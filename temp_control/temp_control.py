@@ -19,7 +19,7 @@ For details, visit: https://opensource.org/licenses/MIT
     > pip install requests
     > (to get dependencies) pip freeze > requirements.txt
     > (on docker) pip install -r requirements.txt
-    > docker build -t script-temp-control . 
+    > docker build -t lichzelg/script-temp-control:0.2 . 
 
 - sources
 
@@ -32,7 +32,9 @@ For details, visit: https://opensource.org/licenses/MIT
 import time
 import requests
 import subprocess
+import platform
 import sys
+import os
 from datetime import datetime, timedelta
 from typing import Optional
 
@@ -43,20 +45,41 @@ NORMAL_TEMP_REPORT_INTERVAL: timedelta = timedelta(days=1)
 
 last_normal_report_time: datetime = datetime.min
 
+import os, subprocess
+
 def get_cpu_temperature() -> Optional[float]:
-    """Returns the CPU temperature as a float, or None if unavailable."""
-    output: subprocess.CompletedProcess = subprocess.run(
-        ["vcgencmd", "measure_temp"],
-        capture_output=True,
-        text=True
-    )
-    if output.returncode != 0:
+    system = platform.system()
+
+    if system == "Linux":
+        # try vcgencmd
+        try:
+            output = subprocess.run(
+                ["vcgencmd", "measure_temp"],
+                capture_output=True,
+                text=True
+            )
+            if output.returncode == 0:
+                return float(output.stdout.strip().replace("temp=", "").replace("'C", ""))
+        except FileNotFoundError:
+            pass
+        # fallback to /sys file
+        try:
+            with open("/sys/class/thermal/thermal_zone0/temp") as f:
+                return float(f.read()) / 1000.0
+        except Exception:
+            return None
+
+    elif system == "Windows":
+        # no standard API without extra libraries
+        print("Temperature reading not supported on Windows.")
         return None
-    temp_str: str = output.stdout.strip().replace("temp=", "").replace("'C", "")
-    try:
-        return float(temp_str)
-    except ValueError:
+
+    elif system == "Darwin":  # macOS
+        print("Temperature reading not supported on macOS.")
         return None
+
+    return None
+
 
 def send_to_discord(message: str) -> None:
     """Sends a message to the Discord webhook."""
