@@ -29,25 +29,33 @@ CPU temperature guard: posts a daily temperature report to Discord and shuts the
 
 ## Run
 
-```bash
-# 1. Go to the script's folder and create your .env (then set DISCORD_WEBHOOK_URL in it)
-cd scripts/temp_control
-cp .env.example .env
-
-# 2a. With Docker
-docker build -t script-temp_control .
-docker run -d --name script-temp_control --restart unless-stopped --env-file .env script-temp_control
-
-# 2b. Or with Python
-python -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-set -a; . ./.env; set +a      # load .env into the environment
-python temp_control.py
-```
+- **Portainer** (recommended): Stacks → Add stack → **Repository**, compose path `scripts/temp_control/docker-compose.yml`, `DISCORD_WEBHOOK_URL` under Environment variables; see [Deploy from the Git repository](../../docs/02-docker-portainer.md#deploy-from-the-git-repository)
+- **Docker Compose** on the server:
+    ```bash
+    cd scripts/temp_control
+    cp .env.example .env          # then set DISCORD_WEBHOOK_URL
+    docker compose up -d --build
+    docker logs script-temp_control
+    ```
+- **Python** without Docker:
+    ```bash
+    cd scripts/temp_control
+    python -m venv .venv
+    source .venv/bin/activate
+    pip install -r requirements.txt
+    set -a; . ./.env; set +a      # load .env into the environment
+    python temp_control.py
+    ```
 
 - the script stops with a message if `DISCORD_WEBHOOK_URL` is not set
-- shutting down the host from inside a container needs extra access (privileges or device mounts); not documented yet
+
+## How it shuts down the host
+
+- in a container: `nsenter -t 1 ... shutdown -h now`, i.e. `shutdown` run as the host's process 1
+    - needs `pid: host` and `privileged: true` ([docker-compose.yml](docker-compose.yml))
+    - trade-off: a privileged container has full access to the host; acceptable for own, reviewed code only
+- without Docker: `sudo shutdown -h now` (the user needs sudo rights)
+- if the shutdown fails, the error goes to Discord and the script keeps watching, instead of crashing into a restart loop
 
 ## Folders
 
@@ -55,6 +63,7 @@ python temp_control.py
 temp_control/
 ├── temp_control.py     the script
 ├── Dockerfile          image that runs it
+├── docker-compose.yml  how it runs: env, restart, host access for the shutdown
 ├── requirements.txt
 ├── .env.example        copy to .env and fill in (.env is gitignored)
 └── legacy/             superseded code, kept for reference only; see legacy/README.md
