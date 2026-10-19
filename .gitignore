@@ -3,10 +3,17 @@
 # ----------------------------------------------------------------------------------------
 
 temp/*
+delegate.md
 _documentation
 _documentation/
 
 .*
+!.gitignore
+
+# confidential files: only their .example copies are committed (docs/secrets-and-examples.md)
+config.yaml
+*.bak
+!*.example
 
 
 
