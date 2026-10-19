@@ -71,7 +71,8 @@ jobs:
           echo "url=$(echo "$cfg" | jq -r '."x-ci".url // ""')" >> "$GITHUB_OUTPUT"
       - name: Skipped
         if: steps.opts.outputs.smoke == 'false'
-        run: echo "::notice::stacks/${{ matrix.stack }}: smoke test skipped (x-ci.smoke is false)"
+        run: |
+          echo "::notice::stacks/${{ matrix.stack }}: smoke test skipped (x-ci.smoke is false)"
       - name: Start
         if: steps.opts.outputs.smoke == 'true'
         run: docker compose up -d --wait --wait-timeout 120
