@@ -39,12 +39,17 @@ Index of the docs for this repo. Start with the repo's [README](../README.md) fo
         - [Create a webhook](integrations/discord-web-hook.md#create-a-webhook)
         - [Use it](integrations/discord-web-hook.md#use-it)
         - [Replace a leaked webhook](integrations/discord-web-hook.md#replace-a-leaked-webhook)
+    - [GitHub read-only token](integrations/github-read-token.md): lets Portainer clone the private repo
+        - [Create the token](integrations/github-read-token.md#create-the-token)
+        - [Use it in Portainer](integrations/github-read-token.md#use-it-in-portainer)
+        - [Renew or replace it](integrations/github-read-token.md#renew-or-replace-it)
 - Setup guides (planned)
     - Exposing services: port forwarding, CGNAT and Cloudflare Tunnel
     - DNS with AdGuard
     - Troubleshooting
 
 ## Changes
+- 2026-10-19 — added the GitHub read-only token page
 - 2026-10-19 — added the Scripts section
 - 2026-10-19 — added the Integrations section with the Discord webhook page
 - 2026-10-19 — added the CI page

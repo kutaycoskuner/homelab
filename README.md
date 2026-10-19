@@ -69,4 +69,5 @@ Your copies (`.env`, `config.yaml`, ...) are gitignored and never committed. A s
     - [01 · Headless server setup](docs/01-headless-server-setup.md): install the OS and reach the server over the network (Raspberry Pi as the example)
     - [02 · Docker and Portainer](docs/02-docker-portainer.md): container runtime and its web UI
     - [Discord webhook](docs/integrations/discord-web-hook.md): messages from scripts to a Discord channel
+    - [GitHub read-only token](docs/integrations/github-read-token.md): lets Portainer clone the private repo
     - Scripts: [temp_control](scripts/temp_control/README.md)

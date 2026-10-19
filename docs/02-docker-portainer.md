@@ -81,16 +81,7 @@ Portainer clones the repo itself, so updates are one click and nothing has to be
 
 ### Private repo access
 
-A private repo needs a GitHub token; Portainer uses it like a password.
-
-1. GitHub → **Settings → Developer settings → Personal access tokens → Fine-grained tokens → Generate new token**
-    - repository access: **Only select repositories** → this repo
-    - permissions: **Contents: Read-only** (nothing else)
-    - expiration: set one, and renew it before it runs out
-2. in the stack's repository settings: **Authentication** on, your GitHub user name, the token as password
-    - Portainer can save it as a credential for other stacks of the same repo
-
-The token lives only in Portainer, never in the repo or a file. When it expires, deploys fail with an authentication error: create a new one and update the credential.
+A private repo needs a read-only GitHub token under **Authentication**: see [GitHub read-only token](integrations/github-read-token.md).
 
 ## Check after a reboot
 
@@ -103,6 +94,7 @@ docker ps
 ```
 
 ## Changes
+- 2026-10-19 — private repo token steps moved to `integrations/github-read-token.md`
 - 2026-10-19 — added deploying from the Git repository, with GitHub token access for a private repo
 - 2026-10-19 — Portainer marked as optional (convenience UI, not required)
 - 2026-10-19 — first version, from the private server notes: what Docker, Compose and Portainer are and why, Docker install, Portainer via Compose, test container, deploying stacks, reboot check
