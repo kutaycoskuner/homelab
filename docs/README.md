@@ -42,6 +42,11 @@ Index of the docs for this repo. Start with the repo's [README](../README.md) fo
         - [When the server itself can't resolve names](stack-adguard.md#when-the-server-itself-cant-resolve-names)
         - [Test it](stack-adguard.md#test-it)
         - [With Tailscale](stack-adguard.md#with-tailscale)
+    - [PostgreSQL](stack-postgres.md): shared database for own apps, with pgAdmin
+        - [Set it up](stack-postgres.md#set-it-up)
+        - [One database and user per app](stack-postgres.md#one-database-and-user-per-app)
+        - [psql basics](stack-postgres.md#psql-basics)
+        - [Keep it private](stack-postgres.md#keep-it-private)
 - Scripts (each script's README is its doc)
     - [temp_control](../scripts/temp_control/README.md): CPU temperature report and shutdown guard
 - Integrations
@@ -66,6 +71,7 @@ Index of the docs for this repo. Start with the repo's [README](../README.md) fo
     - Troubleshooting
 
 ## Changes
+- 2026-10-19 — added the PostgreSQL stack page
 - 2026-10-19 — added the Optional stacks section with AdGuard; core setup guides marked as in order
 - 2026-10-19 — added the Tailscale and Cloudflare Tunnel integration pages
 - 2026-10-19 — added the Exposing services guide
