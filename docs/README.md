@@ -31,12 +31,18 @@ Index of the docs for this repo. Start with the repo's [README](../README.md) fo
         - [Test with a first container](02-docker-portainer.md#test-with-a-first-container)
         - [Deploy a stack from this repo](02-docker-portainer.md#deploy-a-stack-from-this-repo)
         - [Check after a reboot](02-docker-portainer.md#check-after-a-reboot)
+- Integrations
+    - [Discord webhook](integrations/discord-web-hook.md): messages from scripts to a Discord channel
+        - [Create a webhook](integrations/discord-web-hook.md#create-a-webhook)
+        - [Use it](integrations/discord-web-hook.md#use-it)
+        - [Replace a leaked webhook](integrations/discord-web-hook.md#replace-a-leaked-webhook)
 - Setup guides (planned)
     - Exposing services: port forwarding, CGNAT and Cloudflare Tunnel
     - DNS with AdGuard
     - Troubleshooting
 
 ## Changes
+- 2026-10-19 — added the Integrations section with the Discord webhook page
 - 2026-10-19 — added the CI page
 - 2026-10-19 — added the Docker and Portainer guide
 - 2026-10-19 — setup guide renamed to Headless server setup (hardware-agnostic, Pi as the example)
