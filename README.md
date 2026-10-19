@@ -61,3 +61,4 @@ Your copies (`.env`, `config.yaml`, ...) are gitignored and never committed. A s
 
 - [docs/README.md](docs/README.md): index of all docs
     - [Secrets and example files](docs/secrets-and-examples.md): how confidential values are kept out of the repo
+    - [01 · Headless server setup](docs/01-headless-server-setup.md): install the OS and reach the server over the network (Raspberry Pi as the example)
