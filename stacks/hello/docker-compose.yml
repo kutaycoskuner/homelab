@@ -1,0 +1,12 @@
+# hello: a one-page test site to check the whole path (Git deploy, LAN, Tailscale, tunnel). See README.md.
+services:
+  hello:
+    build: .
+    image: homelab-hello
+    container_name: hello
+    restart: unless-stopped
+    ports:
+      - "8088:80"   # 8080 is taken by nextcloud on this server
+
+x-ci:   # CI options, see docs/ci.md
+  url: http://localhost:8088
