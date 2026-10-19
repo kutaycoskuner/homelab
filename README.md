@@ -35,6 +35,8 @@ homelab/
 │   ├── adguard/           DNS with ad and tracker blocking for the whole network
 │   ├── postgres/          shared database for own apps, with pgAdmin
 │   ├── umami/             self-hosted website analytics
+│   ├── nextcloud/         your own cloud storage, with its own database
+│   ├── media-server/      files from a folder as web addresses (images for websites)
 │   ├── tailscale/         private access from your own devices
 │   ├── cloudflared/       Cloudflare Tunnel: public subdomains without open ports
 │   └── hello/             one-page test site to check a deploy end to end
@@ -76,7 +78,7 @@ Your copies (`.env`) are gitignored and never committed. Stacks deployed through
     - [01 · Headless server setup](docs/01-headless-server-setup.md): install the OS and reach the server over the network (Raspberry Pi as the example)
     - [02 · Docker and Portainer](docs/02-docker-portainer.md): container runtime and its web UI
     - [03 · Exposing services](docs/03-exposing-services.md): public through a Cloudflare Tunnel, private through Tailscale
-    - optional stacks: [AdGuard](docs/stack-adguard.md) (network-wide ad and tracker blocking), [PostgreSQL](docs/stack-postgres.md) (shared database with pgAdmin), [Umami](docs/stack-umami.md) (website analytics)
+    - optional stacks: [AdGuard](docs/stack-adguard.md) (network-wide ad and tracker blocking), [PostgreSQL](docs/stack-postgres.md) (shared database with pgAdmin), [Umami](docs/stack-umami.md) (website analytics), [Nextcloud](docs/stack-nextcloud.md) (cloud storage), [Media server](docs/stack-media-server.md) (files as web addresses)
     - [Discord webhook](docs/integrations/discord-web-hook.md): messages from scripts to a Discord channel
     - [Tailscale](docs/integrations/tailscale.md) and [Cloudflare Tunnel](docs/integrations/cloudflare-tunnel.md): private and public access
     - [GitHub read-only token](docs/integrations/github-read-token.md): lets Portainer clone the private repo

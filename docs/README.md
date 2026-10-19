@@ -52,6 +52,15 @@ Index of the docs for this repo. Start with the repo's [README](../README.md) fo
         - [Make it public](stack-umami.md#make-it-public)
         - [Add the tracking code to a website](stack-umami.md#add-the-tracking-code-to-a-website)
         - [Don't count your own visits](stack-umami.md#dont-count-your-own-visits)
+    - [Nextcloud](stack-nextcloud.md): your own cloud storage, with its own database
+        - [Set it up](stack-nextcloud.md#set-it-up)
+        - [Reach it from other addresses](stack-nextcloud.md#reach-it-from-other-addresses)
+        - [Updating](stack-nextcloud.md#updating)
+    - [Media server](stack-media-server.md): files from a folder as web addresses, no database
+        - [How the folder maps to URLs](stack-media-server.md#how-the-folder-maps-to-urls)
+        - [Set it up](stack-media-server.md#set-it-up)
+        - [Add files](stack-media-server.md#add-files)
+        - [Make it public](stack-media-server.md#make-it-public)
 - Scripts (each script's README is its doc)
     - [temp_control](../scripts/temp_control/README.md): CPU temperature report and shutdown guard
 - Integrations
@@ -76,6 +85,7 @@ Index of the docs for this repo. Start with the repo's [README](../README.md) fo
     - Troubleshooting
 
 ## Changes
+- 2026-10-19 — added the Nextcloud and Media server stack pages
 - 2026-10-19 — added the Umami stack page
 - 2026-10-19 — added the PostgreSQL stack page
 - 2026-10-19 — added the Optional stacks section with AdGuard; core setup guides marked as in order
