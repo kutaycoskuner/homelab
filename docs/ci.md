@@ -12,6 +12,9 @@ GitHub Actions checks every push and pull request. Workflows are in [.github/wor
 - **secrets** ([secrets.yml](../.github/workflows/secrets.yml))
     - [gitleaks](https://github.com/gitleaks/gitleaks) scans the files and the full git history for keys and tokens
     - a check for real Discord webhook URLs, which gitleaks has no rule for
+- **terraform** ([terraform.yml](../.github/workflows/terraform.yml)), for every folder under `terraform/`
+    - `terraform fmt -check` (formatting) and `terraform validate` (valid configuration)
+    - no account access: it never plans or applies
 
 ## Per-stack options (`x-ci`)
 
@@ -29,4 +32,5 @@ x-ci:
 - placeholder values only: a stack that works with them in CI can still fail with wrong real values
 
 ## Changes
+- 2026-10-19 — added the terraform workflow
 - 2026-10-19 — first version: stacks (validate, smoke test, arm64 once public), secrets (gitleaks, Discord webhooks), `x-ci` options

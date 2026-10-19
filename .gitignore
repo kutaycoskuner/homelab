@@ -15,6 +15,14 @@ config.yaml
 *.bak
 !*.example
 
+# terraform: variables (tokens, IDs) and state stay local; the lock file pins provider versions
+*.tfvars
+!*.tfvars.example
+*.tfstate
+*.tfstate.*
+.terraform/
+!.terraform.lock.hcl
+
 
 
 # ----------------------------------------------------------------------------------------

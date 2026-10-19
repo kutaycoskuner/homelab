@@ -1,0 +1,39 @@
+# Checks every folder under terraform/: formatting and validity. Needs no account access (see docs/ci.md).
+name: terraform
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  list:
+    runs-on: ubuntu-latest
+    outputs:
+      folders: ${{ steps.find.outputs.folders }}
+    steps:
+      - uses: actions/checkout@v5
+      - id: find
+        run: |
+          echo "folders=$(find terraform -name '*.tf' -printf '%h\n' 2>/dev/null | sort -u | jq -R . | jq -cs .)" >> "$GITHUB_OUTPUT"
+
+  check:
+    needs: list
+    if: needs.list.outputs.folders != '[]'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        folder: ${{ fromJSON(needs.list.outputs.folders) }}
+    defaults:
+      run:
+        working-directory: ${{ matrix.folder }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: hashicorp/setup-terraform@v3
+      - name: Formatting
+        run: terraform fmt -check -diff
+      - name: Download providers
+        run: terraform init -backend=false -input=false
+      - name: Validate
+        run: terraform validate

@@ -20,7 +20,7 @@ Cloudflare Tunnel connector: publishes chosen services under your domain (e.g. `
 
 A connector started with `docker run ... --token <token>` keeps the token in its command line, visible in `docker inspect` and Portainer.
 
-1. copy the token from the Cloudflare dashboard (Networks → Tunnels → your tunnel), not from the old container
+1. copy the token from the Cloudflare dashboard (Networking → Tunnels → your tunnel), not from the old container
 2. remove the old container: `docker stop cloudflared && docker rm cloudflared`
 3. start this stack with the same token; the dashboard shows the tunnel as **Healthy** again
 4. if the token was ever pasted or shared somewhere: in the dashboard, refresh the tunnel token and use the new one
