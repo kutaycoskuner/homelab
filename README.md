@@ -8,6 +8,8 @@
 
 <p align="center">
     <img alt="Last Update" src="https://img.shields.io/github/last-commit/kutaycoskuner/homelab" />
+    <img alt="Stacks" src="https://github.com/kutaycoskuner/homelab/actions/workflows/stacks.yml/badge.svg" />
+    <img alt="Secrets" src="https://github.com/kutaycoskuner/homelab/actions/workflows/secrets.yml/badge.svg" />
 </p>
 
 ------------------------------------------------------------------------------------------
@@ -27,10 +29,12 @@
 homelab/
 ├── README.md              this file
 ├── docs/                  setup guides and write-ups, see docs/README.md
+├── stacks/<service>/      docker-compose.yml + .env.example + README per service
+│   └── portainer/         Docker web UI
 ├── temp_control/          CPU temperature guard (Discord report, shutdown when too hot)
 │
 │   planned:
-├── stacks/<service>/      docker-compose.yml + .env.example + README per service
+├── stacks/...             the other services
 ├── scripts/               helper scripts (temp_control moves here)
 └── roadmap.md             services to add next
 ```
@@ -61,4 +65,6 @@ Your copies (`.env`, `config.yaml`, ...) are gitignored and never committed. A s
 
 - [docs/README.md](docs/README.md): index of all docs
     - [Secrets and example files](docs/secrets-and-examples.md): how confidential values are kept out of the repo
+    - [CI](docs/ci.md): what GitHub Actions checks on every push
     - [01 · Headless server setup](docs/01-headless-server-setup.md): install the OS and reach the server over the network (Raspberry Pi as the example)
+    - [02 · Docker and Portainer](docs/02-docker-portainer.md): container runtime and its web UI

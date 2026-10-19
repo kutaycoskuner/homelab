@@ -9,6 +9,10 @@ Index of the docs for this repo. Start with the repo's [README](../README.md) fo
         - [Placeholders](secrets-and-examples.md#placeholders)
         - [Syncing your copies](secrets-and-examples.md#syncing-your-copies)
         - [Before every commit](secrets-and-examples.md#before-every-commit)
+    - [CI](ci.md): what GitHub Actions checks on every push
+        - [What is checked](ci.md#what-is-checked)
+        - [Per-stack options (`x-ci`)](ci.md#per-stack-options-x-ci)
+        - [Not covered](ci.md#not-covered)
 - Setup guides
     - [01 · Headless server setup](01-headless-server-setup.md): OS install and network access without a screen, Raspberry Pi as the example
         - [Placeholders](01-headless-server-setup.md#placeholders-used-on-this-page)
@@ -20,13 +24,21 @@ Index of the docs for this repo. Start with the repo's [README](../README.md) fo
         - [Optional: remote desktop over VNC](01-headless-server-setup.md#optional-remote-desktop-over-vnc)
         - [Daily use](01-headless-server-setup.md#daily-use)
         - [Git access from the server](01-headless-server-setup.md#git-access-from-the-server)
+    - [02 · Docker and Portainer](02-docker-portainer.md): container runtime and its web UI
+        - [What they are and why we use them](02-docker-portainer.md#what-they-are-and-why-we-use-them)
+        - [Install Docker](02-docker-portainer.md#install-docker)
+        - [Install Portainer](02-docker-portainer.md#install-portainer)
+        - [Test with a first container](02-docker-portainer.md#test-with-a-first-container)
+        - [Deploy a stack from this repo](02-docker-portainer.md#deploy-a-stack-from-this-repo)
+        - [Check after a reboot](02-docker-portainer.md#check-after-a-reboot)
 - Setup guides (planned)
-    - Docker and Portainer
     - Exposing services: port forwarding, CGNAT and Cloudflare Tunnel
     - DNS with AdGuard
     - Troubleshooting
 
 ## Changes
+- 2026-10-19 — added the CI page
+- 2026-10-19 — added the Docker and Portainer guide
 - 2026-10-19 — setup guide renamed to Headless server setup (hardware-agnostic, Pi as the example)
 - 2026-10-19 — added the Raspberry Pi headless setup guide
 - 2026-10-19 — first version: index with the secrets convention and the planned setup guides
