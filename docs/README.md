@@ -33,6 +33,9 @@ Index of the docs for this repo. Start with the repo's [README](../README.md) fo
         - [Deploy a stack from this repo](02-docker-portainer.md#deploy-a-stack-from-this-repo)
         - [Deploy from the Git repository](02-docker-portainer.md#deploy-from-the-git-repository) (incl. [private repo access](02-docker-portainer.md#private-repo-access))
         - [Check after a reboot](02-docker-portainer.md#check-after-a-reboot)
+    - [03 · Exposing services](03-exposing-services.md): public through a Cloudflare Tunnel, private through Tailscale
+        - [What was tried first, and why it failed](03-exposing-services.md#what-was-tried-first-and-why-it-failed)
+        - [Set them up](03-exposing-services.md#set-them-up)
 - Scripts (each script's README is its doc)
     - [temp_control](../scripts/temp_control/README.md): CPU temperature report and shutdown guard
 - Integrations
@@ -40,6 +43,13 @@ Index of the docs for this repo. Start with the repo's [README](../README.md) fo
         - [Create a webhook](integrations/discord-web-hook.md#create-a-webhook)
         - [Use it](integrations/discord-web-hook.md#use-it)
         - [Replace a leaked webhook](integrations/discord-web-hook.md#replace-a-leaked-webhook)
+    - [Tailscale](integrations/tailscale.md): private access to the server from your own devices
+        - [Set up](integrations/tailscale.md#set-up)
+        - [Use it](integrations/tailscale.md#use-it)
+    - [Cloudflare Tunnel](integrations/cloudflare-tunnel.md): public subdomains without open ports
+        - [Set up](integrations/cloudflare-tunnel.md#set-up)
+        - [Publish a service](integrations/cloudflare-tunnel.md#publish-a-service)
+        - [Keep the token safe](integrations/cloudflare-tunnel.md#keep-the-token-safe)
     - [GitHub read-only token](integrations/github-read-token.md): lets Portainer clone the private repo
         - [Create the token](integrations/github-read-token.md#create-the-token)
         - [Use it in Portainer](integrations/github-read-token.md#use-it-in-portainer)
@@ -47,11 +57,12 @@ Index of the docs for this repo. Start with the repo's [README](../README.md) fo
 - Legacy (how it was done before, not current)
     - [First setup, before Docker](legacy/first-setup-without-docker.md): scripts with tmux, bot with pm2, Pi-hole, AdGuard and Tailscale on the host, and moving away from it
 - Setup guides (planned)
-    - Exposing services: port forwarding, CGNAT and Cloudflare Tunnel
     - DNS with AdGuard
     - Troubleshooting
 
 ## Changes
+- 2026-10-19 — added the Tailscale and Cloudflare Tunnel integration pages
+- 2026-10-19 — added the Exposing services guide
 - 2026-10-19 — added the Legacy section with the first setup before Docker
 - 2026-10-19 — added the GitHub read-only token page
 - 2026-10-19 — added the Scripts section

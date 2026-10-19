@@ -1,0 +1,13 @@
+# cloudflared: Cloudflare Tunnel connector, publishes chosen services under your domain without open ports. See README.md.
+# Portainer: set CLOUDFLARE_TUNNEL_TOKEN under Environment variables. CLI: put it in .env (see .env.example).
+services:
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: cloudflared
+    restart: unless-stopped
+    command: tunnel --no-autoupdate run
+    environment:
+      TUNNEL_TOKEN: ${CLOUDFLARE_TUNNEL_TOKEN}   # secret; read from the environment, not the command line
+
+x-ci:   # CI options, see docs/ci.md
+  smoke: false   # needs a real tunnel token
