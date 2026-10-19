@@ -20,6 +20,7 @@ Index of the docs for this repo. Start with the repo's [README](../README.md) fo
         - [Install the operating system](01-headless-server-setup.md#install-the-operating-system)
         - [Find the server on the network](01-headless-server-setup.md#find-the-server-on-the-network)
         - [First login](01-headless-server-setup.md#first-login)
+        - [Log in with an SSH key](01-headless-server-setup.md#log-in-with-an-ssh-key)
         - [Give the server a fixed address](01-headless-server-setup.md#give-the-server-a-fixed-address)
         - [Optional: remote desktop over VNC](01-headless-server-setup.md#optional-remote-desktop-over-vnc)
         - [Daily use](01-headless-server-setup.md#daily-use)
@@ -43,12 +44,15 @@ Index of the docs for this repo. Start with the repo's [README](../README.md) fo
         - [Create the token](integrations/github-read-token.md#create-the-token)
         - [Use it in Portainer](integrations/github-read-token.md#use-it-in-portainer)
         - [Renew or replace it](integrations/github-read-token.md#renew-or-replace-it)
+- Legacy (how it was done before, not current)
+    - [First setup, before Docker](legacy/first-setup-without-docker.md): scripts with tmux, bot with pm2, Pi-hole, AdGuard and Tailscale on the host, and moving away from it
 - Setup guides (planned)
     - Exposing services: port forwarding, CGNAT and Cloudflare Tunnel
     - DNS with AdGuard
     - Troubleshooting
 
 ## Changes
+- 2026-10-19 — added the Legacy section with the first setup before Docker
 - 2026-10-19 — added the GitHub read-only token page
 - 2026-10-19 — added the Scripts section
 - 2026-10-19 — added the Integrations section with the Discord webhook page

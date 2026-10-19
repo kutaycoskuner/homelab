@@ -75,6 +75,33 @@ sudo apt update && sudo apt upgrade -y
 passwd
 ```
 
+## Log in with an SSH key
+
+- **SSH key**: a key pair on the PC; the server keeps the public half and lets the PC in without a password
+    - why: no password to type or guess; password login can then be turned off
+
+```powershell
+# 1. On the PC: create a key (Enter for the default location, set a passphrase)
+ssh-keygen -t ed25519
+
+# 2. Copy the public key to the server
+#   Windows (PowerShell):
+type $env:USERPROFILE\.ssh\id_ed25519.pub | ssh <user>@<hostname>.local "mkdir -p ~/.ssh && cat >> ~/.ssh/authorized_keys"
+#   macOS / Linux:
+ssh-copy-id <user>@<hostname>.local
+
+# 3. Test: must log in without asking for the server password
+ssh <user>@<hostname>.local
+```
+
+Optional, safer: turn off password login. Test the key login first, and keep that session open until a second login works, or you lock yourself out.
+
+```bash
+# on the server; 00- so it wins over other files in that folder (the first value read counts)
+echo "PasswordAuthentication no" | sudo tee /etc/ssh/sshd_config.d/00-no-password.conf
+sudo systemctl restart ssh
+```
+
 ## Give the server a fixed address
 
 Services on the server (and DNS later) are reached by its address, so it must not change.
@@ -135,5 +162,6 @@ git clone git@github.com:<owner>/<repo>.git
 ```
 
 ## Changes
+- 2026-10-19 — added logging in from the PC with an SSH key, and turning off password login
 - 2026-10-19 — made hardware-agnostic: steps for any Debian-based machine, Raspberry Pi as the worked example per step, CPU type note, `sensors` for temperature; taken over from `01-pi-headless-setup.md` (renamed)
 - 2026-10-19 — first version, rewritten from the private setup notes: OS install, finding the server, first login, fixed address, VNC, daily commands, Git over SSH
