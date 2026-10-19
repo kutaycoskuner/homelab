@@ -68,6 +68,30 @@ In Portainer: **Containers → Add container**
 3. under **Environment variables**, add each key from the folder's `.env.example` with your own value
 4. **Deploy the stack**
 
+## Deploy from the Git repository
+
+Portainer clones the repo itself, so updates are one click and nothing has to be copied to the server.
+
+1. **Stacks → Add stack → Repository**
+    - repository URL: `https://github.com/<owner>/homelab`
+    - reference: `refs/heads/main`
+    - compose path: `stacks/<service>/docker-compose.yml` (or `scripts/<script>/docker-compose.yml`)
+2. **Environment variables**: each key from the folder's `.env.example` with your own value
+3. **Deploy the stack**; later updates: the stack → **Pull and redeploy**
+
+### Private repo access
+
+A private repo needs a GitHub token; Portainer uses it like a password.
+
+1. GitHub → **Settings → Developer settings → Personal access tokens → Fine-grained tokens → Generate new token**
+    - repository access: **Only select repositories** → this repo
+    - permissions: **Contents: Read-only** (nothing else)
+    - expiration: set one, and renew it before it runs out
+2. in the stack's repository settings: **Authentication** on, your GitHub user name, the token as password
+    - Portainer can save it as a credential for other stacks of the same repo
+
+The token lives only in Portainer, never in the repo or a file. When it expires, deploys fail with an authentication error: create a new one and update the credential.
+
 ## Check after a reboot
 
 Containers come back on their own when their compose file sets `restart: always` or `unless-stopped`. Check once:
@@ -79,5 +103,6 @@ docker ps
 ```
 
 ## Changes
+- 2026-10-19 — added deploying from the Git repository, with GitHub token access for a private repo
 - 2026-10-19 — Portainer marked as optional (convenience UI, not required)
 - 2026-10-19 — first version, from the private server notes: what Docker, Compose and Portainer are and why, Docker install, Portainer via Compose, test container, deploying stacks, reboot check

@@ -30,6 +30,7 @@ Index of the docs for this repo. Start with the repo's [README](../README.md) fo
         - [Install Portainer](02-docker-portainer.md#install-portainer)
         - [Test with a first container](02-docker-portainer.md#test-with-a-first-container)
         - [Deploy a stack from this repo](02-docker-portainer.md#deploy-a-stack-from-this-repo)
+        - [Deploy from the Git repository](02-docker-portainer.md#deploy-from-the-git-repository) (incl. [private repo access](02-docker-portainer.md#private-repo-access))
         - [Check after a reboot](02-docker-portainer.md#check-after-a-reboot)
 - Scripts (each script's README is its doc)
     - [temp_control](../scripts/temp_control/README.md): CPU temperature report and shutdown guard
