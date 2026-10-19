@@ -13,7 +13,7 @@ Index of the docs for this repo. Start with the repo's [README](../README.md) fo
         - [What is checked](ci.md#what-is-checked)
         - [Per-stack options (`x-ci`)](ci.md#per-stack-options-x-ci)
         - [Not covered](ci.md#not-covered)
-- Setup guides
+- Setup guides (core, in order)
     - [01 · Headless server setup](01-headless-server-setup.md): OS install and network access without a screen, Raspberry Pi as the example
         - [Placeholders](01-headless-server-setup.md#placeholders-used-on-this-page)
         - [Requirements](01-headless-server-setup.md#requirements)
@@ -36,6 +36,12 @@ Index of the docs for this repo. Start with the repo's [README](../README.md) fo
     - [03 · Exposing services](03-exposing-services.md): public through a Cloudflare Tunnel, private through Tailscale
         - [What was tried first, and why it failed](03-exposing-services.md#what-was-tried-first-and-why-it-failed)
         - [Set them up](03-exposing-services.md#set-them-up)
+- Optional stacks (pick what you need)
+    - [AdGuard](stack-adguard.md): network-wide ad and tracker blocking
+        - [Set it up](stack-adguard.md#set-it-up)
+        - [When the server itself can't resolve names](stack-adguard.md#when-the-server-itself-cant-resolve-names)
+        - [Test it](stack-adguard.md#test-it)
+        - [With Tailscale](stack-adguard.md#with-tailscale)
 - Scripts (each script's README is its doc)
     - [temp_control](../scripts/temp_control/README.md): CPU temperature report and shutdown guard
 - Integrations
@@ -57,10 +63,10 @@ Index of the docs for this repo. Start with the repo's [README](../README.md) fo
 - Legacy (how it was done before, not current)
     - [First setup, before Docker](legacy/first-setup-without-docker.md): scripts with tmux, bot with pm2, Pi-hole, AdGuard and Tailscale on the host, and moving away from it
 - Setup guides (planned)
-    - DNS with AdGuard
     - Troubleshooting
 
 ## Changes
+- 2026-10-19 — added the Optional stacks section with AdGuard; core setup guides marked as in order
 - 2026-10-19 — added the Tailscale and Cloudflare Tunnel integration pages
 - 2026-10-19 — added the Exposing services guide
 - 2026-10-19 — added the Legacy section with the first setup before Docker

@@ -1,0 +1,22 @@
+# AdGuard Home: DNS server for the home network that blocks ads and trackers. See README.md.
+# Portainer: set ADGUARD_DATA_DIR under Environment variables. CLI: put it in .env (see .env.example).
+services:
+  adguardhome:
+    image: adguard/adguardhome:latest
+    container_name: adguardhome
+    restart: unless-stopped
+    dns:                       # the container's own lookups (updates, block lists), so it never asks itself
+      - 1.1.1.1
+      - 8.8.8.8
+    ports:
+      - "53:53/tcp"            # DNS
+      - "53:53/udp"
+      - "80:80/tcp"            # web UI after the first-time setup
+      - "443:443/tcp"          # web UI over HTTPS / DNS-over-HTTPS, if turned on
+      - "3000:3000/tcp"        # first-time setup UI
+    volumes:
+      - ${ADGUARD_DATA_DIR}/work:/opt/adguardhome/work   # statistics, query log
+      - ${ADGUARD_DATA_DIR}/conf:/opt/adguardhome/conf   # settings
+
+x-ci:   # CI options, see docs/ci.md
+  smoke: false   # GitHub's runners already use port 53
