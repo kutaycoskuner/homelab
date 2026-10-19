@@ -1,0 +1,42 @@
+# postgres: one shared PostgreSQL database server for own apps, plus pgAdmin as its web UI. See README.md.
+# Portainer: set the keys from .env.example under Environment variables. CLI: put them in .env.
+services:
+  postgres:
+    image: postgres:17
+    container_name: postgres-core
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}             # admin user, created on the first start only
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}     # secret
+      POSTGRES_DB: ${POSTGRES_DB}
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"   # home network and Tailscale only; never publish through the tunnel
+    networks:
+      - db_network
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: pgadmin-core
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}         # pgAdmin login
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}   # secret
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin   # saved servers and settings survive updates
+    ports:
+      - "5050:80"
+    networks:
+      - db_network
+
+volumes:
+  postgres_data:
+    name: ${POSTGRES_VOLUME_NAME}   # fixed name, so a redeploy under another stack name finds the same data
+  pgadmin_data:
+    name: pgadmin_data
+
+networks:
+  db_network:
+    name: db_network   # fixed name, so app stacks (umami, ...) can join it as an external network

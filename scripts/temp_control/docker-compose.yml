@@ -1,0 +1,19 @@
+# temp_control: CPU temperature report and shutdown guard. See README.md.
+# Portainer: Stacks → Add stack → Repository, compose path scripts/temp_control/docker-compose.yml,
+# and DISCORD_WEBHOOK_URL under Environment variables. CLI: put it in .env next to this file.
+services:
+  temp_control:
+    build: .
+    image: script-temp_control
+    container_name: script-temp_control
+    restart: unless-stopped
+    environment:
+      DISCORD_WEBHOOK_URL: ${DISCORD_WEBHOOK_URL}   # secret, never written here
+    # shutting down the host from a container: the script runs `nsenter -t 1 ... shutdown`,
+    # which needs the host's process space and full privileges.
+    # Trade-off: a privileged container has full access to the host; acceptable only for own, reviewed code.
+    pid: host
+    privileged: true
+
+x-ci:   # CI options, see docs/ci.md (scripts aren't smoke-tested: this one needs the real host)
+  smoke: false

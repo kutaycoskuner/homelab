@@ -1,0 +1,14 @@
+# media-server: serves files from a folder on the server as plain web URLs (images for a website, a blog ...).
+# No database: the folder is the content. Set MEDIA_DIR (see .env.example). See README.md.
+services:
+  media-server:
+    image: nginx:alpine
+    container_name: media-server
+    restart: unless-stopped
+    ports:
+      - "8090:80"
+    volumes:
+      - ${MEDIA_DIR}:/usr/share/nginx/html/images:ro   # read-only: the web server can't change your files
+
+x-ci:   # CI options, see docs/ci.md
+  url: http://localhost:8090/

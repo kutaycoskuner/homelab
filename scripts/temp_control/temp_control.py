@@ -19,7 +19,8 @@ For details, visit: https://opensource.org/licenses/MIT
     > pip install requests
     > (to get dependencies) pip freeze > requirements.txt
     > (on docker) pip install -r requirements.txt
-    > docker build -t lichzelg/script-temp-control:0.2 . 
+    > copy .env.example to .env and set DISCORD_WEBHOOK_URL (never commit .env)
+    > (on docker) docker compose up -d --build   (see README.md and docker-compose.yml)
 
 - sources
 
@@ -38,7 +39,11 @@ import os
 from datetime import datetime, timedelta
 from typing import Optional
 
-WEBHOOK_URL: str = "https://discord.com/api/webhooks/842859571054772225/shpU0uxDFUqWxZAT6w5zpsu69dLLb15PpxJJM4Ps4MkxTOGPmjxBzzXCeQHT7uTLT7Yz"
+# Discord webhook, read from the environment (.env, see .env.example), never written in code
+# strip quotes: docker run --env-file passes them through literally, compose and dotenv tools remove them
+WEBHOOK_URL: str = os.getenv("DISCORD_WEBHOOK_URL", "").strip().strip("\"'")
+if not WEBHOOK_URL:
+    sys.exit("DISCORD_WEBHOOK_URL is not set: copy .env.example to .env and fill in the webhook URL")
 CHECK_INTERVAL: int = 3600  # in seconds
 SHUTDOWN_THRESHOLD: float = 78.0  # °C
 NORMAL_TEMP_REPORT_INTERVAL: timedelta = timedelta(days=1)
@@ -91,11 +96,30 @@ def send_to_discord(message: str) -> None:
     except Exception as e:
         print(f"Error sending to Discord: {e}")
 
-def shutdown_pi() -> None:
-    """Sends a shutdown message and shuts down the Pi."""
+def shutdown_pi() -> bool:
+    """
+    Sends a shutdown message and shuts down the host.
+
+    Returns:
+        False if the shutdown command failed (reported to Discord), so the caller keeps
+        watching instead of exiting into a Docker restart loop.
+    """
     send_to_discord("⚠️ Shutting down due to high CPU temperature!")
     time.sleep(3)
-    subprocess.run(["sudo", "shutdown", "-h", "now"])
+    if os.path.exists("/.dockerenv"):
+        # in a container: run shutdown as the host's PID 1, needs pid: host and privileged (docker-compose.yml)
+        command = ["nsenter", "-t", "1", "-m", "-u", "-i", "-n", "-p", "--", "shutdown", "-h", "now"]
+    else:
+        command = ["sudo", "shutdown", "-h", "now"]
+    try:
+        result = subprocess.run(command, capture_output=True, text=True)
+        if result.returncode == 0:
+            return True
+        error = result.stderr.strip() or f"exit code {result.returncode}"
+    except FileNotFoundError as e:
+        error = str(e)
+    send_to_discord(f"❌ Shutdown failed: {error}")
+    return False
 
 def main() -> None:
     global last_normal_report_time
@@ -108,8 +132,8 @@ def main() -> None:
         else:
             if temp > SHUTDOWN_THRESHOLD:
                 send_to_discord(f"🔥 CRITICAL! CPU temperature is {temp:.1f}°C — shutting down!")
-                shutdown_pi()
-                sys.exit()
+                if shutdown_pi():
+                    sys.exit()
             elif now - last_normal_report_time >= NORMAL_TEMP_REPORT_INTERVAL:
                 send_to_discord(f"🌡️ Daily Report: CPU temperature is {temp:.1f}°C")
                 last_normal_report_time = now

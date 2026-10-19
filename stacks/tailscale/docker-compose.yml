@@ -1,0 +1,22 @@
+# Tailscale: private access to the server from your own devices. See README.md.
+# No secret here: the login happens once with `tailscale up` and is kept in the volume.
+services:
+  tailscale:
+    image: tailscale/tailscale:latest
+    container_name: tailscale
+    restart: unless-stopped
+    network_mode: host          # the server itself joins the tailnet, so every service on it is reachable
+    cap_add:
+      - NET_ADMIN               # create the VPN interface and routes
+      - SYS_MODULE
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    volumes:
+      - tailscale-var:/var/lib/tailscale   # login state; survives restarts and updates
+    command: ["tailscaled", "--state=/var/lib/tailscale/tailscaled.state"]
+
+volumes:
+  tailscale-var:
+
+x-ci:   # CI options, see docs/ci.md
+  smoke: false   # needs a real login and the host's network

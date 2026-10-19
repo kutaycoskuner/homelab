@@ -1,0 +1,36 @@
+# nextcloud: private cloud storage (files, calendar, contacts) with its own PostgreSQL 15. See README.md.
+# Own database on purpose: Nextcloud's updates follow their own pace, separate from the shared postgres stack.
+# Portainer: set the keys from .env.example under Environment variables. CLI: put them in .env.
+services:
+  db:
+    image: postgres:15
+    container_name: nextcloud_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: nextcloud
+      POSTGRES_USER: nextcloud
+      POSTGRES_PASSWORD: ${NEXTCLOUD_DB_PASSWORD}   # secret
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  app:
+    image: nextcloud:31   # one major version at a time: Nextcloud can't skip majors on upgrade
+    container_name: nextcloud_app
+    restart: unless-stopped
+    depends_on:
+      - db
+    ports:
+      - "8080:80"
+    environment:
+      POSTGRES_HOST: db
+      POSTGRES_DB: nextcloud
+      POSTGRES_USER: nextcloud
+      POSTGRES_PASSWORD: ${NEXTCLOUD_DB_PASSWORD}   # same secret as above
+    volumes:
+      - nextcloud_data:/var/www/html   # app, settings and the users' files
+
+volumes:
+  db_data:
+    name: ${NEXTCLOUD_DB_VOLUME_NAME}     # fixed names, so a redeploy finds the existing data
+  nextcloud_data:
+    name: ${NEXTCLOUD_DATA_VOLUME_NAME}

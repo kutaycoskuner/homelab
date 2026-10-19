@@ -7,6 +7,13 @@ _documentation
 _documentation/
 
 .*
+!.gitignore
+!.github/
+
+# confidential files: only their .example copies are committed (docs/secrets-and-examples.md)
+config.yaml
+*.bak
+!*.example
 
 
 

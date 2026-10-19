@@ -1,0 +1,105 @@
+# Documentation
+
+Index of the docs for this repo. Start with the repo's [README](../README.md) for what it is and the first setup.
+
+- Conventions
+    - [Secrets and example files](secrets-and-examples.md): how passwords, keys and personal data stay out of git
+        - [What counts as confidential](secrets-and-examples.md#what-counts-as-confidential)
+        - [The `.example` convention](secrets-and-examples.md#the-example-convention)
+        - [Placeholders](secrets-and-examples.md#placeholders)
+        - [Syncing your copies](secrets-and-examples.md#syncing-your-copies)
+        - [Before every commit](secrets-and-examples.md#before-every-commit)
+    - [CI](ci.md): what GitHub Actions checks on every push
+        - [What is checked](ci.md#what-is-checked)
+        - [Per-stack options (`x-ci`)](ci.md#per-stack-options-x-ci)
+        - [Not covered](ci.md#not-covered)
+- Setup guides (core, in order)
+    - [01 · Headless server setup](01-headless-server-setup.md): OS install and network access without a screen, Raspberry Pi as the example
+        - [Placeholders](01-headless-server-setup.md#placeholders-used-on-this-page)
+        - [Requirements](01-headless-server-setup.md#requirements)
+        - [Install the operating system](01-headless-server-setup.md#install-the-operating-system)
+        - [Find the server on the network](01-headless-server-setup.md#find-the-server-on-the-network)
+        - [First login](01-headless-server-setup.md#first-login)
+        - [Log in with an SSH key](01-headless-server-setup.md#log-in-with-an-ssh-key)
+        - [Give the server a fixed address](01-headless-server-setup.md#give-the-server-a-fixed-address)
+        - [Optional: remote desktop over VNC](01-headless-server-setup.md#optional-remote-desktop-over-vnc)
+        - [Daily use](01-headless-server-setup.md#daily-use)
+        - [Git access from the server](01-headless-server-setup.md#git-access-from-the-server)
+    - [02 · Docker and Portainer](02-docker-portainer.md): container runtime and its web UI
+        - [What they are and why we use them](02-docker-portainer.md#what-they-are-and-why-we-use-them)
+        - [Install Docker](02-docker-portainer.md#install-docker)
+        - [Install Portainer](02-docker-portainer.md#install-portainer)
+        - [Test with a first container](02-docker-portainer.md#test-with-a-first-container)
+        - [Deploy a stack from this repo](02-docker-portainer.md#deploy-a-stack-from-this-repo)
+        - [Deploy from the Git repository](02-docker-portainer.md#deploy-from-the-git-repository) (incl. [private repo access](02-docker-portainer.md#private-repo-access))
+        - [Check after a reboot](02-docker-portainer.md#check-after-a-reboot)
+    - [03 · Exposing services](03-exposing-services.md): public through a Cloudflare Tunnel, private through Tailscale
+        - [What was tried first, and why it failed](03-exposing-services.md#what-was-tried-first-and-why-it-failed)
+        - [Set them up](03-exposing-services.md#set-them-up)
+- Optional stacks (pick what you need)
+    - [AdGuard](stack-adguard.md): network-wide ad and tracker blocking
+        - [Set it up](stack-adguard.md#set-it-up)
+        - [When the server itself can't resolve names](stack-adguard.md#when-the-server-itself-cant-resolve-names)
+        - [Test it](stack-adguard.md#test-it)
+        - [With Tailscale](stack-adguard.md#with-tailscale)
+    - [PostgreSQL](stack-postgres.md): shared database for own apps, with pgAdmin
+        - [Set it up](stack-postgres.md#set-it-up)
+        - [One database and user per app](stack-postgres.md#one-database-and-user-per-app)
+        - [psql basics](stack-postgres.md#psql-basics)
+        - [Keep it private](stack-postgres.md#keep-it-private)
+    - [Umami](stack-umami.md): self-hosted website analytics
+        - [Set it up](stack-umami.md#set-it-up)
+        - [Make it public](stack-umami.md#make-it-public)
+        - [Add the tracking code to a website](stack-umami.md#add-the-tracking-code-to-a-website)
+        - [Don't count your own visits](stack-umami.md#dont-count-your-own-visits)
+    - [Nextcloud](stack-nextcloud.md): your own cloud storage, with its own database
+        - [Set it up](stack-nextcloud.md#set-it-up)
+        - [Reach it from other addresses](stack-nextcloud.md#reach-it-from-other-addresses)
+        - [Updating](stack-nextcloud.md#updating)
+    - [Media server](stack-media-server.md): files from a folder as web addresses, no database
+        - [How the folder maps to URLs](stack-media-server.md#how-the-folder-maps-to-urls)
+        - [Set it up](stack-media-server.md#set-it-up)
+        - [Add files](stack-media-server.md#add-files)
+        - [Make it public](stack-media-server.md#make-it-public)
+- Personal (the owner's own apps, not for general use)
+    - [Personal stacks](personal-stacks.md): cauldron, karel, mima discord bot, and what each depends on
+- Scripts (each script's README is its doc)
+    - [temp_control](../scripts/temp_control/README.md): CPU temperature report and shutdown guard
+- Integrations
+    - [Discord webhook](integrations/discord-web-hook.md): messages from scripts to a Discord channel
+        - [Create a webhook](integrations/discord-web-hook.md#create-a-webhook)
+        - [Use it](integrations/discord-web-hook.md#use-it)
+        - [Replace a leaked webhook](integrations/discord-web-hook.md#replace-a-leaked-webhook)
+    - [Tailscale](integrations/tailscale.md): private access to the server from your own devices
+        - [Set up](integrations/tailscale.md#set-up)
+        - [Use it](integrations/tailscale.md#use-it)
+    - [Cloudflare Tunnel](integrations/cloudflare-tunnel.md): public subdomains without open ports
+        - [Set up](integrations/cloudflare-tunnel.md#set-up)
+        - [Publish a service](integrations/cloudflare-tunnel.md#publish-a-service)
+        - [Keep the token safe](integrations/cloudflare-tunnel.md#keep-the-token-safe)
+    - [GitHub read-only token](integrations/github-read-token.md): lets Portainer clone the private repo
+        - [Create the token](integrations/github-read-token.md#create-the-token)
+        - [Use it in Portainer](integrations/github-read-token.md#use-it-in-portainer)
+        - [Renew or replace it](integrations/github-read-token.md#renew-or-replace-it)
+- Legacy (how it was done before, not current)
+    - [First setup, before Docker](legacy/first-setup-without-docker.md): scripts with tmux, bot with pm2, Pi-hole, AdGuard and Tailscale on the host, and moving away from it
+- Setup guides (planned)
+    - Troubleshooting
+
+## Changes
+- 2026-10-19 — added the Personal stacks page
+- 2026-10-19 — added the Nextcloud and Media server stack pages
+- 2026-10-19 — added the Umami stack page
+- 2026-10-19 — added the PostgreSQL stack page
+- 2026-10-19 — added the Optional stacks section with AdGuard; core setup guides marked as in order
+- 2026-10-19 — added the Tailscale and Cloudflare Tunnel integration pages
+- 2026-10-19 — added the Exposing services guide
+- 2026-10-19 — added the Legacy section with the first setup before Docker
+- 2026-10-19 — added the GitHub read-only token page
+- 2026-10-19 — added the Scripts section
+- 2026-10-19 — added the Integrations section with the Discord webhook page
+- 2026-10-19 — added the CI page
+- 2026-10-19 — added the Docker and Portainer guide
+- 2026-10-19 — setup guide renamed to Headless server setup (hardware-agnostic, Pi as the example)
+- 2026-10-19 — added the Raspberry Pi headless setup guide
+- 2026-10-19 — first version: index with the secrets convention and the planned setup guides

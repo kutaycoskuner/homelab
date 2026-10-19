@@ -1,0 +1,19 @@
+# Portainer: web UI for managing Docker. Start with `docker compose up -d` (not as a Portainer stack).
+services:
+  portainer:
+    image: portainer/portainer-ce:lts
+    container_name: portainer
+    restart: always
+    ports:
+      - "9443:9443"   # web UI, HTTPS
+      - "9000:9000"   # web UI, HTTP
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock   # lets Portainer control Docker
+      - portainer_data:/data                        # users, settings, stacks
+
+volumes:
+  portainer_data:
+    name: portainer_data   # fixed name, so an existing portainer_data volume is reused
+
+x-ci:   # CI options, see docs/ci.md
+  url: https://localhost:9443
