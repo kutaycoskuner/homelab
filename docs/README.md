@@ -61,6 +61,8 @@ Index of the docs for this repo. Start with the repo's [README](../README.md) fo
         - [Set it up](stack-media-server.md#set-it-up)
         - [Add files](stack-media-server.md#add-files)
         - [Make it public](stack-media-server.md#make-it-public)
+- Personal (the owner's own apps, not for general use)
+    - [Personal stacks](personal-stacks.md): cauldron, karel, mima discord bot, and what each depends on
 - Scripts (each script's README is its doc)
     - [temp_control](../scripts/temp_control/README.md): CPU temperature report and shutdown guard
 - Integrations
@@ -85,6 +87,7 @@ Index of the docs for this repo. Start with the repo's [README](../README.md) fo
     - Troubleshooting
 
 ## Changes
+- 2026-10-19 — added the Personal stacks page
 - 2026-10-19 — added the Nextcloud and Media server stack pages
 - 2026-10-19 — added the Umami stack page
 - 2026-10-19 — added the PostgreSQL stack page
