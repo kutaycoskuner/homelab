@@ -5,8 +5,12 @@
 import time
 import requests
 import subprocess
+import os
+import sys
 
-WEBHOOK_URL = "https://discord.com/api/webhooks/842859571054772225/shpU0uxDFUqWxZAT6w5zpsu69dLLb15PpxJJM4Ps4MkxTOGPmjxBzzXCeQHT7uTLT7Yz"  # paste your webhook URL here
+WEBHOOK_URL = os.getenv("DISCORD_WEBHOOK_URL", "").strip().strip("\"'")  # from .env, see .env.example; quotes stripped
+if not WEBHOOK_URL:
+    sys.exit("DISCORD_WEBHOOK_URL is not set: copy .env.example to .env and fill in the webhook URL")
 INTERVAL_SECONDS = 3600  # 1 hour
 
 def get_cpu_temperature():

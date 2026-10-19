@@ -31,6 +31,8 @@ Index of the docs for this repo. Start with the repo's [README](../README.md) fo
         - [Test with a first container](02-docker-portainer.md#test-with-a-first-container)
         - [Deploy a stack from this repo](02-docker-portainer.md#deploy-a-stack-from-this-repo)
         - [Check after a reboot](02-docker-portainer.md#check-after-a-reboot)
+- Scripts (each script's README is its doc)
+    - [temp_control](../scripts/temp_control/README.md): CPU temperature report and shutdown guard
 - Integrations
     - [Discord webhook](integrations/discord-web-hook.md): messages from scripts to a Discord channel
         - [Create a webhook](integrations/discord-web-hook.md#create-a-webhook)
@@ -42,6 +44,7 @@ Index of the docs for this repo. Start with the repo's [README](../README.md) fo
     - Troubleshooting
 
 ## Changes
+- 2026-10-19 — added the Scripts section
 - 2026-10-19 — added the Integrations section with the Discord webhook page
 - 2026-10-19 — added the CI page
 - 2026-10-19 — added the Docker and Portainer guide

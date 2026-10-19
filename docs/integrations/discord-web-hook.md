@@ -24,7 +24,8 @@ How scripts on the server send messages (reports, alerts) to a Discord channel.
 
 - store it only in the `.env` of the script or stack that uses it, never in code or committed files (see [Secrets and example files](../secrets-and-examples.md)):
     ```bash
-    WEBHOOK_URL=<webhook-url>
+    # Discord webhook for <what it reports>
+    DISCORD_WEBHOOK_URL="<webhook-url>"
     ```
 - test it from any machine (Discord answers `204 No Content`):
     ```bash
@@ -42,7 +43,9 @@ A webhook URL that was committed, pasted or logged counts as leaked, even after 
 
 ## Used by
 
-- [temp_control](../../temp_control/): daily temperature report and shutdown alert
+- [temp_control](../../scripts/temp_control/): daily temperature report and shutdown alert
 
 ## Changes
+- 2026-10-19 — temp_control link points to its new place under `scripts/`
+- 2026-10-19 — key renamed to `DISCORD_WEBHOOK_URL`, value quoted
 - 2026-10-19 — first version: what a webhook is, creating, storing in `.env`, testing, replacing a leaked one

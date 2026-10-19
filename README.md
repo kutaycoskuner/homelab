@@ -31,11 +31,11 @@ homelab/
 ├── docs/                  setup guides and write-ups, see docs/README.md
 ├── stacks/<service>/      docker-compose.yml + .env.example + README per service
 │   └── portainer/         Docker web UI
-├── temp_control/          CPU temperature guard (Discord report, shutdown when too hot)
+├── scripts/               helper scripts
+│   └── temp_control/      CPU temperature guard (Discord report, shutdown when too hot)
 │
 │   planned:
 ├── stacks/...             the other services
-├── scripts/               helper scripts (temp_control moves here)
 └── roadmap.md             services to add next
 ```
 
@@ -69,3 +69,4 @@ Your copies (`.env`, `config.yaml`, ...) are gitignored and never committed. A s
     - [01 · Headless server setup](docs/01-headless-server-setup.md): install the OS and reach the server over the network (Raspberry Pi as the example)
     - [02 · Docker and Portainer](docs/02-docker-portainer.md): container runtime and its web UI
     - [Discord webhook](docs/integrations/discord-web-hook.md): messages from scripts to a Discord channel
+    - Scripts: [temp_control](scripts/temp_control/README.md)

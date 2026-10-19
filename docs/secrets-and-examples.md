@@ -27,12 +27,14 @@ If in doubt, treat it as confidential.
 - the example has the same keys and structure as the real file, filled with placeholders, so readers see what the file looks like
 - the real file is gitignored (`.env`, `config.yaml`); `.gitignore` explicitly keeps `*.example` files committed
 - secrets go in `.env`, read by the code or by Docker Compose; everything else that controls a tool goes in `config.yaml`
+- `.env` style: keys in `UPPER_SNAKE_CASE` named after the service (`DISCORD_WEBHOOK_URL`), values in double quotes, a comment above each key saying what it is and where to get it
+    - `docker run --env-file` keeps the quotes as part of the value; code reading such a value strips them, Compose's `env_file` removes them itself
 
 Example `.env.example`:
 
 ```bash
 # Discord webhook for the daily report and alerts (Server Settings → Integrations → Webhooks)
-WEBHOOK_URL=https://discord.com/api/webhooks/<id>/<token>
+DISCORD_WEBHOOK_URL="https://discord.com/api/webhooks/<id>/<token>"
 ```
 
 ## Placeholders
@@ -70,4 +72,5 @@ Example files change when the repo is updated (a stack gains a new variable, a s
 - [ ] a new key in a real file was also added to its `.example`
 
 ## Changes
+- 2026-10-19 — `.env` style: service-prefixed keys, quoted values, a comment per key
 - 2026-10-19 — first version: what counts as confidential, the `<file>.example` naming, placeholders, the planned sync script, pre-commit checklist

@@ -19,7 +19,9 @@ For details, visit: https://opensource.org/licenses/MIT
     > pip install requests
     > (to get dependencies) pip freeze > requirements.txt
     > (on docker) pip install -r requirements.txt
-    > docker build -t lichzelg/script-temp-control:0.2 . 
+    > copy .env.example to .env and set DISCORD_WEBHOOK_URL (never commit .env)
+    > (on docker) docker run --env-file .env ...
+    > docker build -t script-temp_control . 
 
 - sources
 
@@ -38,7 +40,11 @@ import os
 from datetime import datetime, timedelta
 from typing import Optional
 
-WEBHOOK_URL: str = "https://discord.com/api/webhooks/842859571054772225/shpU0uxDFUqWxZAT6w5zpsu69dLLb15PpxJJM4Ps4MkxTOGPmjxBzzXCeQHT7uTLT7Yz"
+# Discord webhook, read from the environment (.env, see .env.example), never written in code
+# strip quotes: docker run --env-file passes them through literally, compose and dotenv tools remove them
+WEBHOOK_URL: str = os.getenv("DISCORD_WEBHOOK_URL", "").strip().strip("\"'")
+if not WEBHOOK_URL:
+    sys.exit("DISCORD_WEBHOOK_URL is not set: copy .env.example to .env and fill in the webhook URL")
 CHECK_INTERVAL: int = 3600  # in seconds
 SHUTDOWN_THRESHOLD: float = 78.0  # °C
 NORMAL_TEMP_REPORT_INTERVAL: timedelta = timedelta(days=1)
