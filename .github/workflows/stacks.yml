@@ -1,0 +1,94 @@
+# Checks every stack in stacks/: the compose file is valid, and the stack starts and stays up.
+# Per-stack options live in the compose file under `x-ci` (see docs/ci.md).
+name: stacks
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  list:
+    runs-on: ubuntu-latest
+    outputs:
+      stacks: ${{ steps.find.outputs.stacks }}
+      runners: ${{ steps.find.outputs.runners }}
+    steps:
+      - uses: actions/checkout@v5
+      - id: find
+        run: |
+          echo "stacks=$(find stacks -mindepth 2 -maxdepth 2 -name docker-compose.yml -printf '%h\n' | xargs -n1 basename | sort | jq -R . | jq -cs .)" >> "$GITHUB_OUTPUT"
+          # arm64 (the Pi's CPU type) runners are free for public repos only
+          if [ "${{ github.event.repository.private }}" = "true" ]; then
+            echo 'runners=["ubuntu-latest"]' >> "$GITHUB_OUTPUT"
+            echo "::notice::private repo: smoke test on x86 only, arm64 runs once the repo is public"
+          else
+            echo 'runners=["ubuntu-latest","ubuntu-24.04-arm"]' >> "$GITHUB_OUTPUT"
+          fi
+
+  validate:
+    needs: list
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        stack: ${{ fromJSON(needs.list.outputs.stacks) }}
+    defaults:
+      run:
+        working-directory: stacks/${{ matrix.stack }}
+    steps:
+      - uses: actions/checkout@v5
+      - name: Fill .env from .env.example
+        run: if [ -f .env.example ]; then cp .env.example .env; fi
+      - name: docker compose config
+        # a variable used in the compose file but missing from .env.example only warns in compose, so fail on it here
+        run: |
+          docker compose config --quiet 2>&1 | tee config.log
+          if grep -q "variable is not set" config.log; then
+            echo "::error::stacks/${{ matrix.stack }}: variable used in docker-compose.yml but missing from .env.example"
+            exit 1
+          fi
+
+  smoke:
+    needs: [list, validate]
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        stack: ${{ fromJSON(needs.list.outputs.stacks) }}
+        runner: ${{ fromJSON(needs.list.outputs.runners) }}
+    defaults:
+      run:
+        working-directory: stacks/${{ matrix.stack }}
+    steps:
+      - uses: actions/checkout@v5
+      - name: Read x-ci options
+        id: opts
+        run: |
+          if [ -f .env.example ]; then cp .env.example .env; fi
+          cfg=$(docker compose config --format json)
+          echo "smoke=$(echo "$cfg" | jq -r '."x-ci".smoke | if . == false then "false" else "true" end')" >> "$GITHUB_OUTPUT"
+          echo "url=$(echo "$cfg" | jq -r '."x-ci".url // ""')" >> "$GITHUB_OUTPUT"
+      - name: Skipped
+        if: steps.opts.outputs.smoke == 'false'
+        run: echo "::notice::stacks/${{ matrix.stack }}: smoke test skipped (x-ci.smoke is false)"
+      - name: Start
+        if: steps.opts.outputs.smoke == 'true'
+        run: docker compose up -d --wait --wait-timeout 120
+      - name: Stays up
+        if: steps.opts.outputs.smoke == 'true'
+        run: |
+          sleep 15
+          if [ -n "$(docker compose ps -q --status exited --status restarting)" ]; then
+            echo "::error::stacks/${{ matrix.stack }}: a container exited or is restarting"
+            exit 1
+          fi
+      - name: Responds
+        if: steps.opts.outputs.smoke == 'true' && steps.opts.outputs.url != ''
+        run: curl -kfsS -o /dev/null --retry 10 --retry-delay 3 --retry-all-errors "${{ steps.opts.outputs.url }}"
+      - name: Logs
+        if: failure()
+        run: docker compose logs
+      - name: Stop
+        if: always() && steps.opts.outputs.smoke == 'true'
+        run: docker compose down -v
