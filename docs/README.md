@@ -47,6 +47,11 @@ Index of the docs for this repo. Start with the repo's [README](../README.md) fo
         - [One database and user per app](stack-postgres.md#one-database-and-user-per-app)
         - [psql basics](stack-postgres.md#psql-basics)
         - [Keep it private](stack-postgres.md#keep-it-private)
+    - [Umami](stack-umami.md): self-hosted website analytics
+        - [Set it up](stack-umami.md#set-it-up)
+        - [Make it public](stack-umami.md#make-it-public)
+        - [Add the tracking code to a website](stack-umami.md#add-the-tracking-code-to-a-website)
+        - [Don't count your own visits](stack-umami.md#dont-count-your-own-visits)
 - Scripts (each script's README is its doc)
     - [temp_control](../scripts/temp_control/README.md): CPU temperature report and shutdown guard
 - Integrations
@@ -71,6 +76,7 @@ Index of the docs for this repo. Start with the repo's [README](../README.md) fo
     - Troubleshooting
 
 ## Changes
+- 2026-10-19 — added the Umami stack page
 - 2026-10-19 — added the PostgreSQL stack page
 - 2026-10-19 — added the Optional stacks section with AdGuard; core setup guides marked as in order
 - 2026-10-19 — added the Tailscale and Cloudflare Tunnel integration pages
