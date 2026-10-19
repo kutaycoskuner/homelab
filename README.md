@@ -28,11 +28,13 @@
 ```text
 homelab/
 ├── README.md              this file
+├── main.py                creates and checks your local .env files from the examples
 ├── docs/                  setup guides and write-ups, see docs/README.md
 ├── stacks/<service>/      docker-compose.yml + .env.example + README per service
 │   ├── portainer/         Docker web UI
 │   ├── tailscale/         private access from your own devices
-│   └── cloudflared/       Cloudflare Tunnel: public subdomains without open ports
+│   ├── cloudflared/       Cloudflare Tunnel: public subdomains without open ports
+│   └── hello/             one-page test site to check a deploy end to end
 ├── scripts/               helper scripts
 │   └── temp_control/      CPU temperature guard (Discord report, shutdown when too hot)
 │
@@ -52,14 +54,14 @@ Every file that holds a password, key, token, IP address or other personal value
 git clone https://github.com/kutaycoskuner/homelab.git
 cd homelab
 
-# 2. For each example file you need, copy it and fill in your own values
-#   e.g. a stack's environment file:
-cp stacks/<service>/.env.example stacks/<service>/.env
-#   e.g. a script's config:
-cp scripts/<script>/config.yaml.example scripts/<script>/config.yaml
+# 2. Create your local .env files from the examples (asks per file), then fill in your values
+python main.py --sync
+
+# 3. After every update (git pull): check that your .env files still match their examples
+python main.py --check
 ```
 
-Your copies (`.env`, `config.yaml`, ...) are gitignored and never committed. A sync script that creates and updates them from the examples is planned, see [Secrets and example files](docs/secrets-and-examples.md#syncing-your-copies).
+Your copies (`.env`) are gitignored and never committed. Stacks deployed through Portainer take the same keys as environment variables instead. Details: [Secrets and example files](docs/secrets-and-examples.md#syncing-your-copies).
 
 ------------------------------------------------------------------------------------------
 

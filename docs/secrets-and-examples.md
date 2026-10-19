@@ -53,16 +53,19 @@ DISCORD_WEBHOOK_URL="https://discord.com/api/webhooks/<id>/<token>"
 
 ## Syncing your copies
 
-> Planned: the sync script isn't written yet. Until then, copy the examples by hand as shown in the [README](../README.md#usage).
+Example files change when the repo is updated (a stack gains a new variable, a script a new setting). Your own copies are made once, so they go stale. [main.py](../main.py) in the repo root keeps them in line, for every `.env.example` in the repo:
 
-Example files change when the repo is updated (a stack gains a new variable, a script a new setting). Your own copies are made once, so they go stale. The planned sync script will, for every `*.example` in the repo:
+```bash
+python main.py --check             # report: missing .env, missing keys, unknown keys; writes nothing
+python main.py --sync              # create missing .env files, then replace / update / keep per mismatch
+python main.py --sync --dry-run    # show what --sync would do
+```
 
-- if your copy is missing: offer to create it from the example
-- if your copy exists: compare its keys with the example's and show missing keys (new in the example) and unknown keys (dropped from the example)
-    - only key names are compared; your values are yours and never count as a difference
-- offer to merge (new keys added, your values kept), replace or keep
-- back up your copy (`<file>.bak`, gitignored) before changing it
-- write nothing without a `y`
+- only key names are compared; your values are yours and never count as a difference
+- **replace**: fresh copy of the example; **update**: the example's layout with your values, new keys as placeholders; **keep**: nothing written, asked again next time
+- before replace or update, your old file is saved as `.env.bak` (gitignored)
+- nothing is written without your answer; without a terminal it only reports
+- `--check` exits with 1 when something differs, so it can be used in scripts
 
 ## Before every commit
 
@@ -72,5 +75,6 @@ Example files change when the repo is updated (a stack gains a new variable, a s
 - [ ] a new key in a real file was also added to its `.example`
 
 ## Changes
+- 2026-10-19 — sync script is live: `main.py --check` / `--sync` in the repo root
 - 2026-10-19 — `.env` style: service-prefixed keys, quoted values, a comment per key
 - 2026-10-19 — first version: what counts as confidential, the `<file>.example` naming, placeholders, the planned sync script, pre-commit checklist
