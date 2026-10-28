@@ -77,7 +77,7 @@ Portainer clones the repo itself, so updates are one click and nothing has to be
     - reference: `refs/heads/main`
     - compose path: `stacks/<service>/docker-compose.yml` (or `scripts/<script>/docker-compose.yml`)
 2. **Environment variables**: each key from the folder's `.env.example` with your own value
-3. **Deploy the stack**; later updates: the stack → **Pull and redeploy**
+3. **Deploy the stack**; later updates: the stack → **Pull and redeploy**, or automatically after a merge, see [Updates](updates.md)
 
 ### Private repo access
 
@@ -94,6 +94,7 @@ docker ps
 ```
 
 ## Changes
+- 2026-10-28 — link to automatic updates (Renovate + Portainer)
 - 2026-10-19 — private repo token steps moved to `integrations/github-read-token.md`
 - 2026-10-19 — added deploying from the Git repository, with GitHub token access for a private repo
 - 2026-10-19 — Portainer marked as optional (convenience UI, not required)

@@ -2,7 +2,7 @@
 
 Cloudflare Tunnel connector: publishes chosen services under your domain (e.g. `media.<domain>`) through an outgoing connection, so no port is opened on the router. Background: [03 · Exposing services](../../docs/03-exposing-services.md); account and dashboard setup: [Cloudflare Tunnel](../../docs/integrations/cloudflare-tunnel.md).
 
-- image: `cloudflare/cloudflared:latest`
+- image: `cloudflare/cloudflared`, pinned to a version; updates come as Renovate pull requests ([Updates](../../docs/updates.md))
 - secret: `CLOUDFLARE_TUNNEL_TOKEN` (see [.env.example](.env.example)); routes are configured in the Cloudflare dashboard, not here
 
 ## Start

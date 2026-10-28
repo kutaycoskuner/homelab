@@ -2,7 +2,7 @@
 # Portainer: set CLOUDFLARE_TUNNEL_TOKEN under Environment variables. CLI: put it in .env (see .env.example).
 services:
   cloudflared:
-    image: cloudflare/cloudflared:latest
+    image: cloudflare/cloudflared:2026.10.3   # pinned; 2026.10.2+ required by Cloudflare's security notice (Oct 2026); Renovate proposes updates (docs/updates.md)
     container_name: cloudflared
     restart: unless-stopped
     command: tunnel --no-autoupdate run

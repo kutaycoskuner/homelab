@@ -14,6 +14,10 @@ Index of the docs for this repo. Start with the repo's [README](../README.md) fo
         - [Per-stack options (`x-ci`)](ci.md#per-stack-options-x-ci)
         - [Not covered](ci.md#not-covered)
 - Infrastructure as code
+    - [Updates](updates.md): new image versions as pull requests, deployed by Portainer after merge
+        - [Exceptions](updates.md#exceptions)
+        - [Set it up](updates.md#set-it-up)
+        - [Handle an update pull request](updates.md#handle-an-update-pull-request)
     - [Terraform](terraform.md): outside accounts (Cloudflare, ...) as code; runs on your PC
         - [Where it runs: your PC](terraform.md#where-it-runs-your-pc)
         - [Install](terraform.md#install)
@@ -93,6 +97,7 @@ Index of the docs for this repo. Start with the repo's [README](../README.md) fo
     - Troubleshooting
 
 ## Changes
+- 2026-10-28 — added the Updates page
 - 2026-10-19 — added the Terraform page and an Infrastructure as code section
 - 2026-10-19 — added the Personal stacks page
 - 2026-10-19 — added the Nextcloud and Media server stack pages
