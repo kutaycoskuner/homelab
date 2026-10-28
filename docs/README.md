@@ -13,6 +13,15 @@ Index of the docs for this repo. Start with the repo's [README](../README.md) fo
         - [What is checked](ci.md#what-is-checked)
         - [Per-stack options (`x-ci`)](ci.md#per-stack-options-x-ci)
         - [Not covered](ci.md#not-covered)
+- Infrastructure as code
+    - [Updates](updates.md): new image versions as pull requests, deployed by Portainer after merge
+        - [Exceptions](updates.md#exceptions)
+        - [Set it up](updates.md#set-it-up)
+        - [Handle an update pull request](updates.md#handle-an-update-pull-request)
+    - [Terraform](terraform.md): outside accounts (Cloudflare, ...) as code; runs on your PC
+        - [Where it runs: your PC](terraform.md#where-it-runs-your-pc)
+        - [Install](terraform.md#install)
+        - [Secrets and state](terraform.md#secrets-and-state)
 - Setup guides (core, in order)
     - [01 · Headless server setup](01-headless-server-setup.md): OS install and network access without a screen, Raspberry Pi as the example
         - [Placeholders](01-headless-server-setup.md#placeholders-used-on-this-page)
@@ -76,6 +85,7 @@ Index of the docs for this repo. Start with the repo's [README](../README.md) fo
     - [Cloudflare Tunnel](integrations/cloudflare-tunnel.md): public subdomains without open ports
         - [Set up](integrations/cloudflare-tunnel.md#set-up)
         - [Publish a service](integrations/cloudflare-tunnel.md#publish-a-service)
+        - [Manage routes as code](integrations/cloudflare-tunnel.md#manage-routes-as-code)
         - [Keep the token safe](integrations/cloudflare-tunnel.md#keep-the-token-safe)
     - [GitHub read-only token](integrations/github-read-token.md): lets Portainer clone the private repo
         - [Create the token](integrations/github-read-token.md#create-the-token)
@@ -87,6 +97,8 @@ Index of the docs for this repo. Start with the repo's [README](../README.md) fo
     - Troubleshooting
 
 ## Changes
+- 2026-10-28 — added the Updates page
+- 2026-10-19 — added the Terraform page and an Infrastructure as code section
 - 2026-10-19 — added the Personal stacks page
 - 2026-10-19 — added the Nextcloud and Media server stack pages
 - 2026-10-19 — added the Umami stack page

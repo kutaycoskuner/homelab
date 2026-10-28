@@ -20,7 +20,7 @@ Publishes chosen services on the server under your own domain, e.g. `https://ana
 ## Set up
 
 1. **a domain on Cloudflare**: buy one there (Domains → Register) or move an existing one to Cloudflare's name servers
-2. **create the tunnel**: Cloudflare dashboard → **Zero Trust → Networks → Tunnels → Create a tunnel**
+2. **create the tunnel**: Cloudflare dashboard → **Networking → Tunnels → Create a tunnel**
     - type: **Cloudflared**
     - name: what it serves, e.g. `homelab`
 3. **copy the token**: on the install page choose **Docker**; the shown command ends with `--token <long value>`, copy only that value
@@ -29,7 +29,7 @@ Publishes chosen services on the server under your own domain, e.g. `https://ana
 
 ## Publish a service
 
-Tunnel → **Published application routes → Add a published application route**, one per service:
+This server manages routes with Terraform, see [Manage routes as code](#manage-routes-as-code). By hand in the dashboard: tunnel → **Published application routes → Add a published application route**, one per service:
 
 - subdomain: e.g. `analytics`
 - domain: `<domain>`
@@ -42,6 +42,13 @@ Then open `https://analytics.<domain>`; Cloudflare adds HTTPS by itself.
 > - `media.<domain>` → static media files on port `8090`
 > - `analytics.<domain>` → self-hosted analytics on port `3001`, used by a website
 
+## Manage routes as code
+
+Instead of adding routes in the dashboard, list them in [terraform/cloudflare](../../terraform/cloudflare/README.md) and run `terraform apply`; it also creates the DNS records. Once used, Terraform owns the route list: routes added in the dashboard are removed at the next apply. Background: [Terraform](../terraform.md).
+
+- first run, step by step (API token, values, init, plan, taking over existing records, apply): [terraform/cloudflare → First run](../../terraform/cloudflare/README.md#first-run)
+- a subdomain that doesn't work (DNS error, 1033, 502): [terraform/cloudflare → When a subdomain doesn't work](../../terraform/cloudflare/README.md#when-a-subdomain-doesnt-work)
+
 ## Keep the token safe
 
 - anyone with it can run your tunnel and serve content under your domain
@@ -49,4 +56,7 @@ Then open `https://analytics.<domain>`; Cloudflare adds HTTPS by itself.
 - the dashboard links contain your account ID: don't copy them into docs
 
 ## Changes
+- 2026-10-19 — routes on this server are managed with Terraform; links to its first run and troubleshooting
+- 2026-10-19 — menu path corrected to Networking → Tunnels
+- 2026-10-19 — added managing routes as code with Terraform
 - 2026-10-19 — first version, rewritten from the private notes: what and why, domain, creating the tunnel, token handling, published routes with examples

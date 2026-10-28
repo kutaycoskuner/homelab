@@ -40,6 +40,8 @@ homelab/
 │   ├── tailscale/         private access from your own devices
 │   ├── cloudflared/       Cloudflare Tunnel: public subdomains without open ports
 │   └── hello/             one-page test site to check a deploy end to end
+├── terraform/             outside accounts as code (Cloudflare tunnel routes and DNS)
+├── renovate.json          settings for automatic update pull requests
 ├── scripts/               helper scripts
 │   └── temp_control/      CPU temperature guard (Discord report, shutdown when too hot)
 │
@@ -75,6 +77,8 @@ Your copies (`.env`) are gitignored and never committed. Stacks deployed through
 - [docs/README.md](docs/README.md): index of all docs
     - [Secrets and example files](docs/secrets-and-examples.md): how confidential values are kept out of the repo
     - [CI](docs/ci.md): what GitHub Actions checks on every push
+    - [Terraform](docs/terraform.md): Cloudflare tunnel routes and DNS as code, run from your PC
+    - [Updates](docs/updates.md): new image versions as pull requests, deployed by Portainer after merge
     - [01 · Headless server setup](docs/01-headless-server-setup.md): install the OS and reach the server over the network (Raspberry Pi as the example)
     - [02 · Docker and Portainer](docs/02-docker-portainer.md): container runtime and its web UI
     - [03 · Exposing services](docs/03-exposing-services.md): public through a Cloudflare Tunnel, private through Tailscale

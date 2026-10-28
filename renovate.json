@@ -1,0 +1,28 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "description": "Update pull requests for images, Terraform providers, GitHub Actions and Python packages; see docs/updates.md. ignoreDeps: local names of images built on the server, not on any registry",
+  "extends": ["config:recommended"],
+  "baseBranches": ["dev"],
+  "labels": ["dependencies"],
+  "ignoreDeps": ["script-temp_control", "homelab-hello"],
+  "packageRules": [
+    {
+      "description": "Images without a version (latest, lts, alpine) get a digest, so new builds show up as pull requests too",
+      "matchDatasources": ["docker"],
+      "pinDigests": true
+    },
+    {
+      "description": "postgres major versions need a dump and restore of the database, not just a new image",
+      "matchDatasources": ["docker"],
+      "matchPackageNames": ["postgres"],
+      "matchUpdateTypes": ["major"],
+      "enabled": false
+    },
+    {
+      "description": "nextcloud can't skip major versions: one pull request per major",
+      "matchDatasources": ["docker"],
+      "matchPackageNames": ["nextcloud"],
+      "separateMultipleMajor": true
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 # -----------------------------------------------------------------------------------------
 #   author          : Kutay Coskuner
 #   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-#   last update     : 2026-10-19
+#   last update     : 2026-10-24
 #   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 #                     Check outputs before relying on them.
 # -----------------------------------------------------------------------------------------
@@ -41,7 +41,7 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parent
 EXAMPLE_NAME = ".env.example"
 REAL_NAME = ".env"
-SKIP_DIRS = {".git", ".venv", "venv", "node_modules", "__pycache__", "temp", "_documentation"}
+SKIP_DIRS = {".git", ".venv", "venv", "node_modules", "__pycache__", ".temp", ".input", "_documentation"}
 KEY_LINE = re.compile(r"^\s*(?:export\s+)?([A-Za-z_][A-Za-z0-9_]*)\s*=")
 
 
