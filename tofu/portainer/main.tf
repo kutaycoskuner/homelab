@@ -33,8 +33,8 @@ resource "portainer_stack" "stack" {
   method          = "repository"
   endpoint_id     = var.endpoint_id
 
-  repository_url                = var.repository_url
-  repository_reference_name     = var.repository_branch
+  repository_url                = coalesce(each.value.repository_url, var.repository_url) # another repo, e.g. an app's own
+  repository_reference_name     = coalesce(each.value.branch, var.repository_branch)
   file_path_in_repository       = each.value.path
   git_repository_authentication = true
   repository_username           = var.github_username

@@ -3,6 +3,7 @@
 Portainer's stacks as code: every stack deployed from this repo, its variables and its automatic updates are in `terraform.tfvars`; `tofu apply` sets them up in Portainer. Run with **OpenTofu** (`tofu`). Background: [Terraform and OpenTofu](../../docs/terraform.md), [Updates](../../docs/updates.md).
 
 - manages: Git stacks (repo, branch, compose path), their variables, automatic updates (polling, re-pull image)
+    - from this repo by default; a stack can come from another repo (`repository_url`, `branch` in `stacks`), e.g. an app that keeps its own compose file; the GitHub token then needs read access to that repo too
 - doesn't manage: Portainer itself and Docker (installed and updated by [scripts/server_base](../../scripts/server_base/README.md), because Portainer can't redeploy itself) and the containers' data (volumes and folders stay as they are)
 - secrets: Portainer token, GitHub token and the stacks' passwords in `terraform.tfvars` (gitignored)
 

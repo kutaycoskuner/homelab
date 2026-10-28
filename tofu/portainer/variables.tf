@@ -66,10 +66,12 @@ variable "update_interval" {
 }
 
 variable "stacks" {
-  description = "Stacks to deploy: stack name -> path of its compose file in the repo; pull_image false for stacks that build their image on the server"
+  description = "Stacks to deploy: stack name -> compose file path; repository_url / branch only for stacks from another repo (default: this repo, repository_branch); pull_image false for stacks that build their image on the server"
   type = map(object({
-    path       = string
-    pull_image = optional(bool, true)
+    path           = string
+    pull_image     = optional(bool, true)
+    repository_url = optional(string)
+    branch         = optional(string)
   }))
 }
 

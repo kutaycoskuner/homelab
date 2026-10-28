@@ -6,7 +6,7 @@
 
 | Stack | What it is | Repository | Ports | Depends on |
 |---|---|---|---|---|
-| `app-cauldron` | web app: backend API + frontend | [cauldron](https://github.com/kutaycoskuner/cauldron) | `8000` (API), `3003` (web) | images on `ghcr.io` (registry login in Portainer) |
+| `app-cauldron` | web app: backend API + frontend; compose file in its own repo, public at `cauldron.<domain>` and `api-cauldron.<domain>` | [cauldron](https://github.com/kutaycoskuner/cauldron) | `8000` (API), `3003` (web) | images on `ghcr.io` (registry login in Portainer); database `cauldrondb` on postgres |
 | `app-karel` | web app | [karel](https://github.com/kutaycoskuner/karel) | `4000` | [PostgreSQL](stack-postgres.md): database `kareldb` |
 | `bot-mima-discordbot` | Discord bot (Node.js) | [mima-js](https://github.com/kutaycoskuner/mima-js) | none | a Discord bot token (in its own setup) |
 
@@ -14,7 +14,9 @@
 
 - **app-cauldron**
     - images: `ghcr.io/kutaycoskuner/cauldron-backend` and `-frontend`, built for `linux/arm64`
-    - the frontend's `PUBLIC_API_BASE_URL` points at the backend: `http://<server-tailscale-ip>:8000` (private) or a tunnel address once public
+    - the frontend's `PUBLIC_API_BASE_URL` points at the public API, `https://api-cauldron.<domain>`: the browser calls it directly
+    - runs as the Git stack `cauldron-stack`, deployed by `tofu/portainer` from the cauldron repo (`docker-compose.yml` on `main`); routes `cauldron` → `3003` and `api-cauldron` → `8000` in `tofu/cloudflare`
+    - its compose file takes `CAULDRON_DATABASE_URL` and `CAULDRON_API_URL` (set in `tofu/portainer` `stack_env`); the GitHub token must be allowed to read the cauldron repo
     - Portainer needs the `ghcr.io` registry login (Registries) to pull private images; that's a different token than the Git one, see [GitHub read-only token](integrations/github-read-token.md)
 - **app-karel**
     - its schema lives on the shared postgres: database `kareldb`, created from the repo's `init.sql` (pgAdmin → Query Tool), test data from `test_data.sql`
@@ -24,4 +26,5 @@
     - its token stays in the bot's own `.env` / Portainer variables, never in a repo
 
 ## Changes
+- 2026-10-28 — cauldron deployed by tofu/portainer from its own repo, public through tofu/cloudflare
 - 2026-10-19 — first version: overview of the personal stacks (cauldron, karel, mima discord bot) and what each depends on
