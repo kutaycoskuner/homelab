@@ -25,6 +25,18 @@ provider "portainer" {
   skip_ssl_verify = var.portainer_skip_ssl_verify
 }
 
+# registry logins for private images; a stack names the ones it pulls from (stacks[*].registries)
+resource "portainer_registry" "registry" {
+  for_each = var.registries
+
+  name           = each.key
+  url            = each.value.url
+  type           = each.value.type
+  authentication = true
+  username       = each.value.username
+  password       = var.registry_passwords[each.key]
+}
+
 resource "portainer_stack" "stack" {
   for_each = var.stacks
 
@@ -43,6 +55,9 @@ resource "portainer_stack" "stack" {
 
   update_interval = var.update_interval   # automatic updates: poll the branch at this interval
   pull_image      = each.value.pull_image # re-pull images on redeploy; false for stacks built on the server (their image is on no registry)
+
+  # registry logins this stack may pull with; Git stacks get none unless listed here
+  registries = each.value.registries == null ? null : [for r in each.value.registries : tonumber(portainer_registry.registry[r].id)]
 
   # Portainer 2.45 reports some running Git stacks with a status the provider reads as "not active";
   # without this, every apply would "start" them again, which redeploys and can take them down

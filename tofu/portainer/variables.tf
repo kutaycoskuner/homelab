@@ -66,13 +66,31 @@ variable "update_interval" {
 }
 
 variable "stacks" {
-  description = "Stacks to deploy: stack name -> compose file path; repository_url / branch only for stacks from another repo (default: this repo, repository_branch); pull_image false for stacks that build their image on the server"
+  description = "Stacks to deploy: stack name -> compose file path; repository_url / branch only for stacks from another repo (default: this repo, repository_branch); pull_image false for stacks that build their image on the server; registries: names from var.registries, for stacks with private images"
   type = map(object({
     path           = string
     pull_image     = optional(bool, true)
     repository_url = optional(string)
     branch         = optional(string)
+    registries     = optional(list(string))
   }))
+}
+
+variable "registries" {
+  description = "Registry logins for private images: name -> url (e.g. ghcr.io), username, type (Portainer's registry type, 3 = custom); each name's password goes in registry_passwords"
+  type = map(object({
+    url      = string
+    username = string
+    type     = optional(number, 3)
+  }))
+  default = {}
+}
+
+variable "registry_passwords" {
+  description = "Per registry name: its password or token (secret; stored in the state, the provider has no write-only field for it)"
+  type        = map(string)
+  sensitive   = true
+  default     = {}
 }
 
 variable "stack_env" {

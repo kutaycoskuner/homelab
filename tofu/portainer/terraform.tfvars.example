@@ -41,6 +41,17 @@ stacks = {
   temp_control = { path = "scripts/temp_control/docker-compose.yml", pull_image = false }
   # a stack whose compose file lives in another repo (e.g. an app's own); the GitHub token must be allowed to read it
   # my-app = { path = "docker-compose.yml", repository_url = "https://github.com/<owner>/<app>", branch = "refs/heads/main" }
+  # a stack with a private image: name the registry login it pulls with (from registries below)
+  # my-private-app = { path = "stacks/my-private-app/docker-compose.yml", registries = ["ghcr"] }
+}
+
+# Registry logins for private images (optional): name -> registry address and user; the token per name in registry_passwords
+# ghcr.io takes a classic GitHub token with only read:packages (Settings > Developer settings > Tokens (classic))
+registries = {
+  # ghcr = { url = "ghcr.io", username = "<your-github-user>" }
+}
+registry_passwords = {
+  # ghcr = "<classic-token-with-read-packages>"
 }
 
 # Each stack's variables: the keys of its .env.example, with your values (stored in the state)

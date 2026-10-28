@@ -34,6 +34,9 @@ Portainer ──every update_interval──> the repo's branch ──changed?─
 - **re-pull image** (`pull_image`, per stack, default on) downloads every image before a redeploy, so a new version is used; switch it **off** for stacks that build their image on the server (`build: .`, e.g. `hello`, `temp_control`): their image name is on no registry, and the download fails with "pull access denied … may require 'docker login'" (not a token problem); their compose files also set `pull_policy: build`
 - OpenTofu doesn't start or stop stacks (`active` is ignored): Portainer 2.45 reports some running Git stacks with a status the provider reads as stopped, and "starting" them again redeployed and removed their containers
 - the stacks' variables (`stack_env`) **are** stored in the state, because Portainer needs them as values; the state stays local and private
+- **private images** (`registries`, `registry_passwords`): a registry login in Portainer, created from here; a stack pulls with it only if it names it (`registries = ["ghcr"]`), otherwise the pull fails with `denied` even though the login exists in Portainer
+    - for ghcr.io: a **classic** GitHub token with only `read:packages` (fine-grained tokens don't work for packages); stored in the state, the provider has no write-only field for it
+    - an existing login made in Portainer's UI is taken over with an `import` block (`to = portainer_registry.registry["<name>"]`, `id = "<number in its address, #!/registries/<n>>"`)
 
 ## First run
 

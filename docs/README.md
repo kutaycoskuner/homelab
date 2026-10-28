@@ -25,6 +25,12 @@ Index of the docs for this repo. Start with the repo's [README](../README.md) fo
         - [Install](terraform.md#install)
         - [Secrets and state](terraform.md#secrets-and-state)
 - Setup guides (core, in order)
+    - [00 · From zero to a running server](00-from-zero.md): the whole setup in order, linking the guides below
+        - [A. Accounts and tokens](00-from-zero.md#a-accounts-and-tokens)
+        - [B. The server](00-from-zero.md#b-the-server)
+        - [C. Stacks and routes as code](00-from-zero.md#c-stacks-and-routes-as-code)
+        - [D. Stacks not managed as code yet](00-from-zero.md#d-stacks-not-managed-as-code-yet)
+        - [E. Updates](00-from-zero.md#e-updates)
     - [01 · Headless server setup](01-headless-server-setup.md): OS install and network access without a screen, Raspberry Pi as the example
         - [Placeholders](01-headless-server-setup.md#placeholders-used-on-this-page)
         - [Requirements](01-headless-server-setup.md#requirements)
@@ -73,7 +79,6 @@ Index of the docs for this repo. Start with the repo's [README](../README.md) fo
         - [Add files](stack-media-server.md#add-files)
         - [Make it public](stack-media-server.md#make-it-public)
 - Personal (the owner's own apps, not for general use)
-    - [Personal stacks](personal-stacks.md): cauldron, karel, mima discord bot, and what each depends on
 - Scripts (each script's README is its doc)
     - [server_base](../scripts/server_base/README.md): installs and updates Docker and Portainer
     - [temp_control](../scripts/temp_control/README.md): CPU temperature report and shutdown guard

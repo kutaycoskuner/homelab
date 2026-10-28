@@ -23,6 +23,21 @@
 
 ------------------------------------------------------------------------------------------
 
+## How the owner runs it
+
+This repo is kept person-agnostic on purpose, so anyone can use it as is. The owner's own server runs it together with a **private companion repo**:
+
+```text
+homelab           (this repo, public)   how things are set up: stacks, scripts, OpenTofu modules, docs
+homelab-private   (private)             what runs on the owner's server: which stacks, domain, routes, notes on own apps
+```
+
+- the private repo calls this repo's `tofu/portainer` and `tofu/cloudflare` folders as OpenTofu modules and passes its own values; secrets and state stay local and gitignored in both
+- a fix here reaches the owner's server on the next `tofu apply` there, and nothing personal ever has to be committed here
+- you can do the same with a private repo of your own: [Your own values in a private repo](docs/terraform.md#your-own-values-in-a-private-repo); or skip it and fill in the `.example` files here
+
+------------------------------------------------------------------------------------------
+
 ## Folders
 
 ```text
@@ -45,6 +60,7 @@ homelab/
 ├── renovate.json          settings for automatic update pull requests
 ├── scripts/               helper scripts
 │   ├── server_base/       installs and updates Docker and Portainer
+│   ├── copy_tfvars_values/  copies OpenTofu values between .tfvars files without showing them
 │   └── temp_control/      CPU temperature guard (Discord report, shutdown when too hot)
 │
 │   planned:
@@ -81,12 +97,12 @@ Your copies (`.env`) are gitignored and never committed. Stacks deployed through
     - [CI](docs/ci.md): what GitHub Actions checks on every push
     - [Terraform and OpenTofu](docs/terraform.md): Cloudflare routes and Portainer stacks as code, run from your PC
     - [Updates](docs/updates.md): new image versions as pull requests, deployed by Portainer after merge
+    - [00 · From zero to a running server](docs/00-from-zero.md): the whole setup in order, from an empty machine to all stacks running
     - [01 · Headless server setup](docs/01-headless-server-setup.md): install the OS and reach the server over the network (Raspberry Pi as the example)
     - [02 · Docker and Portainer](docs/02-docker-portainer.md): container runtime and its web UI
     - [03 · Exposing services](docs/03-exposing-services.md): public through a Cloudflare Tunnel, private through Tailscale
     - optional stacks: [AdGuard](docs/stack-adguard.md) (network-wide ad and tracker blocking), [PostgreSQL](docs/stack-postgres.md) (shared database with pgAdmin), [Umami](docs/stack-umami.md) (website analytics), [Nextcloud](docs/stack-nextcloud.md) (cloud storage), [Media server](docs/stack-media-server.md) (files as web addresses)
-    - [Personal stacks](docs/personal-stacks.md): the owner's own apps on this server, as a reminder (not for general use)
     - [Discord webhook](docs/integrations/discord-web-hook.md): messages from scripts to a Discord channel
     - [Tailscale](docs/integrations/tailscale.md) and [Cloudflare Tunnel](docs/integrations/cloudflare-tunnel.md): private and public access
     - [GitHub read-only token](docs/integrations/github-read-token.md): lets Portainer clone the private repo
-    - Scripts: [server_base](scripts/server_base/README.md) (Docker and Portainer), [temp_control](scripts/temp_control/README.md)
+    - Scripts: [server_base](scripts/server_base/README.md) (Docker and Portainer), [copy_tfvars_values](scripts/copy_tfvars_values/README.md) (OpenTofu values into new files), [temp_control](scripts/temp_control/README.md)

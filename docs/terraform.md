@@ -91,6 +91,10 @@ OpenTofu only reads the `.tf` files of the folder it runs in; in any other folde
 tofu -chdir=tofu/portainer plan
 tofu -chdir=tofu/portainer apply
 
+# PowerShell splits an argument that starts with - and contains a dot (e.g. -chdir=../other-repo/...):
+# tofu then reports 'no command named "../..."'; quote the whole argument
+tofu '-chdir=../my-homelab/tofu/portainer' plan
+
 # or change into the folder first
 cd tofu\portainer
 tofu plan
@@ -99,7 +103,28 @@ tofu apply
 
 The CI check for these folders is turned off for now ([CI](ci.md)).
 
+## Your own values in a private repo
+
+Running a folder here with its `terraform.tfvars` works, but then your setup (which stacks, your domain) exists only in gitignored files on one PC. To keep it in git without making this repo personal, use the folders here as **modules** from a private repo of your own. The owner's server runs this way, from a private repo `homelab-private`; that's what keeps this repo free of personal values.
+
+```text
+GitHub/
+├── homelab/tofu/portainer/        this repo: how stacks are deployed
+└── my-homelab/tofu/portainer/     your private repo: which stacks, your values
+    ├── main.tf                    module "portainer" { source = "../../../homelab/tofu/portainer" ... }
+    ├── variables.tf               only the secrets
+    └── secrets.auto.tfvars        secret values, gitignored (loaded automatically)
+```
+
+- **module**: any folder of `.tf` files can be called by another folder like a function; its variables become the module's inputs
+- **why**: the logic stays in one place (here), your private repo only says what to deploy; values that aren't secret are committed there, secrets and state stay local and gitignored
+- **source**: `../../../homelab/...` needs both repos cloned side by side; once this repo is public, a pinned address works without a clone: `git::https://github.com/<owner>/homelab.git//tofu/portainer?ref=<tag>`
+- **moving existing state**: copy `terraform.tfstate` into the private folder and add a `moved` block per resource, e.g. `moved { from = portainer_stack.stack  to = module.portainer.portainer_stack.stack }`; `plan` then shows "has moved" and recreates nothing
+- **moving your values**: copy the private folder's `.example` files, then fill them from your old `terraform.tfvars` with [copy_tfvars_values](../scripts/copy_tfvars_values/README.md), which never shows a value
+
 ## Changes
+- 2026-10-29 — PowerShell: quote -chdir when the path contains a dot; copy_tfvars_values for moving values
+- 2026-10-28 — using the tofu folders as modules from a private repo, with your values there
 - 2026-10-28 — running tofu from the repo root with -chdir; the "No configuration files" error explained
 - 2026-10-28 — OpenTofu added: tofu/ folders in use (cloudflare copied, portainer new), terraform/ kept as reference; install, commands with tofu; CI check off
 - 2026-10-19 — daily use as a table of the four commands; link to the cloudflare first run
