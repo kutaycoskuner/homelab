@@ -28,6 +28,7 @@ github_token_version = 1
 update_interval = "5m"
 
 # Stacks to deploy: name -> compose file. Keep only those you run; Portainer itself isn't listed here.
+# pull_image = false for stacks that build their image on the server (build: .), or every redeploy fails trying to download it
 stacks = {
   cloudflared  = { path = "stacks/cloudflared/docker-compose.yml" }
   tailscale    = { path = "stacks/tailscale/docker-compose.yml" }
@@ -36,13 +37,14 @@ stacks = {
   umami        = { path = "stacks/umami/docker-compose.yml" }
   nextcloud    = { path = "stacks/nextcloud/docker-compose.yml" }
   media-server = { path = "stacks/media-server/docker-compose.yml" }
-  hello        = { path = "stacks/hello/docker-compose.yml" }
-  temp_control = { path = "scripts/temp_control/docker-compose.yml" }
+  hello        = { path = "stacks/hello/docker-compose.yml", pull_image = false }
+  temp_control = { path = "scripts/temp_control/docker-compose.yml", pull_image = false }
 }
 
 # Each stack's variables: the keys of its .env.example, with your values (stored in the state)
 stack_env = {
   cloudflared = {
+    # tunnel token, not the API token: Cloudflare > Networking > Tunnels > your tunnel > install page, the value after --token
     CLOUDFLARE_TUNNEL_TOKEN = "<tunnel-token>"
   }
   adguard = {

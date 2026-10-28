@@ -83,8 +83,16 @@ terraform -version
 | `tofu apply` | shows the plan and, after `yes`, makes the changes | yes |
 | `tofu import <address> <id>` | takes over something that already exists in the account | no (only the state) |
 
+OpenTofu only reads the `.tf` files of the folder it runs in; in any other folder it stops with **"No configuration files"** (nothing is changed). Two ways:
+
 ```powershell
-cd tofu\<folder>
+# from the repo root: -chdir tells tofu which folder to use (relative to the current folder;
+# check with Get-Location, or give the full path: -chdir=C:\...\homelab	ofu\portainer)
+tofu -chdir=tofu/portainer plan
+tofu -chdir=tofu/portainer apply
+
+# or change into the folder first
+cd tofu\portainer
 tofu plan
 tofu apply
 ```
@@ -92,6 +100,7 @@ tofu apply
 The CI check for these folders is turned off for now ([CI](ci.md)).
 
 ## Changes
+- 2026-10-28 — running tofu from the repo root with -chdir; the "No configuration files" error explained
 - 2026-10-28 — OpenTofu added: tofu/ folders in use (cloudflare copied, portainer new), terraform/ kept as reference; install, commands with tofu; CI check off
 - 2026-10-19 — daily use as a table of the four commands; link to the cloudflare first run
 - 2026-10-19 — first version: what Terraform is and why, running it on the PC, install, secrets and state, daily use

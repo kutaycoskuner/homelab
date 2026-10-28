@@ -17,6 +17,15 @@ Publishes chosen services on the server under your own domain, e.g. `https://ana
 | `<server-ip>` | the server's fixed LAN address | `192.168.x.x` |
 | `<port>` | the service's port on the server | `3001` |
 
+## Two different tokens
+
+| Token | Does | Where it goes |
+|---|---|---|
+| **tunnel token** | lets the `cloudflared` container on the server connect to the tunnel | `CLOUDFLARE_TUNNEL_TOKEN` in [tofu/portainer](../../tofu/portainer/README.md) `terraform.tfvars` (or the stack's `.env`) |
+| **API token** | lets OpenTofu manage the account: routes, DNS records | `cloudflare_api_token` in [tofu/cloudflare](../../tofu/cloudflare/README.md) `terraform.tfvars` |
+
+Both are secrets; neither replaces the other.
+
 ## Set up
 
 1. **a domain on Cloudflare**: buy one there (Domains → Register) or move an existing one to Cloudflare's name servers
@@ -56,6 +65,7 @@ Instead of adding routes in the dashboard, list them in [tofu/cloudflare](../../
 - the dashboard links contain your account ID: don't copy them into docs
 
 ## Changes
+- 2026-10-28 — tunnel token vs API token explained
 - 2026-10-28 — routes managed from tofu/cloudflare with OpenTofu
 - 2026-10-19 — routes on this server are managed with Terraform; links to its first run and troubleshooting
 - 2026-10-19 — menu path corrected to Networking → Tunnels

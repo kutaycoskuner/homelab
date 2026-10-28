@@ -20,7 +20,11 @@ Cloudflare Tunnel connector: publishes chosen services under your domain (e.g. `
 
 A connector started with `docker run ... --token <token>` keeps the token in its command line, visible in `docker inspect` and Portainer.
 
-1. copy the token from the Cloudflare dashboard (Networking → Tunnels → your tunnel), not from the old container
-2. remove the old container: `docker stop cloudflared && docker rm cloudflared`
-3. start this stack with the same token; the dashboard shows the tunnel as **Healthy** again
-4. if the token was ever pasted or shared somewhere: in the dashboard, refresh the tunnel token and use the new one
+1. copy the **tunnel token** from the Cloudflare dashboard (Networking → Tunnels → your tunnel → install page, the value after `--token`), not from the old container; it's not the API token in `tofu/cloudflare` ([two tokens](../../docs/integrations/cloudflare-tunnel.md#two-different-tokens))
+2. put it into `tofu/portainer/terraform.tfvars`: the stack in `stacks`, the token as `CLOUDFLARE_TUNNEL_TOKEN` in `stack_env` (see [terraform.tfvars.example](../../tofu/portainer/terraform.tfvars.example))
+3. check, on the PC in the repo root: `tofu -chdir=tofu/portainer plan` → `1 to add`
+4. remove the old container, on the server: `docker stop cloudflared && docker rm cloudflared` (it holds no data; the tunnel is offline until step 5)
+5. create the stack right after, on the PC: `tofu -chdir=tofu/portainer apply`, type `yes`; the dashboard shows the tunnel as **Healthy** again, connector version as in the compose file
+6. if the token was ever pasted or shared somewhere: in the dashboard, refresh the tunnel token, put the new one in step 2's place, `apply` again
+
+Without OpenTofu: start the stack in Portainer with the token under Environment variables instead of steps 2, 3 and 5.

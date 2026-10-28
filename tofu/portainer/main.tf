@@ -41,8 +41,14 @@ resource "portainer_stack" "stack" {
   repository_password_wo        = var.github_token         # write-only: not stored in the state
   repository_wo_version         = var.github_token_version # raise by one after changing the token, so it's sent again
 
-  update_interval = var.update_interval # automatic updates: poll the branch at this interval
-  pull_image      = true                # re-pull images on redeploy, so a new image is actually used
+  update_interval = var.update_interval   # automatic updates: poll the branch at this interval
+  pull_image      = each.value.pull_image # re-pull images on redeploy; false for stacks built on the server (their image is on no registry)
+
+  # Portainer 2.45 reports some running Git stacks with a status the provider reads as "not active";
+  # without this, every apply would "start" them again, which redeploys and can take them down
+  lifecycle {
+    ignore_changes = [active]
+  }
 
   # the stack's variables (the keys of its .env.example); values are stored in the state
   dynamic "env" {
