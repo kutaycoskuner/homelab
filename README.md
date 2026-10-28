@@ -40,9 +40,11 @@ homelab/
 │   ├── tailscale/         private access from your own devices
 │   ├── cloudflared/       Cloudflare Tunnel: public subdomains without open ports
 │   └── hello/             one-page test site to check a deploy end to end
-├── terraform/             outside accounts as code (Cloudflare tunnel routes and DNS)
+├── tofu/                  OpenTofu, in use: Cloudflare tunnel routes and DNS, Portainer stacks with automatic updates
+├── terraform/             Terraform reference copy of tofu/cloudflare (not applied)
 ├── renovate.json          settings for automatic update pull requests
 ├── scripts/               helper scripts
+│   ├── server_base/       installs and updates Docker and Portainer
 │   └── temp_control/      CPU temperature guard (Discord report, shutdown when too hot)
 │
 │   planned:
@@ -77,7 +79,7 @@ Your copies (`.env`) are gitignored and never committed. Stacks deployed through
 - [docs/README.md](docs/README.md): index of all docs
     - [Secrets and example files](docs/secrets-and-examples.md): how confidential values are kept out of the repo
     - [CI](docs/ci.md): what GitHub Actions checks on every push
-    - [Terraform](docs/terraform.md): Cloudflare tunnel routes and DNS as code, run from your PC
+    - [Terraform and OpenTofu](docs/terraform.md): Cloudflare routes and Portainer stacks as code, run from your PC
     - [Updates](docs/updates.md): new image versions as pull requests, deployed by Portainer after merge
     - [01 · Headless server setup](docs/01-headless-server-setup.md): install the OS and reach the server over the network (Raspberry Pi as the example)
     - [02 · Docker and Portainer](docs/02-docker-portainer.md): container runtime and its web UI
@@ -87,4 +89,4 @@ Your copies (`.env`) are gitignored and never committed. Stacks deployed through
     - [Discord webhook](docs/integrations/discord-web-hook.md): messages from scripts to a Discord channel
     - [Tailscale](docs/integrations/tailscale.md) and [Cloudflare Tunnel](docs/integrations/cloudflare-tunnel.md): private and public access
     - [GitHub read-only token](docs/integrations/github-read-token.md): lets Portainer clone the private repo
-    - Scripts: [temp_control](scripts/temp_control/README.md)
+    - Scripts: [server_base](scripts/server_base/README.md) (Docker and Portainer), [temp_control](scripts/temp_control/README.md)

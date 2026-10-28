@@ -17,8 +17,10 @@ Index of the docs for this repo. Start with the repo's [README](../README.md) fo
     - [Updates](updates.md): new image versions as pull requests, deployed by Portainer after merge
         - [Exceptions](updates.md#exceptions)
         - [Set it up](updates.md#set-it-up)
+        - [Routine](updates.md#routine-eg-once-a-week)
         - [Handle an update pull request](updates.md#handle-an-update-pull-request)
-    - [Terraform](terraform.md): outside accounts (Cloudflare, ...) as code; runs on your PC
+    - [Terraform and OpenTofu](terraform.md): outside accounts and Portainer stacks as code; runs on your PC
+        - [Which folder](terraform.md#which-folder)
         - [Where it runs: your PC](terraform.md#where-it-runs-your-pc)
         - [Install](terraform.md#install)
         - [Secrets and state](terraform.md#secrets-and-state)
@@ -73,6 +75,7 @@ Index of the docs for this repo. Start with the repo's [README](../README.md) fo
 - Personal (the owner's own apps, not for general use)
     - [Personal stacks](personal-stacks.md): cauldron, karel, mima discord bot, and what each depends on
 - Scripts (each script's README is its doc)
+    - [server_base](../scripts/server_base/README.md): installs and updates Docker and Portainer
     - [temp_control](../scripts/temp_control/README.md): CPU temperature report and shutdown guard
 - Integrations
     - [Discord webhook](integrations/discord-web-hook.md): messages from scripts to a Discord channel
@@ -97,6 +100,8 @@ Index of the docs for this repo. Start with the repo's [README](../README.md) fo
     - Troubleshooting
 
 ## Changes
+- 2026-10-28 — added the server_base script
+- 2026-10-28 — Terraform page covers OpenTofu and the tofu/ folders
 - 2026-10-28 — added the Updates page
 - 2026-10-19 — added the Terraform page and an Infrastructure as code section
 - 2026-10-19 — added the Personal stacks page

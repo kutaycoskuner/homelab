@@ -1,0 +1,76 @@
+# ----------------------------------------------------------------------------------------
+#   portainer values for OpenTofu (example) -- copy to terraform.tfvars and fill in; this file is committed
+# ----------------------------------------------------------------------------------------
+# values in double quotes; one comment above each key: what it is and where to get it
+
+# Portainer address as seen from this PC (home network or Tailscale)
+portainer_url = "https://192.168.x.x:9443"
+
+# Portainer access token: click your user name at the top right (not Settings in the left menu)
+#   > My account > Access tokens > + Add access token, description "opentofu"
+#   shown only once: copy it straight here
+portainer_api_key = "<your-portainer-token>"
+
+# Docker environment ID: the number in Portainer's address after #!/ when the environment is open, usually 1
+endpoint_id = 1
+
+# This repo and the branch Portainer deploys from
+repository_url    = "https://github.com/<owner>/homelab"
+repository_branch = "refs/heads/dev"
+
+# GitHub login for the repo: your user name and a read-only token (docs/integrations/github-read-token.md)
+github_username = "<your-github-user>"
+github_token    = "<your-github-token>"
+# raise by one after changing github_token
+github_token_version = 1
+
+# How often Portainer checks the branch for changes
+update_interval = "5m"
+
+# Stacks to deploy: name -> compose file. Keep only those you run; Portainer itself isn't listed here.
+stacks = {
+  cloudflared  = { path = "stacks/cloudflared/docker-compose.yml" }
+  tailscale    = { path = "stacks/tailscale/docker-compose.yml" }
+  adguard      = { path = "stacks/adguard/docker-compose.yml" }
+  postgres     = { path = "stacks/postgres/docker-compose.yml" }
+  umami        = { path = "stacks/umami/docker-compose.yml" }
+  nextcloud    = { path = "stacks/nextcloud/docker-compose.yml" }
+  media-server = { path = "stacks/media-server/docker-compose.yml" }
+  hello        = { path = "stacks/hello/docker-compose.yml" }
+  temp_control = { path = "scripts/temp_control/docker-compose.yml" }
+}
+
+# Each stack's variables: the keys of its .env.example, with your values (stored in the state)
+stack_env = {
+  cloudflared = {
+    CLOUDFLARE_TUNNEL_TOKEN = "<tunnel-token>"
+  }
+  adguard = {
+    ADGUARD_DATA_DIR = "/home/<user>/docker/adguard"
+  }
+  postgres = {
+    POSTGRES_USER            = "appuser"
+    POSTGRES_PASSWORD        = "<your-password>"
+    POSTGRES_DB              = "appdb"
+    POSTGRES_VOLUME_NAME     = "postgres_data"
+    PGADMIN_DEFAULT_EMAIL    = "admin@example.net"
+    PGADMIN_DEFAULT_PASSWORD = "<your-password>"
+  }
+  umami = {
+    UMAMI_DB_NAME     = "umamidb"
+    UMAMI_DB_USER     = "umami_user"
+    UMAMI_DB_PASSWORD = "<your-password>"
+    UMAMI_APP_SECRET  = "<random-hex-secret>"
+  }
+  nextcloud = {
+    NEXTCLOUD_DB_PASSWORD      = "<your-password>"
+    NEXTCLOUD_DB_VOLUME_NAME   = "nextcloud_db_data"
+    NEXTCLOUD_DATA_VOLUME_NAME = "nextcloud_data"
+  }
+  media-server = {
+    MEDIA_DIR = "/srv/media-server/data-images"
+  }
+  temp_control = {
+    DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/<id>/<token>"
+  }
+}

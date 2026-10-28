@@ -18,6 +18,18 @@ Installs the container runtime every service in this repo runs on, and a web UI 
 |---|---|---|
 | `<server-ip>` | the server's fixed LAN address | `192.168.x.x` |
 
+## Install Docker and Portainer with one script
+
+[scripts/server_base](../scripts/server_base/README.md) does both steps below (and later their updates), asking before each change. On the server, in the repo clone:
+
+```bash
+git clone https://github.com/<owner>/homelab.git && cd homelab
+bash scripts/server_base/server_base.sh --install --dry-run   # what it would do
+bash scripts/server_base/server_base.sh --install
+```
+
+Updating both later: `git pull`, then `bash scripts/server_base/server_base.sh --update`. The two sections below are the same steps by hand.
+
 ## Install Docker
 
 ```bash
@@ -94,6 +106,7 @@ docker ps
 ```
 
 ## Changes
+- 2026-10-28 — install and update of Docker and Portainer through scripts/server_base
 - 2026-10-28 — link to automatic updates (Renovate + Portainer)
 - 2026-10-19 — private repo token steps moved to `integrations/github-read-token.md`
 - 2026-10-19 — added deploying from the Git repository, with GitHub token access for a private repo

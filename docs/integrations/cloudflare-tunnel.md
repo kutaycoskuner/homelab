@@ -44,10 +44,10 @@ Then open `https://analytics.<domain>`; Cloudflare adds HTTPS by itself.
 
 ## Manage routes as code
 
-Instead of adding routes in the dashboard, list them in [terraform/cloudflare](../../terraform/cloudflare/README.md) and run `terraform apply`; it also creates the DNS records. Once used, Terraform owns the route list: routes added in the dashboard are removed at the next apply. Background: [Terraform](../terraform.md).
+Instead of adding routes in the dashboard, list them in [tofu/cloudflare](../../tofu/cloudflare/README.md) and run `tofu apply` (OpenTofu); it also creates the DNS records. Once used, Terraform owns the route list: routes added in the dashboard are removed at the next apply. Background: [Terraform and OpenTofu](../terraform.md).
 
-- first run, step by step (API token, values, init, plan, taking over existing records, apply): [terraform/cloudflare → First run](../../terraform/cloudflare/README.md#first-run)
-- a subdomain that doesn't work (DNS error, 1033, 502): [terraform/cloudflare → When a subdomain doesn't work](../../terraform/cloudflare/README.md#when-a-subdomain-doesnt-work)
+- first run, step by step (API token, values, init, plan, taking over existing records, apply): [tofu/cloudflare → First run](../../tofu/cloudflare/README.md#first-run)
+- a subdomain that doesn't work (DNS error, 1033, 502): [tofu/cloudflare → When a subdomain doesn't work](../../tofu/cloudflare/README.md#when-a-subdomain-doesnt-work)
 
 ## Keep the token safe
 
@@ -56,6 +56,7 @@ Instead of adding routes in the dashboard, list them in [terraform/cloudflare](.
 - the dashboard links contain your account ID: don't copy them into docs
 
 ## Changes
+- 2026-10-28 — routes managed from tofu/cloudflare with OpenTofu
 - 2026-10-19 — routes on this server are managed with Terraform; links to its first run and troubleshooting
 - 2026-10-19 — menu path corrected to Networking → Tunnels
 - 2026-10-19 — added managing routes as code with Terraform

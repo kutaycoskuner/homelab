@@ -1,0 +1,39 @@
+# ----------------------------------------------------------------------------------------
+#   cloudflare values for OpenTofu (example) -- copy to terraform.tfvars and fill in; this file is committed
+# ----------------------------------------------------------------------------------------
+# values in double quotes; one comment above each key: what it is and where to get it
+
+# API token: profile icon > My Profile > API Tokens > Create Token > Create Custom Token:
+#   permissions: Account > Cloudflare Tunnel > Edit, and Zone > DNS > Edit
+#   resources: your account, and Specific zone > your domain; IP filtering empty; TTL e.g. one year
+#   shown only once: copy it straight here
+cloudflare_api_token = "<your-api-token>"
+
+# Account ID (32 characters, 0-9 and a-f), any of:
+#   - the code right after dash.cloudflare.com/ in the browser's address bar
+#   - your domain > Overview > right column, API section > Account ID
+#   - account home > ... next to the account name > Copy account ID
+account_id = "<your-account-id>"
+
+# Zone ID: your domain > Overview > right column, API section > Zone ID
+zone_id = "<your-zone-id>"
+
+# Tunnel ID: Networking > Tunnels > your tunnel; the long ID (xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx)
+tunnel_id = "<your-tunnel-id>"
+
+# Your domain on Cloudflare
+domain = "example.net"
+
+# The server's address in your home network (not your public internet address), any of:
+#   - on the server: hostname -I (first address)
+#   - the router's device list
+#   - the address the existing tunnel routes already use
+# should be the fixed address reserved for it in the router
+server_ip = "192.168.x.x"
+
+# Every published route; one missing here is removed from the tunnel on apply
+routes = [
+  { subdomain = "media", port = 8090 },     # stacks/media-server
+  { subdomain = "analytics", port = 3001 }, # stacks/umami
+  { subdomain = "hello", port = 8088 },     # stacks/hello
+]
