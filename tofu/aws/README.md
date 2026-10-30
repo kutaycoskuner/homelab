@@ -46,6 +46,10 @@ credential_process = aws configure export-credentials --profile <profile-name> -
 region = eu-central-1
 ```
 
+If `apply` fails with **"explicit deny in a service control policy"**, the account is an AWS "project" (accounts created through the newer signup, managed from `settings.aws.com`): it only allows its **home Region** until *advanced features* are activated there. Use that Region (the console's default after signing in, e.g. `eu-north-1`) as `region`, or activate advanced features (it also removes the project's spend limits).
+
+If it fails with **"BucketAlreadyExists"**, someone in the world already has that name: add something of your own to `bucket_name`.
+
 ## Costs
 
 A few hundred MB of backups: well under $0.10 per month. Budgets are free for the first two. Check the AWS account's plan: an account on the Free plan closes when its free period ends, and the backups with it.

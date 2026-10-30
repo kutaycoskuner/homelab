@@ -4,7 +4,7 @@
 # values in double quotes; one comment above each key: what it is and where to get it
 # no secrets: tofu signs in through an AWS CLI profile (README.md, First run)
 
-# Region for the bucket; eu-central-1 is Frankfurt
+# Region for the bucket: your account's Region; new AWS project accounts only allow their home Region (README.md)
 region = "eu-north-1"
 
 # AWS CLI profile from `aws login --profile <name>`
