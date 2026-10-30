@@ -2,7 +2,7 @@
 # Portainer: set ADGUARD_DATA_DIR under Environment variables. CLI: put it in .env (see .env.example).
 services:
   adguardhome:
-    image: adguard/adguardhome:latest
+    image: adguard/adguardhome:latest@sha256:aba9e3bf0613be3ba3755e1fc311b126e2c24bec25e18b6483894a88283074f0
     container_name: adguardhome
     restart: unless-stopped
     dns:                       # the container's own lookups (updates, block lists), so it never asks itself
