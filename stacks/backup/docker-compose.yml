@@ -1,0 +1,43 @@
+# backup: every night, dumps the databases and uploads them with the data that can't be rebuilt from
+# git (Portainer's data, media files, AdGuard settings) to S3, encrypted by restic; Discord on failure.
+# The scripts are copied into an image built on the server (Portainer CE can't mount files from a
+# Git stack). Variables: see .env.example. See docs/backup.md.
+services:
+  backup:
+    build: .
+    image: homelab-backup
+    pull_policy: build   # built on the server from this folder, never downloaded
+    container_name: backup
+    restart: unless-stopped
+    environment:
+      RESTIC_REPOSITORY: ${RESTIC_REPOSITORY}           # where: s3:s3.<region>.amazonaws.com/<bucket>
+      RESTIC_PASSWORD: ${RESTIC_PASSWORD}               # secret: encrypts every backup; lost = backups unreadable
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}           # the bucket's login (tofu/aws outputs)
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}   # secret
+      POSTGRES_HOST: ${POSTGRES_HOST}
+      POSTGRES_USER: ${POSTGRES_USER}                   # the postgres stack's admin user
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}           # secret
+      DISCORD_WEBHOOK_URL: ${DISCORD_WEBHOOK_URL}       # secret: failure messages go here
+      BACKUP_SCHEDULE: ${BACKUP_SCHEDULE}               # cron format, e.g. "0 3 * * *" = 03:00 every night
+      TZ: ${TZ}                                         # time zone of the schedule
+    volumes:
+      # what is backed up, read-only: the backup can't change any of it
+      - portainer_data:/backup/portainer:ro
+      - ${MEDIA_DIR}:/backup/media:ro
+      - ${ADGUARD_CONF_DIR}:/backup/adguard-conf:ro
+      # restic's local index cache: makes nightly runs faster, can be lost without harm
+      - restic_cache:/root/.cache/restic
+    networks:
+      - db_network   # reaches the postgres stack by its container name
+
+volumes:
+  portainer_data:
+    external: true   # Portainer's own volume, created by stacks/portainer
+  restic_cache:
+
+networks:
+  db_network:
+    external: true   # created by stacks/postgres
+
+x-ci:   # CI options, see docs/ci.md
+  smoke: false   # needs the postgres stack, Portainer's volume and a real bucket

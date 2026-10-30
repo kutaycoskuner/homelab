@@ -53,6 +53,7 @@ homelab/
 │   ├── nextcloud/         your own cloud storage, with its own database
 │   ├── media-server/      files from a folder as web addresses (images for websites)
 │   ├── monitoring/        checks that the sites answer, alerts to Discord; configured as code (blackbox, Prometheus, Alertmanager)
+│   ├── backup/            nightly, encrypted backup of databases and data to S3 (restic), Discord on failure
 │   ├── _idle/             stacks not in use, kept for later (uptime-kuma); not tested or deployed
 │   ├── tailscale/         private access from your own devices
 │   ├── cloudflared/       Cloudflare Tunnel: public subdomains without open ports
@@ -74,21 +75,30 @@ homelab/
 
 ## Usage
 
-Every file that holds a password, key, token, IP address or other personal value exists in the repo only as `<file>.example`. Before running anything, create your own copy and fill in your values:
+From an empty server to running stacks in four steps; the full walkthrough, with accounts and integrations: [00 · From zero to a running server](docs/00-from-zero.md).
 
 ```bash
-# 1. Clone the repository
+# 1. get the repo (on the server)
 git clone https://github.com/kutaycoskuner/homelab.git
 cd homelab
 
-# 2. Create your local .env files from the examples (asks per file), then fill in your values
-python main.py --sync
+# 2. install Docker and Portainer (scripts/server_base)
+bash scripts/server_base/server_base.sh --install   # installs Docker, adds you to the docker group
+    newgrp docker                                    # or log out and back in
+bash scripts/server_base/server_base.sh --install   # second run starts Portainer
 
-# 3. After every update (git pull): check that your .env files still match their examples
-python main.py --check
+# 3. set up your values: personal files exist only as <file>.example
+python main.py --sync                               # creates your .env files from the examples, then fill them in
+    python main.py --check                           # after every git pull: still matching their examples?
+    # OpenTofu folders: copy terraform.tfvars.example to terraform.tfvars next to it (docs/terraform.md)
+
+# 4. deploy the stacks, once you have the integration keys (GitHub, Cloudflare, Tailscale, Discord; see Documentation)
+tofu -chdir=tofu/portainer apply                    # as code, from your PC: stacks with automatic updates
+    tofu -chdir=tofu/cloudflare apply                # public routes and DNS
+    # or by hand: in Portainer, a stack from this repository per service
 ```
 
-Your copies (`.env`) are gitignored and never committed. Stacks deployed through Portainer take the same keys as environment variables instead. Details: [Secrets and example files](docs/secrets-and-examples.md#syncing-your-copies).
+Your copies (`.env`, `terraform.tfvars`) are gitignored and never committed. Stacks deployed through Portainer take the same keys as environment variables instead. Details: [Secrets and example files](docs/secrets-and-examples.md#syncing-your-copies).
 
 ------------------------------------------------------------------------------------------
 
@@ -103,7 +113,7 @@ Your copies (`.env`) are gitignored and never committed. Stacks deployed through
     - [01 · Headless server setup](docs/01-headless-server-setup.md): install the OS and reach the server over the network (Raspberry Pi as the example)
     - [02 · Docker and Portainer](docs/02-docker-portainer.md): container runtime and its web UI
     - [03 · Exposing services](docs/03-exposing-services.md): public through a Cloudflare Tunnel, private through Tailscale
-    - optional stacks: [AdGuard](docs/stack-adguard.md) (network-wide ad and tracker blocking), [PostgreSQL](docs/stack-postgres.md) (shared database with pgAdmin), [Umami](docs/stack-umami.md) (website analytics), [Nextcloud](docs/stack-nextcloud.md) (cloud storage), [Media server](docs/stack-media-server.md) (files as web addresses), [Monitoring](docs/monitoring.md) (alerts to Discord when a site is down, as code); idle: [Uptime Kuma](docs/stack-uptime-kuma.md)
+    - optional stacks: [AdGuard](docs/stack-adguard.md) (network-wide ad and tracker blocking), [PostgreSQL](docs/stack-postgres.md) (shared database with pgAdmin), [Umami](docs/stack-umami.md) (website analytics), [Nextcloud](docs/stack-nextcloud.md) (cloud storage), [Media server](docs/stack-media-server.md) (files as web addresses), [Monitoring](docs/monitoring.md) (alerts to Discord when a site is down, as code), [Backup](docs/backup.md) (nightly, encrypted, to S3; restore); idle: [Uptime Kuma](docs/stack-uptime-kuma.md)
     - [Discord webhook](docs/integrations/discord-web-hook.md): messages from scripts to a Discord channel
     - [Tailscale](docs/integrations/tailscale.md) and [Cloudflare Tunnel](docs/integrations/cloudflare-tunnel.md): private and public access
     - [GitHub read-only token](docs/integrations/github-read-token.md): lets Portainer clone the private repo

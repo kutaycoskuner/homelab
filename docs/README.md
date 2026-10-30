@@ -85,10 +85,17 @@ Index of the docs for this repo. Start with the repo's [README](../README.md) fo
         - [Set it up](monitoring.md#set-it-up)
         - [Daily use](monitoring.md#daily-use)
         - [When something doesn't work](monitoring.md#when-something-doesnt-work)
+    - [Backup](backup.md): nightly, encrypted backup of databases and data to S3, and how to restore
+        - [What is backed up](backup.md#what-is-backed-up)
+        - [The pipeline](backup.md#the-pipeline)
+        - [Set it up](backup.md#set-it-up)
+        - [Daily use](backup.md#daily-use)
+        - [Restore](backup.md#restore)
+        - [When something doesn't work](backup.md#when-something-doesnt-work)
     - idle: [Uptime Kuma](stack-uptime-kuma.md), replaced by Monitoring (configured in its web UI, not as code)
-- Personal (the owner's own apps, not for general use)
 - Scripts (each script's README is its doc)
     - [server_base](../scripts/server_base/README.md): installs and updates Docker and Portainer
+    - [copy_tfvars_values](../scripts/copy_tfvars_values/README.md): copies OpenTofu values between .tfvars files without showing them
     - [temp_control](../scripts/temp_control/README.md): CPU temperature report and shutdown guard
 - Integrations
     - [Discord webhook](integrations/discord-web-hook.md): messages from scripts to a Discord channel
@@ -113,6 +120,7 @@ Index of the docs for this repo. Start with the repo's [README](../README.md) fo
     - Troubleshooting
 
 ## Changes
+- 2026-10-30 — added the Backup page
 - 2026-10-30 — added the Monitoring page; Uptime Kuma idle
 - 2026-10-30 — added the Uptime Kuma stack page
 - 2026-10-28 — added the server_base script

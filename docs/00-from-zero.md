@@ -67,6 +67,7 @@ Deployed in Portainer as Git stacks, each following its own page; any of them ca
 
 - [Tailscale](integrations/tailscale.md): private access, also to services without a public route
 - recommended: [Monitoring](monitoring.md): a message to Discord when a site stops answering, configured as code; deploy it with `tofu/portainer` like the stacks in C
+- recommended: [Backup](backup.md): nightly, encrypted backup of the databases and data to an S3 bucket from [tofu/aws](../tofu/aws/README.md); do the restore test once
 - optional: [AdGuard](stack-adguard.md), [PostgreSQL](stack-postgres.md), [Umami](stack-umami.md), [Nextcloud](stack-nextcloud.md), [Media server](stack-media-server.md)
 
 ## E. Updates
@@ -75,6 +76,7 @@ Deployed in Portainer as Git stacks, each following its own page; any of them ca
 - the server itself: `git pull && bash scripts/server_base/server_base.sh --update` for Docker and Portainer
 
 ## Changes
+- 2026-10-30 — Backup in phase D
 - 2026-10-30 — Monitoring in phase D (Uptime Kuma idle)
 - 2026-10-30 — Uptime Kuma in phase D
 - 2026-10-28 — first version: the whole setup in order (accounts, server, OpenTofu, other stacks, updates), with the private-repo variant
