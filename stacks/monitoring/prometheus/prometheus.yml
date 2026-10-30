@@ -1,0 +1,35 @@
+# What Prometheus collects, how often, and where alerts go. See docs/monitoring.md.
+global:
+  scrape_interval: 30s       # ask every 30 s
+  evaluation_interval: 30s   # check the alert rules every 30 s
+
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets: ["alertmanager:9093"]
+
+rule_files:
+  - /etc/prometheus/alert-rules.yml
+
+scrape_configs:
+  # every URL from PROBE_TARGETS, checked by blackbox; start.sh writes the target file
+  - job_name: websites
+    metrics_path: /probe
+    params:
+      module: [http_2xx]   # blackbox.yml
+    file_sd_configs:
+      - files: [/tmp/probe-targets.json]
+    relabel_configs:
+      # the URL becomes blackbox's ?target= parameter and the result's "instance" label,
+      # and the request goes to blackbox instead of the URL itself
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: blackbox:9115
+
+  # the monitoring stack checks its own parts, so a broken part raises an alert too
+  - job_name: monitoring
+    static_configs:
+      - targets: ["localhost:9090", "alertmanager:9093", "blackbox:9115"]

@@ -1,6 +1,8 @@
 # Stack · Uptime Kuma
 
-**Optional, recommended.** Tells you when a service is down, before someone else does.
+**Idle: not in use, kept for a later decision.** Replaced by [Monitoring](monitoring.md), whose checks and alerts are configured as code; Kuma is configured in its web UI. The stack lives in `stacks/_idle/uptime-kuma/`.
+
+Tells you when a service is down, before someone else does.
 
 ## What it is and why we use it
 
@@ -19,7 +21,7 @@
 
 ## Set it up
 
-1. **deploy** [stacks/uptime-kuma](../stacks/uptime-kuma/README.md), e.g. one line in `tofu/portainer`'s stacks; no variables
+1. **deploy** [stacks/_idle/uptime-kuma](../stacks/_idle/uptime-kuma/README.md) (move it back to `stacks/uptime-kuma/` first), e.g. one line in `tofu/portainer`'s stacks; no variables
 2. **first login**: `http://<server-tailscale-ip>:3002` from a device in your tailnet ([Tailscale](integrations/tailscale.md))
     - database: choose **SQLite** (one file in the data volume, no extra server)
     - create the admin user right away: the first visitor gets to create it
@@ -42,4 +44,5 @@
 All monitors, their history and the settings are in the volume `uptime-kuma_data` (one SQLite file). Back up the volume; without it, the monitors have to be added again.
 
 ## Changes
+- 2026-10-30 — idle: replaced by the monitoring stack (configured as code); stack moved to stacks/_idle/
 - 2026-10-30 — first version: what and why, first login, Discord, which monitors to add, backup

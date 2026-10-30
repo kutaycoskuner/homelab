@@ -1,0 +1,43 @@
+# When an alert fires. "for" is how long the condition must hold first, so a single slow
+# answer doesn't page anyone. Alertmanager sends each firing alert to Discord, and again when it's
+# resolved. See docs/monitoring.md.
+groups:
+  - name: websites
+    rules:
+      - alert: SiteDown
+        expr: probe_success{job="websites"} == 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "{{ $labels.instance }} is down"
+          description: "No successful answer for 2 minutes."
+
+      - alert: SiteSlow
+        expr: probe_duration_seconds{job="websites"} > 5
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "{{ $labels.instance }} is slow"
+          description: "Answers took over 5 seconds for 10 minutes (now {{ $value | humanizeDuration }})."
+
+      - alert: CertificateExpiresSoon
+        expr: (probe_ssl_earliest_cert_expiry{job="websites"} - time()) / 86400 < 14
+        for: 1h
+        labels:
+          severity: warning
+        annotations:
+          summary: "Certificate of {{ $labels.instance }} expires soon"
+          description: "Expires in {{ $value | humanize }} days."
+
+  - name: monitoring
+    rules:
+      - alert: MonitoringPartDown
+        expr: up{job="monitoring"} == 0
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Monitoring part {{ $labels.instance }} is down"
+          description: "Prometheus can't reach it for 5 minutes; checks or alerts may be missing."

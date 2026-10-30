@@ -52,7 +52,8 @@ homelab/
 │   ├── umami/             self-hosted website analytics
 │   ├── nextcloud/         your own cloud storage, with its own database
 │   ├── media-server/      files from a folder as web addresses (images for websites)
-│   ├── uptime-kuma/       checks that the services answer, messages to Discord when one fails
+│   ├── monitoring/        checks that the sites answer, alerts to Discord; configured as code (blackbox, Prometheus, Alertmanager)
+│   ├── _idle/             stacks not in use, kept for later (uptime-kuma); not tested or deployed
 │   ├── tailscale/         private access from your own devices
 │   ├── cloudflared/       Cloudflare Tunnel: public subdomains without open ports
 │   └── hello/             one-page test site to check a deploy end to end
@@ -102,7 +103,7 @@ Your copies (`.env`) are gitignored and never committed. Stacks deployed through
     - [01 · Headless server setup](docs/01-headless-server-setup.md): install the OS and reach the server over the network (Raspberry Pi as the example)
     - [02 · Docker and Portainer](docs/02-docker-portainer.md): container runtime and its web UI
     - [03 · Exposing services](docs/03-exposing-services.md): public through a Cloudflare Tunnel, private through Tailscale
-    - optional stacks: [AdGuard](docs/stack-adguard.md) (network-wide ad and tracker blocking), [PostgreSQL](docs/stack-postgres.md) (shared database with pgAdmin), [Umami](docs/stack-umami.md) (website analytics), [Nextcloud](docs/stack-nextcloud.md) (cloud storage), [Media server](docs/stack-media-server.md) (files as web addresses), [Uptime Kuma](docs/stack-uptime-kuma.md) (alerts when a service is down)
+    - optional stacks: [AdGuard](docs/stack-adguard.md) (network-wide ad and tracker blocking), [PostgreSQL](docs/stack-postgres.md) (shared database with pgAdmin), [Umami](docs/stack-umami.md) (website analytics), [Nextcloud](docs/stack-nextcloud.md) (cloud storage), [Media server](docs/stack-media-server.md) (files as web addresses), [Monitoring](docs/monitoring.md) (alerts to Discord when a site is down, as code); idle: [Uptime Kuma](docs/stack-uptime-kuma.md)
     - [Discord webhook](docs/integrations/discord-web-hook.md): messages from scripts to a Discord channel
     - [Tailscale](docs/integrations/tailscale.md) and [Cloudflare Tunnel](docs/integrations/cloudflare-tunnel.md): private and public access
     - [GitHub read-only token](docs/integrations/github-read-token.md): lets Portainer clone the private repo
