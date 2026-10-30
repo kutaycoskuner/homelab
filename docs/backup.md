@@ -55,6 +55,7 @@ crond ──> backup.sh
     - `RESTIC_REPOSITORY`: `s3:s3.<region>.amazonaws.com/<bucket-name>`
     - `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`: from `tofu output` in `tofu/aws`
     - `POSTGRES_USER`, `POSTGRES_PASSWORD`: the postgres stack's admin
+    - `POSTGRES_NETWORK`: the postgres stack's network, `db_network` when deployed from `stacks/postgres`; a stack started under another name has `<stack>_db_network` (check: `docker inspect postgres-core --format '{{range $k, $v := .NetworkSettings.Networks}}{{$k}} {{end}}'`)
 4. **deploy** with re-pull images off (`pull_image = false`): the image is built on the server
 5. **first run by hand**, on the server: `docker exec backup backup.sh`; expect "no repository in the bucket yet: creating it", then "done"
 6. **restore test** (below), once: a backup you've never restored is a hope, not a backup
@@ -101,7 +102,8 @@ An older backup instead of the latest: take its ID from `restic snapshots` in pl
 
 | Symptom | Look at |
 |---|---|
-| "Backup failed at step: dumping the databases" | postgres down, or the backup isn't on `db_network`, or a wrong `POSTGRES_USER` / `POSTGRES_PASSWORD` |
+| deploy fails: "network … declared as external, but could not be found" | `POSTGRES_NETWORK` doesn't match the postgres stack's network (check command in Set it up) |
+| "Backup failed at step: dumping the databases" | postgres down, a wrong `POSTGRES_NETWORK`, or a wrong `POSTGRES_USER` / `POSTGRES_PASSWORD` |
 | "… opening the repository" / "… uploading" | the bucket's login or `RESTIC_REPOSITORY` (region, bucket name); `docker logs backup` shows AWS's answer |
 | "wrong password or no key found" | `RESTIC_PASSWORD` differs from the one the repository was created with |
 | no message, but no backups either | the schedule: `docker logs backup` shows "backups run at …" on start; time zone `TZ` |

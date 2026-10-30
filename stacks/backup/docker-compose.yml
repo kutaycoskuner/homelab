@@ -37,7 +37,8 @@ volumes:
 
 networks:
   db_network:
-    external: true   # created by stacks/postgres
+    external: true                 # created by the postgres stack
+    name: ${POSTGRES_NETWORK}      # db_network when deployed from stacks/postgres; <stack>_db_network if it was started under another stack name
 
 x-ci:   # CI options, see docs/ci.md
   smoke: false   # needs the postgres stack, Portainer's volume and a real bucket
