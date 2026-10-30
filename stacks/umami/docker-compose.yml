@@ -2,7 +2,7 @@
 # Needs stacks/postgres running (database, user and the db_network). Variables: see .env.example.
 services:
   umami:
-    image: ghcr.io/umami-software/umami:latest
+    image: ghcr.io/umami-software/umami:latest@sha256:e69d1a7932e9dab0fc523edc7be1f3a53f3c261f57856fc2167ae74a8fc022e8
     container_name: umami
     restart: unless-stopped
     environment:

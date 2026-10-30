@@ -1,7 +1,7 @@
 # Portainer: web UI for managing Docker. Start with `docker compose up -d` (not as a Portainer stack).
 services:
   portainer:
-    image: portainer/portainer-ce:lts
+    image: portainer/portainer-ce:lts@sha256:3609c307943bca8e5c492f69ddd6965df177208b50678a4cff28391c8dd4e96e
     container_name: portainer
     restart: always
     ports:

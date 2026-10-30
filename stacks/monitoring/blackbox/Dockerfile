@@ -1,3 +1,3 @@
 # blackbox exporter with this repo's check types baked in (Portainer CE can't mount files from a Git stack)
-FROM prom/blackbox-exporter:v0.29.1
+FROM prom/blackbox-exporter:v0.29.1@sha256:ea1c7aa3ef3f307cd03e85f34abb604478ccb90b567fc690da0cd9776da76b13
 COPY blackbox.yml /etc/blackbox_exporter/config.yml
