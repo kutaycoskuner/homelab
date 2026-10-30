@@ -13,7 +13,7 @@ How the server's data that git can't rebuild is copied off the server every nigh
 
 | Data | Why | How |
 |---|---|---|
-| all PostgreSQL databases (e.g. your apps' databases, umami) | can't be rebuilt | `pg_dumpall` into one SQL file: consistent, unlike the raw files of a running database |
+| all PostgreSQL databases (e.g. your apps' databases, umami) | can't be rebuilt | `pg_dumpall` into one SQL file: consistent, unlike the raw files of a running database; the users are in it, their password hashes not (`--no-role-passwords`, so a read-only user can make the dump) |
 | `portainer_data` | stacks created in Portainer's UI, registry logins, users | the volume, read-only |
 | media folder (`MEDIA_DIR`) | your files, served as web addresses | the folder, read-only |
 | AdGuard `conf/` (`ADGUARD_CONF_DIR`) | filters, clients, settings | the folder, read-only; `work/` (query logs, downloaded lists) is left out |
@@ -54,7 +54,7 @@ crond ──> backup.sh
 3. **values**: the stack's variables ([.env.example](../stacks/backup/.env.example)), e.g. in `tofu/portainer`'s `stack_env`
     - `RESTIC_REPOSITORY`: `s3:s3.<region>.amazonaws.com/<bucket-name>`
     - `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`: from `tofu output` in `tofu/aws`
-    - `POSTGRES_USER`, `POSTGRES_PASSWORD`: the postgres stack's admin
+    - `POSTGRES_USER`, `POSTGRES_PASSWORD`: a user that can read every database; best a read-only one created by [tofu/postgres](../tofu/postgres/README.md) (`backup` with `pg_read_all_data`), so the backup never holds the admin password
     - `POSTGRES_NETWORK`: the postgres stack's network, `db_network` when deployed from `stacks/postgres`; a stack started under another name has `<stack>_db_network` (check: `docker inspect postgres-core --format '{{range $k, $v := .NetworkSettings.Networks}}{{$k}} {{end}}'`)
 4. **deploy** with re-pull images off (`pull_image = false`): the image is built on the server
 5. **first run by hand**, on the server: `docker exec backup backup.sh`; expect "no repository in the bucket yet: creating it", then "done"
@@ -89,10 +89,11 @@ docker exec backup restic ls latest
     docker cp backup:/tmp/restore ./restore
     ```
     the files are under `./restore/backup/` (`postgres/postgres-all.sql`, `portainer/`, `media/`, `adguard-conf/`)
-3. **databases**: load the dump into a running postgres (into an empty server, e.g. after a rebuild; on a running one it fails for objects that already exist):
+3. **databases**: load the dump into a running postgres (into an empty server, e.g. after a rebuild; on a running one it fails for objects that already exist), as the admin:
     ```bash
-    docker exec -i postgres-core psql -U <postgres-user> -d postgres < ./restore/backup/postgres/postgres-all.sql
+    docker exec -i postgres-core psql -U <postgres-admin> -d postgres < ./restore/backup/postgres/postgres-all.sql
     ```
+    the users come back without passwords: `tofu apply` in `tofu/postgres` sets them again (the generated ones from its state)
 4. **files**: copy back what you need, e.g. the media folder to `MEDIA_DIR`; Portainer's data into its volume while Portainer is stopped
 5. **clean up**: `docker exec backup rm -rf /tmp/restore` and the local `./restore`
 
@@ -109,4 +110,5 @@ An older backup instead of the latest: take its ID from `restic snapshots` in pl
 | no message, but no backups either | the schedule: `docker logs backup` shows "backups run at …" on start; time zone `TZ` |
 
 ## Changes
+- 2026-10-30 — read-only database user from tofu/postgres instead of the admin; dump without password hashes
 - 2026-10-30 — first version: what is backed up and why, pipeline, setup, daily use, restore, troubleshooting

@@ -16,7 +16,8 @@ How outside accounts (Cloudflare, later Tailscale and GitHub) and Portainer's st
 |---|---|---|
 | [tofu/cloudflare](../tofu/cloudflare/README.md) | OpenTofu | **in use**: tunnel routes and DNS |
 | [tofu/portainer](../tofu/portainer/README.md) | OpenTofu | **in use**: Portainer stacks and their automatic updates |
-| [tofu/aws](../tofu/aws/README.md) | OpenTofu | **new**: S3 bucket for offsite backups, the server's backup login, a budget alarm |
+| [tofu/aws](../tofu/aws/README.md) | OpenTofu | **in use**: S3 bucket for offsite backups, the server's backup login, a budget alarm |
+| [tofu/postgres](../tofu/postgres/README.md) | OpenTofu | **new**: PostgreSQL users with generated passwords, e.g. a read-only user for backups |
 | [terraform/cloudflare](../terraform/cloudflare/README.md) | Terraform | reference only: same code as `tofu/cloudflare`; don't `apply` here |
 
 Apply each account from **one** folder only: two folders with two state files would overwrite each other's changes.
@@ -124,6 +125,7 @@ GitHub/
 - **moving your values**: copy the private folder's `.example` files, then fill them from your old `terraform.tfvars` with [copy_tfvars_values](../scripts/copy_tfvars_values/README.md), which never shows a value
 
 ## Changes
+- 2026-10-30 — tofu/postgres: database users with generated passwords
 - 2026-10-30 — tofu/aws: bucket for offsite backups, the server's backup login, budget alarm
 - 2026-10-29 — PowerShell: quote -chdir when the path contains a dot; copy_tfvars_values for moving values
 - 2026-10-28 — using the tofu folders as modules from a private repo, with your values there

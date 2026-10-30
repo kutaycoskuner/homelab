@@ -15,7 +15,7 @@ services:
       AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}           # the bucket's login (tofu/aws outputs)
       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}   # secret
       POSTGRES_HOST: ${POSTGRES_HOST}
-      POSTGRES_USER: ${POSTGRES_USER}                   # the postgres stack's admin user
+      POSTGRES_USER: ${POSTGRES_USER}                   # a read-only user (tofu/postgres), or the admin
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}           # secret
       DISCORD_WEBHOOK_URL: ${DISCORD_WEBHOOK_URL}       # secret: failure messages go here
       BACKUP_SCHEDULE: ${BACKUP_SCHEDULE}               # cron format, e.g. "0 3 * * *" = 03:00 every night

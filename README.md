@@ -58,7 +58,7 @@ homelab/
 │   ├── tailscale/         private access from your own devices
 │   ├── cloudflared/       Cloudflare Tunnel: public subdomains without open ports
 │   └── hello/             one-page test site to check a deploy end to end
-├── tofu/                  OpenTofu, in use: Cloudflare tunnel routes and DNS, Portainer stacks with automatic updates, AWS bucket for backups
+├── tofu/                  OpenTofu, in use: Cloudflare tunnel routes and DNS, Portainer stacks with automatic updates, AWS bucket for backups, PostgreSQL users
 ├── terraform/             Terraform reference copy of tofu/cloudflare (not applied)
 ├── renovate.json          settings for automatic update pull requests
 ├── scripts/               helper scripts

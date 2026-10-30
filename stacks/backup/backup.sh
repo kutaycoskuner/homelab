@@ -14,7 +14,8 @@
 #   3. upload /backup (the dump and the read-only mounts) with restic: encrypted, only changed parts
 #   4. remove old backups: KEEP_DAILY / KEEP_WEEKLY / KEEP_MONTHLY (default 7 / 4 / 6)
 # On any failure: a message to DISCORD_WEBHOOK_URL naming the step; success stays silent.
-# Requires: the variables in .env.example; the postgres stack on db_network.
+# Requires: the variables in .env.example; the postgres stack on its network; a database user
+# that can read everything (e.g. one with pg_read_all_data from tofu/postgres, not the admin).
 
 set -eu
 
@@ -56,7 +57,9 @@ fi
 # 2. database dump
 step="dumping the databases"
 mkdir -p "$DUMP_DIR"
-PGPASSWORD="$POSTGRES_PASSWORD" pg_dumpall -h "${POSTGRES_HOST:-postgres-core}" -U "$POSTGRES_USER" \
+# --no-role-passwords: works with a read-only user (no admin needed); the dump has the users but
+# not their password hashes, which tofu/postgres sets again after a restore
+PGPASSWORD="$POSTGRES_PASSWORD" pg_dumpall --no-role-passwords -h "${POSTGRES_HOST:-postgres-core}" -U "$POSTGRES_USER" \
     > "$DUMP_DIR/postgres-all.sql"
 log "database dump: $(du -h "$DUMP_DIR/postgres-all.sql" | cut -f1)"
 

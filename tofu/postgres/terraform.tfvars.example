@@ -1,0 +1,16 @@
+# ----------------------------------------------------------------------------------------
+#   postgres values for OpenTofu (example) -- copy to terraform.tfvars and fill in; this file is committed
+# ----------------------------------------------------------------------------------------
+# values in double quotes; one comment above each key: what it is and where to get it
+
+# The PostgreSQL server as seen from this PC (home network or Tailscale address)
+host = "192.168.x.x"
+
+# The admin login from the server's first start (POSTGRES_USER / POSTGRES_PASSWORD of stacks/postgres)
+admin_username = "<admin-user>"
+admin_password = "<admin-password>"
+
+# Users to create, each with a generated password; e.g. a read-only user for backups
+users = {
+  backup = { roles = ["pg_read_all_data"] }
+}
