@@ -78,6 +78,10 @@ Index of the docs for this repo. Start with the repo's [README](../README.md) fo
         - [Set it up](stack-media-server.md#set-it-up)
         - [Add files](stack-media-server.md#add-files)
         - [Make it public](stack-media-server.md#make-it-public)
+    - [Uptime Kuma](stack-uptime-kuma.md): checks that the services answer, messages to Discord when one fails
+        - [Set it up](stack-uptime-kuma.md#set-it-up)
+        - [Which monitors to add](stack-uptime-kuma.md#which-monitors-to-add)
+        - [Backup](stack-uptime-kuma.md#backup)
 - Personal (the owner's own apps, not for general use)
 - Scripts (each script's README is its doc)
     - [server_base](../scripts/server_base/README.md): installs and updates Docker and Portainer
@@ -105,6 +109,7 @@ Index of the docs for this repo. Start with the repo's [README](../README.md) fo
     - Troubleshooting
 
 ## Changes
+- 2026-10-30 — added the Uptime Kuma stack page
 - 2026-10-28 — added the server_base script
 - 2026-10-28 — Terraform page covers OpenTofu and the tofu/ folders
 - 2026-10-28 — added the Updates page

@@ -52,10 +52,11 @@ homelab/
 │   ├── umami/             self-hosted website analytics
 │   ├── nextcloud/         your own cloud storage, with its own database
 │   ├── media-server/      files from a folder as web addresses (images for websites)
+│   ├── uptime-kuma/       checks that the services answer, messages to Discord when one fails
 │   ├── tailscale/         private access from your own devices
 │   ├── cloudflared/       Cloudflare Tunnel: public subdomains without open ports
 │   └── hello/             one-page test site to check a deploy end to end
-├── tofu/                  OpenTofu, in use: Cloudflare tunnel routes and DNS, Portainer stacks with automatic updates
+├── tofu/                  OpenTofu, in use: Cloudflare tunnel routes and DNS, Portainer stacks with automatic updates, AWS bucket for backups
 ├── terraform/             Terraform reference copy of tofu/cloudflare (not applied)
 ├── renovate.json          settings for automatic update pull requests
 ├── scripts/               helper scripts
@@ -101,7 +102,7 @@ Your copies (`.env`) are gitignored and never committed. Stacks deployed through
     - [01 · Headless server setup](docs/01-headless-server-setup.md): install the OS and reach the server over the network (Raspberry Pi as the example)
     - [02 · Docker and Portainer](docs/02-docker-portainer.md): container runtime and its web UI
     - [03 · Exposing services](docs/03-exposing-services.md): public through a Cloudflare Tunnel, private through Tailscale
-    - optional stacks: [AdGuard](docs/stack-adguard.md) (network-wide ad and tracker blocking), [PostgreSQL](docs/stack-postgres.md) (shared database with pgAdmin), [Umami](docs/stack-umami.md) (website analytics), [Nextcloud](docs/stack-nextcloud.md) (cloud storage), [Media server](docs/stack-media-server.md) (files as web addresses)
+    - optional stacks: [AdGuard](docs/stack-adguard.md) (network-wide ad and tracker blocking), [PostgreSQL](docs/stack-postgres.md) (shared database with pgAdmin), [Umami](docs/stack-umami.md) (website analytics), [Nextcloud](docs/stack-nextcloud.md) (cloud storage), [Media server](docs/stack-media-server.md) (files as web addresses), [Uptime Kuma](docs/stack-uptime-kuma.md) (alerts when a service is down)
     - [Discord webhook](docs/integrations/discord-web-hook.md): messages from scripts to a Discord channel
     - [Tailscale](docs/integrations/tailscale.md) and [Cloudflare Tunnel](docs/integrations/cloudflare-tunnel.md): private and public access
     - [GitHub read-only token](docs/integrations/github-read-token.md): lets Portainer clone the private repo

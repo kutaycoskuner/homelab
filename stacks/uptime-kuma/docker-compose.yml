@@ -1,0 +1,19 @@
+# uptime-kuma: checks every minute that the services answer, and posts to Discord when one fails.
+# Monitors and settings live in its own SQLite file in the data volume (back it up). See README.md.
+services:
+  uptime-kuma:
+    image: louislam/uptime-kuma:2
+    container_name: uptime-kuma
+    restart: unless-stopped
+    ports:
+      - "3002:3001"   # 3001 inside; 3002 on the server, because umami already uses 3001
+    volumes:
+      - uptime-kuma_data:/app/data
+    # no Docker socket on purpose: access to it is effectively root on the server;
+    # HTTP and port checks cover the services
+
+volumes:
+  uptime-kuma_data:
+
+x-ci:   # CI options, see docs/ci.md
+  url: http://localhost:3002/

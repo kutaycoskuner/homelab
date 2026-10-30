@@ -66,6 +66,7 @@ On your PC, where you edit the repo ([Terraform and OpenTofu](terraform.md): ins
 Deployed in Portainer as Git stacks, each following its own page; any of them can move into `tofu/portainer` later (one line in `stacks`, its variables in `stack_env`):
 
 - [Tailscale](integrations/tailscale.md): private access, also to services without a public route
+- recommended: [Uptime Kuma](stack-uptime-kuma.md): a message to Discord when a service stops answering
 - optional: [AdGuard](stack-adguard.md), [PostgreSQL](stack-postgres.md), [Umami](stack-umami.md), [Nextcloud](stack-nextcloud.md), [Media server](stack-media-server.md)
 
 ## E. Updates
@@ -74,4 +75,5 @@ Deployed in Portainer as Git stacks, each following its own page; any of them ca
 - the server itself: `git pull && bash scripts/server_base/server_base.sh --update` for Docker and Portainer
 
 ## Changes
+- 2026-10-30 — Uptime Kuma in phase D
 - 2026-10-28 — first version: the whole setup in order (accounts, server, OpenTofu, other stacks, updates), with the private-repo variant
