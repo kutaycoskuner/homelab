@@ -10,7 +10,9 @@ host = "192.168.x.x"
 admin_username = "<admin-user>"
 admin_password = "<admin-password>"
 
-# Users to create, each with a generated password; e.g. a read-only user for backups
+# Users to create, each with a generated password: e.g. a read-only user for backups,
+# and one user per app with full use of its own database
 users = {
   backup = { roles = ["pg_read_all_data"] }
+  # my-app = { database = "myappdb" }
 }

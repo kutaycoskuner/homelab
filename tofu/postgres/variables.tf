@@ -36,9 +36,11 @@ variable "sslmode" {
 }
 
 variable "users" {
-  description = "Users to create: name -> built-in roles to grant (e.g. [\"pg_read_all_data\"] for read-only access to every database); each gets a generated password"
+  description = "Users to create, each with a generated password: roles = built-in roles to grant (e.g. [\"pg_read_all_data\"] for read-only access to every database); database = the one database an app user may fully use (read, write, create tables), in the listed schemas"
   type = map(object({
-    roles = optional(list(string), [])
+    roles    = optional(list(string), [])
+    database = optional(string)
+    schemas  = optional(list(string), ["public"])
   }))
   default = {}
 }
