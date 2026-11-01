@@ -1,6 +1,6 @@
 # tofu/cloudflare
 
-The Cloudflare Tunnel's routes and DNS records as code: add a line to `routes`, run `tofu apply`, and `https://<subdomain>.<domain>` points at that port on the server. Run with **OpenTofu** (`tofu`); the same code as [terraform/cloudflare](../../terraform/cloudflare/README.md), which is kept as a reference only. Background: [Terraform and OpenTofu](../../docs/terraform.md).
+The Cloudflare Tunnel's routes and DNS records as code: add a line to `routes`, run `tofu apply`, and `https://<subdomain>.<domain>` points at that port on the server. Run with **OpenTofu** (`tofu`); the same code as [legacy/terraform/cloudflare](../../legacy/terraform/cloudflare/README.md), which is kept as a reference only. Background: [Terraform and OpenTofu](../../docs/terraform.md).
 
 - manages: the tunnel's published routes and one DNS record per route
 - doesn't manage: the tunnel itself (created in the dashboard) and the `cloudflared` container ([stacks/cloudflared](../../stacks/cloudflared/README.md))
@@ -32,22 +32,23 @@ browser → DNS: <subdomain>.<domain> = the tunnel → Cloudflare → tunnel →
            └──── DNS record (Terraform) ────┘                  └──── tunnel route (Terraform) ────┘
 ```
 
-## Switching from terraform/cloudflare
+## Switching from Terraform (legacy)
 
-Only when `terraform/cloudflare` already manages your routes (state in that folder). All in PowerShell, in the repo root:
+Only when the Terraform version, now in `legacy/terraform/cloudflare`, already manages your routes (its state in that folder). All in PowerShell, in the repo root:
 
 1. **copy your values and the state** over, so OpenTofu takes over what Terraform created instead of creating it again
     ```powershell
-    copy terraform\cloudflare	erraform.tfvars tofu\cloudflare    copy terraform\cloudflare	erraform.tfstate tofu\cloudflare    ```
-    - `copy` duplicates the file; both copies stay gitignored
+    Copy-Item legacy/terraform/cloudflare/terraform.tfvars tofu/cloudflare/
+    Copy-Item legacy/terraform/cloudflare/terraform.tfstate tofu/cloudflare/
+    ```
+    - `Copy-Item` duplicates the file; both copies stay gitignored
 2. **download the provider and compare**
     ```powershell
-    cd tofu\cloudflare
-    tofu init
-    tofu plan
+    tofu -chdir=tofu/cloudflare init
+    tofu -chdir=tofu/cloudflare plan
     ```
     → `No changes. Your infrastructure matches the configuration.`; anything else: stop and check before `apply`
-3. **from now on apply only here**; `terraform/cloudflare` stays as a reference, don't run `apply` there again
+3. **from now on apply only here**; the legacy folder stays as a reference, don't run `apply` there again
 
 ## First run
 

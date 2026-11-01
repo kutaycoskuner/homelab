@@ -6,7 +6,7 @@
 #                     Check outputs before relying on them.
 # -----------------------------------------------------------------------------------------
 # Cloudflare Tunnel routes and their DNS records, as code (see README.md). Run with OpenTofu (tofu);
-# same content as terraform/cloudflare, which is kept as a reference only: apply from one folder, never both.
+# the first, Terraform version is in legacy/terraform/cloudflare (reference only, never applied there).
 # Takes over an existing tunnel's routes: every route that should exist must be in var.routes,
 # because apply replaces the whole route list (the dashboard's published application routes).
 
