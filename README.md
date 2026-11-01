@@ -29,6 +29,26 @@
 
 ------------------------------------------------------------------------------------------
 
+## Services
+
+What runs on the server; "reached" says who can open it: anyone through the Cloudflare Tunnel, only your own devices (home network, Tailscale), or nobody, for services that only send things out.
+
+| Service | What it does | Reached |
+|---|---|---|
+| [Portainer](stacks/portainer/README.md) | Docker web UI; deploys the stacks from git | private (LAN, Tailscale) |
+| [cloudflared](stacks/cloudflared/README.md) | Cloudflare Tunnel: public subdomains without open ports | outbound only |
+| [Tailscale](stacks/tailscale/README.md) | private access from your own devices | private |
+| [AdGuard](docs/stack-adguard.md) | network-wide DNS with ad and tracker blocking | home network |
+| [PostgreSQL + pgAdmin](docs/stack-postgres.md) | shared database for own apps | private |
+| [Umami](docs/stack-umami.md) | website analytics | public (tunnel) |
+| [Media server](docs/stack-media-server.md) | files from a folder as web addresses | public (tunnel) |
+| [Monitoring](docs/monitoring.md) | checks the sites, alerts to Discord | private |
+| [Backup](docs/backup.md) | nightly encrypted backup to S3 | outbound only |
+| [hello](stacks/hello/README.md) | one-page test site for a deploy | public (tunnel) |
+| [temp_control](scripts/temp_control/README.md) | CPU temperature guard, shutdown when too hot | — |
+
+------------------------------------------------------------------------------------------
+
 ## How the owner runs it
 
 This repo is kept person-agnostic on purpose, so anyone can use it as is. The owner's own server runs it together with a **private companion repo**:
