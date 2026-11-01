@@ -12,6 +12,12 @@
     <img alt="Secrets" src="https://github.com/kutaycoskuner/homelab/actions/workflows/secrets.yml/badge.svg" />
 </p>
 
+<p align="center">
+    <img alt="Architecture: from the PC, OpenTofu sets up Portainer, Cloudflare and an AWS S3 bucket; Portainer deploys the stacks on the Raspberry Pi from the GitHub repos; visitors reach them through Cloudflare's tunnel and cloudflared, own devices through Tailscale; the backup sends encrypted copies to S3 every night, monitoring and backup failures go to Discord" src="display/20261101-architecture_v1.svg" />
+    <br>
+    <sub><i>How the parts fit together; dashed links are set up once by OpenTofu. Drawn with <a href="https://kutaycoskuner.github.io/imge/">imge</a>, source: <a href="graphs/20261101-architecture_v1.json">graphs/20261101-architecture_v1.json</a></i></sub>
+</p>
+
 ------------------------------------------------------------------------------------------
 
 ## What this repo does
@@ -45,6 +51,8 @@ homelab/
 ├── README.md              this file
 ├── main.py                creates and checks your local .env files from the examples
 ├── docs/                  setup guides and write-ups, see docs/README.md
+├── display/               images for the README (SVG, PNG, JPG), e.g. the architecture graph
+├── graphs/                imge graph sources (JSON) the images in display/ are exported from
 ├── stacks/<service>/      docker-compose.yml + .env.example + README per service
 │   ├── portainer/         Docker web UI
 │   ├── adguard/           DNS with ad and tracker blocking for the whole network
