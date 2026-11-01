@@ -2,18 +2,22 @@
 # -----------------------------------------------------------------------------------------
 #   author          : Kutay Coskuner
 #   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-#   last update     : 2026-10-28
+#   last update     : 2026-11-01
 #   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 #                     Check outputs before relying on them.
 # -----------------------------------------------------------------------------------------
 # server_base.sh -- installs, updates and checks the server's base software: Docker (engine
-# and Compose plugin) and Portainer (from stacks/portainer/docker-compose.yml).
+# and Compose plugin) and Portainer (from stacks/portainer/docker-compose.yml); sets the
+# server's own DNS servers to fixed public ones (--dns).
 #
 # Exists because everything else runs on these two, and neither can be managed from inside:
 # Portainer can't update itself (it would stop its own container), tofu/portainer only
 # manages the stacks inside Portainer, and Docker comes from the system's packages.
+# --dns exists because a server that asks its own AdGuard for names can't download images
+# while AdGuard is redeploying (e.g. when several stacks are recreated at once).
 #
-# Requires: Debian-based Linux (Raspberry Pi OS, Debian, Ubuntu) with sudo; curl; network.
+# Requires: Debian-based Linux (Raspberry Pi OS, Debian, Ubuntu) with sudo; curl; network;
+# for --dns, NetworkManager (nmcli), the default on Raspberry Pi OS since Bookworm.
 #
 # Run: bash scripts/server_base/server_base.sh --help
 #
@@ -31,6 +35,9 @@ VOLUME="portainer_data"
 STATUS_URL="http://localhost:9000/api/system/status"
 DOCKER_PACKAGES=(docker-ce docker-ce-cli containerd.io docker-compose-plugin docker-buildx-plugin)
 ME="$(id -un)"   # the current user; $ME isn't set in every shell
+# the server's own DNS servers for --dns (Cloudflare, Google); the same pair the AdGuard stack uses
+DNS_V4="1.1.1.1 8.8.8.8"
+DNS_V6="2606:4700:4700::1111 2001:4860:4860::8888"
 
 # -----------------------------------------------------------------------------------------
 #   helpers
@@ -46,15 +53,18 @@ commands:
                  from stacks/portainer; offers to replace an old docker run Portainer container
   --update       update the Docker packages through apt, then pull Portainer's image and restart
                  it only if the image changed
+  --dns          set the server's own DNS servers to $DNS_V4 / $DNS_V6
+                 instead of the ones the router hands out (e.g. AdGuard on this server)
 
 options:
-  --dry-run      with --install or --update: show what would happen, change nothing
+  --dry-run      with --install, --update or --dns: show what would happen, change nothing
 
 examples:
   bash scripts/server_base/server_base.sh --status
   bash scripts/server_base/server_base.sh --install --dry-run
   bash scripts/server_base/server_base.sh --install
   git pull && bash scripts/server_base/server_base.sh --update
+  bash scripts/server_base/server_base.sh --dns --dry-run
 
 details: scripts/server_base/README.md
 EOF
@@ -246,6 +256,67 @@ portainer_update() {
 }
 
 # -----------------------------------------------------------------------------------------
+#   dns
+# -----------------------------------------------------------------------------------------
+
+dns_connection() {
+    # the NetworkManager connection of the default route's device; empty when there is none
+    local device
+    device="$(ip route show default 2>/dev/null | awk '{ for (i = 1; i < NF; i++) if ($i == "dev") { print $(i + 1); exit } }' || true)"
+    [[ -n "$device" ]] || return 0
+    nmcli -g GENERAL.CONNECTION device show "$device" 2>/dev/null || true
+}
+
+dns_status() {
+    local servers con
+    servers="$(sed -n 's/^nameserver[[:space:]]*//p' /etc/resolv.conf 2>/dev/null | tr '\n' ' ' || true)"
+    say "DNS servers         : ${servers:-none found in /etc/resolv.conf}"
+    if ! command -v nmcli >/dev/null 2>&1; then
+        say "  set by            : not NetworkManager (no nmcli); --dns can't change it"
+        return
+    fi
+    con="$(dns_connection)"
+    if [[ -z "$con" ]]; then
+        say "  set by            : unknown (no default route)"
+    elif [[ "$(nmcli -g ipv4.ignore-auto-dns connection show "$con" 2>/dev/null)" == "yes" ]]; then
+        say "  set by            : fixed in connection '$con' (--dns)"
+    else
+        say "  set by            : the router, through connection '$con' (--dns would fix them)"
+    fi
+}
+
+dns_set() {
+    local dry_run="$1" con device
+    if ! command -v nmcli >/dev/null 2>&1; then
+        say "NetworkManager (nmcli) not found: set the DNS servers by hand, see docs/stack-adguard.md."
+        exit 1
+    fi
+    con="$(dns_connection)"
+    if [[ -z "$con" ]]; then say "No active network connection with a default route found."; exit 1; fi
+    device="$(nmcli -g GENERAL.DEVICES connection show "$con" 2>/dev/null || true)"
+    dns_status
+    say "Connection '$con' ($device) would use $DNS_V4 and $DNS_V6, ignoring the DNS servers the router hands out."
+    say "The server itself is then no longer filtered by AdGuard; devices on the network still are."
+    if [[ "$dry_run" == "yes" ]]; then
+        say "dry run: would run: sudo nmcli connection modify '$con' ipv4.dns '$DNS_V4' ipv4.ignore-auto-dns yes ipv6.dns '$DNS_V6' ipv6.ignore-auto-dns yes"
+        say "dry run: would run: sudo nmcli device reapply $device"
+        return
+    fi
+    ask "Set these DNS servers now (needs sudo; the network connection stays up)?" || { say "DNS unchanged."; return; }
+    sudo nmcli connection modify "$con" ipv4.dns "$DNS_V4" ipv4.ignore-auto-dns yes ipv6.dns "$DNS_V6" ipv6.ignore-auto-dns yes
+    sudo nmcli device reapply "$device"
+    sleep 2
+    dns_status
+    if getent hosts registry-1.docker.io >/dev/null; then
+        say "Check: registry-1.docker.io resolves."
+    else
+        say "Check FAILED: registry-1.docker.io doesn't resolve. Undo with:"
+        say "  sudo nmcli connection modify '$con' ipv4.dns '' ipv4.ignore-auto-dns no ipv6.dns '' ipv6.ignore-auto-dns no && sudo nmcli device reapply $device"
+        exit 1
+    fi
+}
+
+# -----------------------------------------------------------------------------------------
 #   main
 # -----------------------------------------------------------------------------------------
 
@@ -254,7 +325,7 @@ main() {
     local command="" dry_run="no" arg
     for arg in "$@"; do
         case "$arg" in
-            --status|--install|--update)
+            --status|--install|--update|--dns)
                 if [[ -n "$command" ]]; then say "Only one command at a time: $command or $arg."; exit 2; fi
                 command="$arg" ;;
             --dry-run) dry_run="yes" ;;
@@ -273,11 +344,14 @@ main() {
         exit 0
     fi
 
-    # 3. Run it: Docker first, Portainer on top of it
+    # 3. Run it: Docker first, Portainer on top of it; DNS on its own
     case "$command" in
         --status)
             docker_status
-            portainer_status ;;
+            portainer_status
+            dns_status ;;
+        --dns)
+            dns_set "$dry_run" ;;
         --install)
             docker_install "$dry_run"
             if [[ "$dry_run" == "no" ]]; then need_docker_access; fi

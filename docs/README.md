@@ -94,7 +94,7 @@ Index of the docs for this repo. Start with the repo's [README](../README.md) fo
         - [When something doesn't work](backup.md#when-something-doesnt-work)
     - idle: [Uptime Kuma](stack-uptime-kuma.md), replaced by Monitoring (configured in its web UI, not as code)
 - Scripts (each script's README is its doc)
-    - [server_base](../scripts/server_base/README.md): installs and updates Docker and Portainer
+    - [server_base](../scripts/server_base/README.md): installs and updates Docker and Portainer; the server's own DNS servers
     - [copy_tfvars_values](../scripts/copy_tfvars_values/README.md): copies OpenTofu values between .tfvars files without showing them
     - [temp_control](../scripts/temp_control/README.md): CPU temperature report and shutdown guard
 - Integrations
