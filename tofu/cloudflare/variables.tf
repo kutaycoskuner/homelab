@@ -1,7 +1,7 @@
 # -----------------------------------------------------------------------------------------
 #   author          : Kutay Coskuner
 #   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-#   last update     : 2026-10-19
+#   last update     : 2026-11-01
 #   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 #                     Check outputs before relying on them.
 # -----------------------------------------------------------------------------------------
@@ -39,10 +39,11 @@ variable "server_ip" {
 }
 
 variable "routes" {
-  description = "Every published route: subdomain -> port on the server. Routes missing here are removed on apply."
+  description = "Every published route: subdomain -> port on the server; path (optional, a regex) limits the route to matching paths, other paths get 404. Routes missing here are removed on apply."
   type = list(object({
     subdomain = string
     port      = number
+    path      = optional(string)
   }))
 
   validation {

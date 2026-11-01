@@ -36,4 +36,6 @@ routes = [
   { subdomain = "media", port = 8090 },     # stacks/media-server
   { subdomain = "analytics", port = 3001 }, # stacks/umami
   { subdomain = "hello", port = 8088 },     # stacks/hello
+  # only Portainer's webhooks, for app CI redeploys (tofu/portainer webhook = true); the rest of Portainer stays private
+  # { subdomain = "deploy", port = 9000, path = "^/api/stacks/webhooks/" },
 ]
