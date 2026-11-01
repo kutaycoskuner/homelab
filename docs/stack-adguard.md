@@ -14,13 +14,13 @@
 | Placeholder | Meaning | Example |
 |---|---|---|
 | `<server-ip>` | the server's fixed LAN address | `192.168.x.x` |
-| `<data-dir>` | AdGuard's data folder on the server | `/home/<user>/docker/adguard` |
+| `<data-dir>` | AdGuard's data folder on the server | `/srv/adguard` |
 
 ## Set it up
 
 1. **port 53 must be free**: `sudo lsof -i :53` prints nothing
     - something listed: an old Pi-hole or AdGuard on the host, remove it as in [First setup, before Docker](legacy/first-setup-without-docker.md) step 8
-2. **deploy** [stacks/adguard](../stacks/adguard/README.md) with `ADGUARD_DATA_DIR` set to `<data-dir>`
+2. **deploy** [stacks/adguard](../stacks/adguard/README.md) with `ADGUARD_DATA_DIR` set to `<data-dir>`; `ADGUARD_HTTP_PORT` / `ADGUARD_HTTPS_PORT` for the web UI, 80 / 443 unless another web server already uses them (e.g. 82 / 444)
 3. **first-time setup**: open `http://<server-ip>:3000`, keep the suggested ports, create the admin user
     - afterwards the web UI is on `http://<server-ip>`
 4. **router**
@@ -63,5 +63,6 @@ The AdGuard stack itself already sets `dns: 1.1.1.1, 8.8.8.8` for the same reaso
 Tailscale can push its own DNS to the server, which would replace the setup above. Log the server in with `--accept-dns=false` (see [Tailscale](integrations/tailscale.md)).
 
 ## Changes
+- 2026-11-01 — web UI ports as variables; data folder example /srv/adguard
 - 2026-10-19 — renamed from `04-dns-adguard.md`: optional stack, not a core setup step
 - 2026-10-19 — first version, rewritten from the private notes: what and why, setup, router, block lists, the server's own DNS fix, tests, Tailscale

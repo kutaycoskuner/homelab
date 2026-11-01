@@ -1,9 +1,9 @@
 # Checks every folder under terraform/: formatting and validity. Needs no account access (see docs/ci.md).
+# Turned off for now: runs only when started by hand (Actions > terraform > Run workflow).
+# To turn it back on, add push: and pull_request: under on:.
 name: terraform
 
 on:
-  push:
-  pull_request:
   workflow_dispatch:
 
 jobs:

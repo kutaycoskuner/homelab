@@ -12,8 +12,9 @@ GitHub Actions checks every push and pull request. Workflows are in [.github/wor
 - **secrets** ([secrets.yml](../.github/workflows/secrets.yml))
     - [gitleaks](https://github.com/gitleaks/gitleaks) scans the files and the full git history for keys and tokens
     - a check for real Discord webhook URLs, which gitleaks has no rule for
-- **terraform** ([terraform.yml](../.github/workflows/terraform.yml)), for every folder under `terraform/`
+- **terraform** ([terraform.yml](../.github/workflows/terraform.yml)), for every folder under `terraform/`: **turned off**, runs only when started by hand (Actions → terraform → Run workflow)
     - `terraform fmt -check` (formatting) and `terraform validate` (valid configuration)
+    - finds nothing to check since the Terraform folder moved to `legacy/`; a check for the `tofu/` folders would replace it
     - no account access: it never plans or applies
 
 ## Per-stack options (`x-ci`)
@@ -32,5 +33,7 @@ x-ci:
 - placeholder values only: a stack that works with them in CI can still fail with wrong real values
 
 ## Changes
+- 2026-11-01 — terraform workflow has nothing left to check (terraform/ moved to legacy/)
+- 2026-10-28 — terraform workflow turned off (manual start only)
 - 2026-10-19 — added the terraform workflow
 - 2026-10-19 — first version: stacks (validate, smoke test, arm64 once public), secrets (gitleaks, Discord webhooks), `x-ci` options

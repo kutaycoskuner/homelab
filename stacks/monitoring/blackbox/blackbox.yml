@@ -1,0 +1,9 @@
+# How blackbox checks a URL. Prometheus names the module per job (prometheus.yml: params.module).
+modules:
+  # the URL answers with a 2xx status within 10 s; redirects are followed (e.g. http -> https)
+  http_2xx:
+    prober: http
+    timeout: 10s
+    http:
+      preferred_ip_protocol: ip4
+      follow_redirects: true

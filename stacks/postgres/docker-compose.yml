@@ -31,12 +31,14 @@ services:
     networks:
       - db_network
 
+# fixed names (from .env.example), so a redeploy finds the same data, and app stacks (umami, backup, ...)
+# can join the network as an external one; an existing install keeps its own names here
 volumes:
   postgres_data:
-    name: ${POSTGRES_VOLUME_NAME}   # fixed name, so a redeploy under another stack name finds the same data
+    name: ${POSTGRES_VOLUME_NAME}
   pgadmin_data:
-    name: pgadmin_data
+    name: ${PGADMIN_VOLUME_NAME}
 
 networks:
   db_network:
-    name: db_network   # fixed name, so app stacks (umami, ...) can join it as an external network
+    name: ${POSTGRES_NETWORK}

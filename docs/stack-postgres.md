@@ -26,6 +26,21 @@
     - connection → host: `postgres-core` (the container name; pgAdmin reaches it inside `db_network`), port `5432`
     - username / password: `POSTGRES_USER` / `POSTGRES_PASSWORD`, tick **Save password**
 
+## Take over an existing postgres stack
+
+A postgres that was started some other way (e.g. pasted into Portainer) can be redeployed from this repo without losing data, if the new stack uses **the same names**:
+
+1. read them from the running containers, on the server:
+    ```bash
+    docker inspect postgres-core --format '{{range .Mounts}}{{.Name}} -> {{.Destination}} {{end}}| {{range $k, $v := .NetworkSettings.Networks}}{{$k}}{{end}}'
+    docker inspect pgadmin-core --format '{{range .Mounts}}{{.Name}} -> {{.Destination}}{{end}}'
+    ```
+2. set `POSTGRES_VOLUME_NAME`, `POSTGRES_NETWORK` and `PGADMIN_VOLUME_NAME` to exactly those names; keep the **same stack name** in Portainer, so Docker treats it as the same project
+3. check `PGDATA` matches (`docker inspect postgres-core` shows it): a different data path starts an empty database next to the real one
+4. remove the old stack, deploy the new one right after; a message that the network couldn't be removed (other apps are connected) is harmless: it has to stay
+
+`POSTGRES_USER` / `POSTGRES_PASSWORD` only matter on the very first start; for an existing database they're ignored, so set the current admin login there to avoid confusion.
+
 ## One database and user per app
 
 In pgAdmin (**Query Tool** on the server) or with `psql`:
@@ -35,7 +50,8 @@ CREATE USER <app>_user WITH PASSWORD '<app-password>';
 CREATE DATABASE <app>db OWNER <app>_user;
 ```
 
-- the app's stack then connects to host `postgres-core`, database `<app>db`, user `<app>_user`, and joins the external network `db_network`
+- the app's stack then connects to host `postgres-core`, database `<app>db`, user `<app>_user`, and joins the external network (`POSTGRES_NETWORK`, `db_network` by default)
+- as code instead: [tofu/postgres](../tofu/postgres/README.md) creates such users with generated passwords
 - the password goes into that app's `.env` / Portainer variables, never into its compose file
 
 ## psql basics
@@ -59,4 +75,5 @@ docker exec -it postgres-core psql -U <user> -d <db>    # open a SQL prompt
 - `POSTGRES_USER` / `POSTGRES_PASSWORD` only apply to an empty data volume; change a password later with `ALTER USER <user> WITH PASSWORD '...';`
 
 ## Changes
+- 2026-11-01 — network and pgAdmin volume names as variables; taking over an existing postgres stack without losing data
 - 2026-10-19 — first version, rewritten from the private notes: what and why, setup, pgAdmin server registration via `db_network`, per-app database and user, psql basics, keeping it private

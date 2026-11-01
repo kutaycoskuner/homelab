@@ -1,0 +1,13 @@
+# Where alerts go and how often. See docs/monitoring.md.
+route:
+  receiver: discord
+  group_by: [alertname, instance]   # one message per alert and site
+  group_wait: 30s                   # wait briefly, so alerts that start together go in one message
+  group_interval: 5m                # new alerts for an existing group: at most every 5 minutes
+  repeat_interval: 12h              # still firing: remind every 12 hours
+
+receivers:
+  - name: discord
+    discord_configs:
+      - webhook_url_file: /tmp/discord-webhook-url   # written by start.sh from DISCORD_WEBHOOK_URL
+        send_resolved: true                         # also post when it's fixed

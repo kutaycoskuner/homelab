@@ -1,0 +1,48 @@
+# monitoring: checks that the sites answer and posts to Discord when one fails; everything is configured
+# as code in this folder. blackbox checks, Prometheus collects and evaluates the alert rules,
+# Alertmanager sends the alerts. The config files are copied into images built on the server, because
+# Portainer CE can't mount files from a Git stack. Variables: see .env.example. See docs/monitoring.md.
+services:
+  blackbox:
+    build: ./blackbox
+    image: homelab-monitoring-blackbox
+    pull_policy: build   # built on the server from ./blackbox, never downloaded
+    container_name: monitoring-blackbox
+    restart: unless-stopped
+    # no port on the server: only Prometheus asks it, inside this stack's network
+
+  prometheus:
+    build: ./prometheus
+    image: homelab-monitoring-prometheus
+    pull_policy: build
+    container_name: monitoring-prometheus
+    restart: unless-stopped
+    environment:
+      PROBE_TARGETS: ${PROBE_TARGETS}   # the URLs to check, comma-separated
+    ports:
+      - "9090:9090"   # Prometheus' page: current checks and alerts (read-only), through Tailscale
+    volumes:
+      - prometheus_data:/prometheus   # 15 days of results
+    depends_on:
+      - blackbox
+      - alertmanager
+
+  alertmanager:
+    build: ./alertmanager
+    image: homelab-monitoring-alertmanager
+    pull_policy: build
+    container_name: monitoring-alertmanager
+    restart: unless-stopped
+    environment:
+      DISCORD_WEBHOOK_URL: ${DISCORD_WEBHOOK_URL}   # secret: anyone with it can post to the channel
+    ports:
+      - "9093:9093"   # Alertmanager's page: alerts being sent (read-only), through Tailscale
+    volumes:
+      - alertmanager_data:/alertmanager   # remembers what was already sent, across restarts
+
+volumes:
+  prometheus_data:
+  alertmanager_data:
+
+x-ci:   # CI options, see docs/ci.md
+  url: http://localhost:9090/-/ready

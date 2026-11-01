@@ -1,9 +1,11 @@
-# terraform/cloudflare
+# legacy/terraform/cloudflare
 
-The Cloudflare Tunnel's routes and DNS records as code: add a line to `routes`, run `terraform apply`, and `https://<subdomain>.<domain>` points at that port on the server. Background on Terraform: [Terraform](../../docs/terraform.md).
+**Legacy, kept for reference:** replaced by [tofu/cloudflare](../../../tofu/cloudflare/README.md) (OpenTofu, same resources). Don't `apply` here. Paths below still show its old place, `terraform/cloudflare`.
+
+The Cloudflare Tunnel's routes and DNS records as code: add a line to `routes`, run `terraform apply`, and `https://<subdomain>.<domain>` points at that port on the server. Background on Terraform: [Terraform](../../../docs/terraform.md).
 
 - manages: the tunnel's published routes and one DNS record per route
-- doesn't manage: the tunnel itself (created in the dashboard) and the `cloudflared` container ([stacks/cloudflared](../../stacks/cloudflared/README.md))
+- doesn't manage: the tunnel itself (created in the dashboard) and the `cloudflared` container ([stacks/cloudflared](../../../stacks/cloudflared/README.md))
 - secrets: API token and IDs in `terraform.tfvars` (gitignored), see [terraform.tfvars.example](terraform.tfvars.example)
 
 ## Files

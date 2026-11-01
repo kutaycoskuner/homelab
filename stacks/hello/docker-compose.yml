@@ -3,6 +3,7 @@ services:
   hello:
     build: .
     image: homelab-hello
+    pull_policy: build   # built on the server, never downloaded: the name exists on no registry
     container_name: hello
     restart: unless-stopped
     ports:

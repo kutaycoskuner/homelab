@@ -1,0 +1,145 @@
+{
+    "metadata": { "format": "imge-graph", "version": 7, "direction": "left-to-right" },
+    "data": {
+        "nodes": [
+            {
+                "id": "n1",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": { "x": 0, "y": 320 },
+                "ports": [{ "id": "o1", "kind": "out", "type": "basic", "label": "Output" }],
+                "content": { "name": "PC: OpenTofu", "color": null, "shape": "square" }
+            },
+            {
+                "id": "n2",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": { "x": 0, "y": 160 },
+                "ports": [{ "id": "o1", "kind": "out", "type": "basic", "label": "Output" }],
+                "content": { "name": "GitHub: homelab repos", "color": null, "shape": "square" }
+            },
+            {
+                "id": "n3",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": { "x": 0, "y": 0 },
+                "ports": [{ "id": "o1", "kind": "out", "type": "basic", "label": "Output" }],
+                "content": { "name": "Internet visitors", "color": null, "shape": "square" }
+            },
+            {
+                "id": "n4",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": { "x": 0, "y": -160 },
+                "ports": [{ "id": "o1", "kind": "out", "type": "basic", "label": "Output" }],
+                "content": { "name": "Own devices", "color": null, "shape": "square" }
+            },
+            {
+                "id": "n5",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": { "x": 360, "y": 0 },
+                "ports": [
+                    { "id": "i1", "kind": "in", "type": "basic", "label": "Input" },
+                    { "id": "o1", "kind": "out", "type": "basic", "label": "Output" }
+                ],
+                "content": { "name": "Cloudflare: tunnel, DNS", "color": "#f38020", "shape": "square" }
+            },
+            {
+                "id": "n6",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": { "x": 760, "y": 320 },
+                "ports": [
+                    { "id": "i1", "kind": "in", "type": "basic", "label": "Input" },
+                    { "id": "o1", "kind": "out", "type": "basic", "label": "Output" }
+                ],
+                "content": { "name": "Portainer", "color": null, "shape": "square" }
+            },
+            {
+                "id": "n7",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": { "x": 760, "y": 40 },
+                "ports": [
+                    { "id": "i1", "kind": "in", "type": "basic", "label": "Input" },
+                    { "id": "o1", "kind": "out", "type": "basic", "label": "Output" }
+                ],
+                "content": { "name": "cloudflared", "color": null, "shape": "square" }
+            },
+            {
+                "id": "n8",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": { "x": 760, "y": -160 },
+                "ports": [
+                    { "id": "i1", "kind": "in", "type": "basic", "label": "Input" },
+                    { "id": "o1", "kind": "out", "type": "basic", "label": "Output" }
+                ],
+                "content": { "name": "Tailscale", "color": null, "shape": "square" }
+            },
+            {
+                "id": "n9",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": { "x": 1080, "y": 120 },
+                "ports": [
+                    { "id": "i1", "kind": "in", "type": "basic", "label": "Input" },
+                    { "id": "o1", "kind": "out", "type": "basic", "label": "Output" }
+                ],
+                "content": { "name": "Stacks: apps, postgres, AdGuard, monitoring", "color": null, "shape": "square" }
+            },
+            {
+                "id": "n10",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": { "x": 1080, "y": -120 },
+                "ports": [
+                    { "id": "i1", "kind": "in", "type": "basic", "label": "Input" },
+                    { "id": "o1", "kind": "out", "type": "basic", "label": "Output" }
+                ],
+                "content": { "name": "backup (restic)", "color": null, "shape": "square" }
+            },
+            {
+                "id": "n11",
+                "type": "group",
+                "typeVersion": 3,
+                "position": { "x": 700, "y": 400 },
+                "ports": [],
+                "content": { "name": "Raspberry Pi", "color": "#2a9fd6", "children": ["n6", "n7", "n8", "n9", "n10"], "shape": "square" }
+            },
+            {
+                "id": "n12",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": { "x": 1500, "y": 200 },
+                "ports": [{ "id": "i1", "kind": "in", "type": "basic", "label": "Input" }],
+                "content": { "name": "AWS S3: backups", "color": "#ff9900", "shape": "square" }
+            },
+            {
+                "id": "n13",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": { "x": 1500, "y": -80 },
+                "ports": [{ "id": "i1", "kind": "in", "type": "basic", "label": "Input" }],
+                "content": { "name": "Discord: alerts", "color": "#5865f2", "shape": "square" }
+            }
+        ],
+        "links": [
+            { "id": "l1", "type": "basic", "name": "tofu apply", "shape": "spline", "arrow": "forward", "line": "solid", "mark": "arrow", "route": "above", "source": { "node": "n1", "port": "o1" }, "target": { "node": "n6", "port": "i1" } },
+            { "id": "l2", "type": "basic", "name": "routes", "shape": "spline", "arrow": "forward", "line": "dashed", "mark": "arrow", "route": "above", "source": { "node": "n1", "port": "o1" }, "target": { "node": "n5", "port": "i1" } },
+            { "id": "l3", "type": "basic", "name": "bucket", "shape": "spline", "arrow": "forward", "line": "dashed", "mark": "arrow", "route": "above", "source": { "node": "n1", "port": "o1" }, "target": { "node": "n12", "port": "i1" } },
+            { "id": "l4", "type": "basic", "name": "compose files", "shape": "spline", "arrow": "forward", "line": "solid", "mark": "arrow", "route": "above", "source": { "node": "n2", "port": "o1" }, "target": { "node": "n6", "port": "i1" } },
+            { "id": "l5", "type": "basic", "name": "https", "shape": "spline", "arrow": "forward", "line": "solid", "mark": "arrow", "route": "above", "source": { "node": "n3", "port": "o1" }, "target": { "node": "n5", "port": "i1" } },
+            { "id": "l6", "type": "basic", "name": "tunnel", "shape": "spline", "arrow": "forward", "line": "solid", "mark": "arrow", "route": "above", "source": { "node": "n5", "port": "o1" }, "target": { "node": "n7", "port": "i1" } },
+            { "id": "l7", "type": "basic", "name": "private", "shape": "spline", "arrow": "forward", "line": "solid", "mark": "arrow", "route": "above", "source": { "node": "n4", "port": "o1" }, "target": { "node": "n8", "port": "i1" } },
+            { "id": "l8", "type": "basic", "name": "deploys", "shape": "spline", "arrow": "forward", "line": "solid", "mark": "arrow", "route": "above", "source": { "node": "n6", "port": "o1" }, "target": { "node": "n9", "port": "i1" } },
+            { "id": "l9", "type": "basic", "shape": "spline", "arrow": "forward", "line": "solid", "mark": "arrow", "route": "above", "source": { "node": "n7", "port": "o1" }, "target": { "node": "n9", "port": "i1" } },
+            { "id": "l10", "type": "basic", "shape": "spline", "arrow": "forward", "line": "solid", "mark": "arrow", "route": "above", "source": { "node": "n8", "port": "o1" }, "target": { "node": "n9", "port": "i1" } },
+            { "id": "l11", "type": "basic", "name": "nightly", "shape": "spline", "arrow": "forward", "line": "solid", "mark": "arrow", "route": "above", "source": { "node": "n9", "port": "o1" }, "target": { "node": "n10", "port": "i1" } },
+            { "id": "l12", "type": "basic", "name": "encrypted", "shape": "spline", "arrow": "forward", "line": "solid", "mark": "arrow", "route": "above", "source": { "node": "n10", "port": "o1" }, "target": { "node": "n12", "port": "i1" } },
+            { "id": "l13", "type": "basic", "name": "alerts", "shape": "spline", "arrow": "forward", "line": "solid", "mark": "arrow", "route": "above", "source": { "node": "n9", "port": "o1" }, "target": { "node": "n13", "port": "i1" } },
+            { "id": "l14", "type": "basic", "name": "on failure", "shape": "spline", "arrow": "forward", "line": "dashed", "mark": "arrow", "route": "above", "source": { "node": "n10", "port": "o1" }, "target": { "node": "n13", "port": "i1" } }
+        ]
+    }
+}

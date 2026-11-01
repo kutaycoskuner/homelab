@@ -5,6 +5,7 @@ services:
   temp_control:
     build: .
     image: script-temp_control
+    pull_policy: build   # built on the server, never downloaded: the name exists on no registry
     container_name: script-temp_control
     restart: unless-stopped
     environment:

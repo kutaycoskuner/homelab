@@ -17,12 +17,20 @@ Index of the docs for this repo. Start with the repo's [README](../README.md) fo
     - [Updates](updates.md): new image versions as pull requests, deployed by Portainer after merge
         - [Exceptions](updates.md#exceptions)
         - [Set it up](updates.md#set-it-up)
+        - [Routine](updates.md#routine-eg-once-a-week)
         - [Handle an update pull request](updates.md#handle-an-update-pull-request)
-    - [Terraform](terraform.md): outside accounts (Cloudflare, ...) as code; runs on your PC
+    - [Terraform and OpenTofu](terraform.md): outside accounts and Portainer stacks as code; runs on your PC
+        - [Which folder](terraform.md#which-folder)
         - [Where it runs: your PC](terraform.md#where-it-runs-your-pc)
         - [Install](terraform.md#install)
         - [Secrets and state](terraform.md#secrets-and-state)
 - Setup guides (core, in order)
+    - [00 · From zero to a running server](00-from-zero.md): the whole setup in order, linking the guides below
+        - [A. Accounts and tokens](00-from-zero.md#a-accounts-and-tokens)
+        - [B. The server](00-from-zero.md#b-the-server)
+        - [C. Stacks and routes as code](00-from-zero.md#c-stacks-and-routes-as-code)
+        - [D. Stacks not managed as code yet](00-from-zero.md#d-stacks-not-managed-as-code-yet)
+        - [E. Updates](00-from-zero.md#e-updates)
     - [01 · Headless server setup](01-headless-server-setup.md): OS install and network access without a screen, Raspberry Pi as the example
         - [Placeholders](01-headless-server-setup.md#placeholders-used-on-this-page)
         - [Requirements](01-headless-server-setup.md#requirements)
@@ -70,9 +78,24 @@ Index of the docs for this repo. Start with the repo's [README](../README.md) fo
         - [Set it up](stack-media-server.md#set-it-up)
         - [Add files](stack-media-server.md#add-files)
         - [Make it public](stack-media-server.md#make-it-public)
-- Personal (the owner's own apps, not for general use)
-    - [Personal stacks](personal-stacks.md): cauldron, karel, mima discord bot, and what each depends on
+    - [Monitoring](monitoring.md): checks that the sites answer, alerts to Discord; configured as code
+        - [The pipeline](monitoring.md#the-pipeline)
+        - [The alerts](monitoring.md#the-alerts)
+        - [Why the config is built into the images](monitoring.md#why-the-config-is-built-into-the-images)
+        - [Set it up](monitoring.md#set-it-up)
+        - [Daily use](monitoring.md#daily-use)
+        - [When something doesn't work](monitoring.md#when-something-doesnt-work)
+    - [Backup](backup.md): nightly, encrypted backup of databases and data to S3, and how to restore
+        - [What is backed up](backup.md#what-is-backed-up)
+        - [The pipeline](backup.md#the-pipeline)
+        - [Set it up](backup.md#set-it-up)
+        - [Daily use](backup.md#daily-use)
+        - [Restore](backup.md#restore)
+        - [When something doesn't work](backup.md#when-something-doesnt-work)
+    - idle: [Uptime Kuma](stack-uptime-kuma.md), replaced by Monitoring (configured in its web UI, not as code)
 - Scripts (each script's README is its doc)
+    - [server_base](../scripts/server_base/README.md): installs and updates Docker and Portainer
+    - [copy_tfvars_values](../scripts/copy_tfvars_values/README.md): copies OpenTofu values between .tfvars files without showing them
     - [temp_control](../scripts/temp_control/README.md): CPU temperature report and shutdown guard
 - Integrations
     - [Discord webhook](integrations/discord-web-hook.md): messages from scripts to a Discord channel
@@ -97,6 +120,11 @@ Index of the docs for this repo. Start with the repo's [README](../README.md) fo
     - Troubleshooting
 
 ## Changes
+- 2026-10-30 — added the Backup page
+- 2026-10-30 — added the Monitoring page; Uptime Kuma idle
+- 2026-10-30 — added the Uptime Kuma stack page
+- 2026-10-28 — added the server_base script
+- 2026-10-28 — Terraform page covers OpenTofu and the tofu/ folders
 - 2026-10-28 — added the Updates page
 - 2026-10-19 — added the Terraform page and an Infrastructure as code section
 - 2026-10-19 — added the Personal stacks page
