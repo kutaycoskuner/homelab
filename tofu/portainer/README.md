@@ -32,7 +32,8 @@ Portainer ──every update_interval──> the repo's branch ──changed?─
 ```
 
 - **webhook instead of polling** (`webhook = true` in `stacks`): Portainer doesn't poll that stack; it redeploys when its webhook URL is called, e.g. by the app's CI right after it pushes a new image
-    - the URL: `tofu output -json webhook_urls`; it's a secret (anyone with it can trigger a redeploy, not change the stack); store it as a CI secret
+    - the URL: `tofu output -json webhook_urls`; it's a secret (anyone with it can trigger a redeploy, not change the stack); store it as a CI secret, e.g. with [tofu/github](../github/README.md)
+    - the apply that turns the webhook on saves the output empty (`""`): Portainer creates the URL during that apply; `tofu apply -refresh-only` reads it and saves it
     - the caller must reach Portainer: from GitHub's servers that means a tunnel route for the webhook path only
 - the GitHub token is **write-only**: sent to Portainer, never stored in the state
 - **re-pull image** (`pull_image`, per stack, default on) downloads every image before a redeploy, so a new version is used; switch it **off** for stacks that build their image on the server (`build: .`, e.g. `hello`, `temp_control`): their image name is on no registry, and the download fails with "pull access denied … may require 'docker login'" (not a token problem); their compose files also set `pull_policy: build`

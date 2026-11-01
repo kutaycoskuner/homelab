@@ -10,6 +10,7 @@ How new versions of the images reach the server: as pull requests you check and 
 - **Portainer automatic updates**: a stack deployed from Git checks the repo regularly and redeploys when its files changed
     - set as code in [tofu/portainer](../tofu/portainer/README.md) (`update_interval`), not in Portainer's interface
     - why: after merging, the server updates itself; no SSH, no clicking "Pull and redeploy"
+    - for an app whose CI pushes a new image under the same tag (e.g. `:latest`), a [Portainer webhook](integrations/portainer-webhook.md) instead: polling sees no changed file there
 
 ```text
 new image version → Renovate pull request → CI checks → you merge into dev → Portainer redeploys the stack
@@ -53,6 +54,7 @@ Nothing changes on the server until you merge: Renovate only proposes.
 Don't want an update: **close** the pull request; Renovate won't propose that version again, only the next one.
 
 ## Changes
+- 2026-11-01 — Portainer webhook as the alternative to polling for apps whose CI pushes `:latest`
 - 2026-10-28 — Portainer's automatic updates set from tofu/portainer instead of the interface
 - 2026-10-28 — setup starts with getting renovate.json onto main; weekly routine, git pull afterwards, closing a pull request to skip a version
 - 2026-10-28 — Python packages listed; local image names skipped

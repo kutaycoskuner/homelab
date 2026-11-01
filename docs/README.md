@@ -114,6 +114,10 @@ Index of the docs for this repo. Start with the repo's [README](../README.md) fo
         - [Create the token](integrations/github-read-token.md#create-the-token)
         - [Use it in Portainer](integrations/github-read-token.md#use-it-in-portainer)
         - [Renew or replace it](integrations/github-read-token.md#renew-or-replace-it)
+    - [Portainer webhook](integrations/portainer-webhook.md): an app's CI redeploys its stack right after pushing a new image
+        - [Set up](integrations/portainer-webhook.md#set-up)
+        - [Test it](integrations/portainer-webhook.md#test-it)
+        - [Replace a leaked webhook, renew the token](integrations/portainer-webhook.md#replace-a-leaked-webhook-renew-the-token)
 - Legacy (how it was done before, not current)
     - [First setup, before Docker](legacy/first-setup-without-docker.md): scripts with tmux, bot with pm2, Pi-hole, AdGuard and Tailscale on the host, and moving away from it
 - Setup guides (planned)
