@@ -3,7 +3,7 @@
 AdGuard Home: the home network's DNS server, blocking ads and trackers for every device. Setup, router settings and tests: [Stack · AdGuard](../../docs/stack-adguard.md).
 
 - image: `adguard/adguardhome:latest`
-- ports: `53` (DNS), `3000` (first-time setup), `80` / `443` (web UI)
+- ports: `53` (DNS), `3000` (first-time setup), `ADGUARD_HTTP_PORT` / `ADGUARD_HTTPS_PORT` (web UI, default `80` / `443`)
 - data: `ADGUARD_DATA_DIR` (see [.env.example](.env.example)), with `conf/` (settings) and `work/` (statistics)
 - secrets: none in files; the admin password is set in the first-time setup and stored in `conf/`
 

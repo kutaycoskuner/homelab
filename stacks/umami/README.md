@@ -5,7 +5,7 @@ Self-hosted website analytics, as a privacy-friendly replacement for Google Anal
 - image: `ghcr.io/umami-software/umami:latest`
 - port: `3001`
 - data: in the postgres stack, database `UMAMI_DB_NAME`
-- needs: [stacks/postgres](../postgres/README.md) running, with umami's database and user, and its `db_network`
+- needs: [stacks/postgres](../postgres/README.md) running, with umami's database and user; umami joins its network (`POSTGRES_NETWORK`, `db_network` by default)
 - secrets: database password and app secret, see [.env.example](.env.example)
 
 ## Start

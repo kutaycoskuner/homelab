@@ -17,7 +17,7 @@ services:
 networks:
   db_network:
     external: true
-    name: db_network   # created by stacks/postgres
+    name: ${POSTGRES_NETWORK}   # the postgres stack's network (POSTGRES_NETWORK there)
 
 x-ci:   # CI options, see docs/ci.md
   smoke: false   # needs the postgres stack's database and network
