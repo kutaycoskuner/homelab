@@ -28,7 +28,7 @@ provider "github" {
 resource "github_actions_secret" "secret" {
   for_each = var.actions_secrets
 
-  repository      = each.value.repository
-  secret_name     = each.value.name
-  plaintext_value = var.secret_values[each.key]
+  repository  = each.value.repository
+  secret_name = each.value.name
+  value       = var.secret_values[each.key] # was plaintext_value, deprecated in provider 6.x
 }
