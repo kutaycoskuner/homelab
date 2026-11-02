@@ -29,7 +29,8 @@ scrape_configs:
       - target_label: __address__
         replacement: blackbox:9115
 
-  # the monitoring stack checks its own parts, so a broken part raises an alert too
+  # the monitoring stack checks its own parts, so a broken part raises an alert too; node-exporter
+  # also delivers the server's numbers and the backup's last successful run
   - job_name: monitoring
     static_configs:
-      - targets: ["localhost:9090", "alertmanager:9093", "blackbox:9115"]
+      - targets: ["localhost:9090", "alertmanager:9093", "blackbox:9115", "node-exporter:9100"]

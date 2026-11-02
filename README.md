@@ -7,7 +7,7 @@
 </p>
 
 <p align="center">
-    <img alt="Version 0.53" src="https://img.shields.io/badge/version-0.53-blue" />
+    <img alt="Version 0.54" src="https://img.shields.io/badge/version-0.54-blue" />
     <img alt="Last Update" src="https://img.shields.io/github/last-commit/kutaycoskuner/homelab" />
     <img alt="Stacks" src="https://github.com/kutaycoskuner/homelab/actions/workflows/stacks.yml/badge.svg" />
     <img alt="Secrets" src="https://github.com/kutaycoskuner/homelab/actions/workflows/secrets.yml/badge.svg" />
@@ -81,7 +81,7 @@ homelab/
 │   ├── umami/             self-hosted website analytics
 │   ├── nextcloud/         your own cloud storage, with its own database
 │   ├── media-server/      files from a folder as web addresses (images for websites)
-│   ├── monitoring/        checks that the sites answer, alerts to Discord; configured as code (blackbox, Prometheus, Alertmanager)
+│   ├── monitoring/        checks that the sites answer, alerts to Discord; the server's numbers; configured as code (blackbox, Prometheus, Alertmanager, node-exporter)
 │   ├── backup/            nightly, encrypted backup of databases and data to S3 (restic), Discord on failure
 │   ├── _idle/             stacks not in use, kept for later (uptime-kuma); not tested or deployed
 │   ├── tailscale/         private access from your own devices

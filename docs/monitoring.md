@@ -7,7 +7,8 @@ How the server notices that a site is down and tells you on Discord, configured 
 - **why**: without it, an outage is noticed only when someone opens the site
 - **why these tools**: blackbox, Prometheus and Alertmanager are the standard open-source monitoring set; each reads its settings from a file, so every check, rule and route is in git, reviewed in pull requests, and comes back the same after a rebuild
 - **limit**: it runs on the same server; if the whole server is down it can't tell you, see [When the server itself is down](#when-the-server-itself-is-down)
-- **later**: node-exporter (CPU, RAM, temperature, disk) and Grafana dashboards, also as files
+- **node-exporter**: collects the server's own numbers (CPU, RAM, temperature, disk) and values other stacks write as small files, e.g. the backup's last successful run ([The server's numbers](#the-servers-numbers-node-exporter))
+- **later**: Grafana dashboards for node-exporter's numbers, also as files
 
 ## Placeholders used on this page
 
@@ -41,6 +42,23 @@ PROBE_TARGETS ──> start.sh ──> target file
 | 4 | Prometheus | stores the results and evaluates the alert rules every 30 s | [prometheus/alert-rules.yml](../stacks/monitoring/prometheus/alert-rules.yml) |
 | 5 | Alertmanager | receives firing alerts, groups them per alert and site, sends them to Discord, reminds every 12 h, posts again when resolved | [alertmanager/alertmanager.yml](../stacks/monitoring/alertmanager/alertmanager.yml) |
 | 6 | `start.sh` (Alertmanager image) | writes `DISCORD_WEBHOOK_URL` into the file Alertmanager reads, readable only inside the container | [alertmanager/start.sh](../stacks/monitoring/alertmanager/start.sh) |
+
+## The server's numbers: node-exporter
+
+```text
+the server's system (/, read-only) ──┐
+                                     ├──> node-exporter ──every 30 s──> Prometheus (job "monitoring")
+volume backup-status: *.prom files ──┘
+        ^
+        └── written by other stacks, e.g. the backup after a successful run
+```
+
+- **what**: Prometheus' official exporter for the machine it runs on: CPU, RAM, temperature, disk, network; the base for later dashboards
+- **textfile folder**: node-exporter also reads every `*.prom` file in the volume `backup-status` and passes its values on, so a stack without its own metrics can still report one number, e.g. `backup_last_success_timestamp_seconds`
+- **the volume**: created by this stack with the fixed name `backup-status`; other stacks mount it as an external volume, so deploy this stack first
+- **health**: node-exporter is in the `monitoring` job, so `MonitoringPartDown` covers it
+- **image**: downloaded (`prom/node-exporter`), not built: it needs no config file of its own, only its start options in `docker-compose.yml`
+- **check**: `…:9090/targets` lists `node-exporter:9100` as **UP**; the query `node_load1` on `…:9090` shows the server's load
 
 ## The alerts
 
@@ -114,6 +132,7 @@ Discord: "Monitor is DOWN: <site>"   ...   "Monitor is UP: <site>"
 - **test**: stop a site's container for 10 minutes (`docker stop <container>`); DOWN arrives on Discord, UP within 5 minutes after `docker start <container>`
 
 ## Changes
+- 2026-11-02 — node-exporter: the server's numbers and the shared volume backup-status
 - 2026-11-02 — outside check set up: UptimeRobot through tofu/uptimerobot
 - 2026-11-02 — when the server itself is down: options for an outside check and a backup-age alert
 - 2026-10-30 — first version: pipeline (blackbox, Prometheus, Alertmanager), alerts, why the config is in the images, setup, daily use, troubleshooting

@@ -40,9 +40,26 @@ services:
     volumes:
       - alertmanager_data:/alertmanager   # remembers what was already sent, across restarts
 
+  # the server's own numbers (CPU, RAM, temperature, disk) and values other stacks write as small
+  # files into backup-status, e.g. the backup's last successful run
+  node-exporter:
+    image: prom/node-exporter:v1.12.1
+    container_name: monitoring-node-exporter
+    restart: unless-stopped
+    pid: host   # sees the server's processes, not only its own
+    command:
+      - --path.rootfs=/host
+      - --collector.textfile.directory=/textfile
+    volumes:
+      - /:/host:ro,rslave              # the server's system, read-only
+      - backup-status:/textfile:ro     # *.prom files written by other stacks
+    # no port on the server: only Prometheus asks it, inside this stack's network
+
 volumes:
   prometheus_data:
   alertmanager_data:
+  backup-status:
+    name: backup-status   # fixed name: the backup stack mounts it as an external volume
 
 x-ci:   # CI options, see docs/ci.md
   url: http://localhost:9090/-/ready
