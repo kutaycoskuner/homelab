@@ -1,7 +1,7 @@
 # -----------------------------------------------------------------------------------------
 #   author          : Kutay Coskuner
 #   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-#   last update     : 2026-10-30
+#   last update     : 2026-11-02
 #   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 #                     Check outputs before relying on them.
 # -----------------------------------------------------------------------------------------
@@ -16,6 +16,11 @@ output "bucket_name" {
 output "region" {
   description = "Region of the bucket"
   value       = var.region
+}
+
+output "state_bucket_name" {
+  description = "The bucket for the tofu states (the backend of every tofu folder)"
+  value       = aws_s3_bucket.state.bucket
 }
 
 output "backup_access_key_id" {

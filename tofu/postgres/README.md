@@ -46,4 +46,4 @@ tofu -chdir=tofu/postgres apply
 
 ## State
 
-The state holds the generated passwords: keep it local and private, like the other tofu folders.
+The state holds the generated passwords: keep it private, like the other tofu folders'. Run on its own, it stays local; the owner's setup keeps it in an S3 bucket ([State in S3](../../docs/terraform.md#state-in-s3)).

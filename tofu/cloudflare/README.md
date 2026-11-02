@@ -125,4 +125,4 @@ A route can be limited to some paths with `path` (a regex), e.g. only Portainer'
 
 ## State
 
-`terraform.tfstate` (and `.backup`) is OpenTofu's record of what it manages. It stays on the machine you run Terraform on and is gitignored: it can contain secrets. Lose it and Terraform no longer knows its resources (import them again as in step 5). Keep a copy somewhere private, e.g. your Nextcloud.
+`terraform.tfstate` (and `.backup`) is OpenTofu's record of what it manages. It stays on the machine you run Terraform on and is gitignored: it can contain secrets. Lose it and Terraform no longer knows its resources (import them again as in step 5). Keep a copy somewhere private, e.g. your Nextcloud, or keep the state in an S3 bucket, as the owner's setup does ([State in S3](../../docs/terraform.md#state-in-s3)).

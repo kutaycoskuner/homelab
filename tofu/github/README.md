@@ -37,4 +37,4 @@ A **fine-grained** token, limited to the repositories in `actions_secrets`, with
 
 ## State
 
-The secret values are stored in the state, because the provider has no write-only field for them. The state stays local and private, like the other tofu folders'.
+The secret values are stored in the state, because the provider has no write-only field for them. Keep the state private, like the other tofu folders'. Run on its own, it stays local; the owner's setup keeps it in an S3 bucket ([State in S3](../../docs/terraform.md#state-in-s3)).
