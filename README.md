@@ -7,7 +7,7 @@
 </p>
 
 <p align="center">
-    <img alt="Version 0.52" src="https://img.shields.io/badge/version-0.52-blue" />
+    <img alt="Version 0.53" src="https://img.shields.io/badge/version-0.53-blue" />
     <img alt="Last Update" src="https://img.shields.io/github/last-commit/kutaycoskuner/homelab" />
     <img alt="Stacks" src="https://github.com/kutaycoskuner/homelab/actions/workflows/stacks.yml/badge.svg" />
     <img alt="Secrets" src="https://github.com/kutaycoskuner/homelab/actions/workflows/secrets.yml/badge.svg" />
@@ -59,7 +59,7 @@ homelab           (this repo, public)   how things are set up: stacks, scripts, 
 homelab-private   (private)             what runs on the owner's server: which stacks, domain, routes, notes on own apps
 ```
 
-- the private repo calls this repo's `tofu/portainer`, `tofu/cloudflare` and `tofu/github` folders as OpenTofu modules and passes its own values; secrets and state stay local and gitignored in both
+- the private repo calls this repo's `tofu/portainer`, `tofu/cloudflare`, `tofu/github` and `tofu/uptimerobot` folders as OpenTofu modules and passes its own values; secrets stay local and gitignored in both, the states are in an S3 bucket ([State in S3](docs/terraform.md#state-in-s3))
 - a fix here reaches the owner's server on the next `tofu apply` there, and nothing personal ever has to be committed here
 - you can do the same with a private repo of your own: [Your own values in a private repo](docs/terraform.md#your-own-values-in-a-private-repo); or skip it and fill in the `.example` files here
 
@@ -87,7 +87,7 @@ homelab/
 │   ├── tailscale/         private access from your own devices
 │   ├── cloudflared/       Cloudflare Tunnel: public subdomains without open ports
 │   └── hello/             one-page test site to check a deploy end to end
-├── tofu/                  OpenTofu, in use: Cloudflare tunnel routes and DNS, Portainer stacks with automatic updates, AWS bucket for backups, PostgreSQL users, GitHub Actions secrets
+├── tofu/                  OpenTofu, in use: Cloudflare tunnel routes and DNS, Portainer stacks with automatic updates, AWS buckets for backups and the tofu states, PostgreSQL users, GitHub Actions secrets, UptimeRobot outside checks
 ├── legacy/                replaced code kept for reference (terraform/cloudflare, superseded by tofu/cloudflare)
 ├── renovate.json          settings for automatic update pull requests
 ├── scripts/               helper scripts

@@ -6,7 +6,7 @@ How the server notices that a site is down and tells you on Discord, configured 
 
 - **why**: without it, an outage is noticed only when someone opens the site
 - **why these tools**: blackbox, Prometheus and Alertmanager are the standard open-source monitoring set; each reads its settings from a file, so every check, rule and route is in git, reviewed in pull requests, and comes back the same after a rebuild
-- **limit**: it runs on the same server; if the whole server is down it can't tell you (an outside heartbeat check covers that, a later step)
+- **limit**: it runs on the same server; if the whole server is down it can't tell you, see [When the server itself is down](#when-the-server-itself-is-down)
 - **later**: node-exporter (CPU, RAM, temperature, disk) and Grafana dashboards, also as files
 
 ## Placeholders used on this page
@@ -85,5 +85,35 @@ Portainer CE deploys a Git stack from its own copy of the repo, and can't mount 
 | an alert fires but nothing reaches Discord | `docker logs monitoring-alertmanager`; a wrong or deleted webhook shows as a failed notify |
 | a rule change doesn't apply | Portainer hasn't redeployed yet, or the build failed: Portainer → the stack's events |
 
+## When the server itself is down
+
+Monitoring that runs on the server goes silent with it: a power cut, a crash, a frozen system or a home internet outage sends no alert. The backup has a similar gap: it posts only when a run fails, so a backup that stops running at all posts nothing. Both need a check that doesn't depend on the server being up. Free options:
+
+| Option | How | Catches | Misses |
+|---|---|---|---|
+| **Heartbeat service** (e.g. Healthchecks.io) | the server sends "I'm alive" every few minutes, the backup one after each run; silence → alert | server or internet down, backup stopped | a broken tunnel, a single site down |
+| **Website checker** (e.g. UptimeRobot) | an outside service opens the public sites every few minutes | server or internet down, tunnel broken, a single site down | backup stopped |
+| **Website checker + backup-age alert** (chosen here; the website checker is set up, the backup-age alert is next) | the website checker as above; the backup records the time of its last success, and a rule here alerts when it's older than about 26 h | everything above: the outside check covers the server being down, the rule covers the backup | nothing of these; the backup alert waits while the server is down, the outside check fires then |
+| **"Backup fresh" URL** | after a backup, the server serves a URL for 24 h; the website checker watches it | backup stopped, server down | needs a web server, a public route and expiry logic; the alert doesn't say which of the two failed |
+
+All four are free; health checks from AWS (~$0.50–1/month) or Cloudflare (paid plan) work too.
+
+### The outside check: UptimeRobot
+
+Set up as code in [tofu/uptimerobot](../tofu/uptimerobot/README.md): every public site is opened from the internet every 5 minutes; a failed check posts to Discord through its own webhook, and again when the site is back.
+
+```text
+UptimeRobot (internet) ──every 5 min──> https://<site>.<domain> ──Cloudflare tunnel──> the server
+        │  no answer, or an error (e.g. 502 when the app is stopped)
+        v
+Discord: "Monitor is DOWN: <site>"   ...   "Monitor is UP: <site>"
+```
+
+- **both run side by side**: this server's monitoring checks every 30 s and says *which* site is down; UptimeRobot is slower but keeps working when the server itself is gone. When the whole server is down, only UptimeRobot's messages arrive, and they arrive for every site at once
+- **which sites**: the public routes of the tunnel, except test pages and routes limited to a path (their front page answers 404 on purpose)
+- **test**: stop a site's container for 10 minutes (`docker stop <container>`); DOWN arrives on Discord, UP within 5 minutes after `docker start <container>`
+
 ## Changes
+- 2026-11-02 — outside check set up: UptimeRobot through tofu/uptimerobot
+- 2026-11-02 — when the server itself is down: options for an outside check and a backup-age alert
 - 2026-10-30 — first version: pipeline (blackbox, Prometheus, Alertmanager), alerts, why the config is in the images, setup, daily use, troubleshooting

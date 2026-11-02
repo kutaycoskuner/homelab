@@ -18,6 +18,7 @@ How outside accounts (Cloudflare, later Tailscale and GitHub) and Portainer's st
 | [tofu/portainer](../tofu/portainer/README.md) | OpenTofu | **in use**: Portainer stacks and their automatic updates |
 | [tofu/aws](../tofu/aws/README.md) | OpenTofu | **in use**: S3 bucket for offsite backups, the server's backup login, a budget alarm |
 | [tofu/postgres](../tofu/postgres/README.md) | OpenTofu | **new**: PostgreSQL users with generated passwords, e.g. a read-only user for backups |
+| [tofu/uptimerobot](../tofu/uptimerobot/README.md) | OpenTofu | **new**: outside check, the public sites opened from the internet every 5 minutes, alerts to Discord |
 | [legacy/terraform/cloudflare](../legacy/terraform/cloudflare/README.md) | Terraform | **legacy**: the first version of `tofu/cloudflare`, kept for reference; don't `apply` there |
 
 Apply each account from **one** folder only: two folders with two state files would overwrite each other's changes.
@@ -178,6 +179,7 @@ terraform {
 - a folder that reads another folder's state needs the passphrase too, so encrypt the read folder and its readers together
 
 ## Changes
+- 2026-11-02 — tofu/uptimerobot: outside check of the public sites
 - 2026-11-02 — state in S3: backend block, moving a local state, optional encryption with a passphrase
 - 2026-11-01 — terraform/cloudflare moved to legacy/
 - 2026-10-30 — tofu/postgres: database users with generated passwords

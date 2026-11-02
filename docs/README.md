@@ -85,6 +85,7 @@ Index of the docs for this repo. Start with the repo's [README](../README.md) fo
         - [Set it up](monitoring.md#set-it-up)
         - [Daily use](monitoring.md#daily-use)
         - [When something doesn't work](monitoring.md#when-something-doesnt-work)
+        - [When the server itself is down](monitoring.md#when-the-server-itself-is-down): the outside check (UptimeRobot) and the options
     - [Backup](backup.md): nightly, encrypted backup of databases and data to S3, and how to restore
         - [What is backed up](backup.md#what-is-backed-up)
         - [The pipeline](backup.md#the-pipeline)
