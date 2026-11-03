@@ -31,6 +31,7 @@ terraform.tfvars ──tofu apply──> Portainer API: create / update the stac
 Portainer ──every update_interval──> the repo's branch ──changed?──> pull and redeploy that stack
 ```
 
+- the three ways a change reaches the server (polling, webhook, by hand with `-replace`) and what was tested: [How a change reaches the server](../../docs/updates.md#how-a-change-reaches-the-server)
 - **webhook instead of polling** (`webhook = true` in `stacks`): Portainer doesn't poll that stack; it redeploys when its webhook URL is called, e.g. by the app's CI right after it pushes a new image
     - the URL: `tofu output -json webhook_urls`; it's a secret (anyone with it can trigger a redeploy, not change the stack); store it as a CI secret, e.g. with [tofu/github](../github/README.md)
     - the apply that turns the webhook on saves the output empty (`""`): Portainer creates the URL during that apply; `tofu apply -refresh-only` reads it and saves it
@@ -98,6 +99,7 @@ Quotes in `tofu import`: single quotes outside, plain double quotes inside (Powe
 
 - add a stack: one line in `stacks`, its variables in `stack_env`, then `tofu plan` and `tofu apply`
 - change a variable: edit `stack_env`, `tofu apply`; Portainer redeploys that stack
+- redeploy a stack now (e.g. polling hasn't picked up a push): `tofu apply '-replace=portainer_stack.stack["<stack>"]'`; deletes and recreates it from the branch, volumes stay
 - new GitHub token: put it in `github_token`, raise `github_token_version` by one, `tofu apply`
 - remove a stack: delete its line, `tofu apply` (removes the stack; volumes stay)
 

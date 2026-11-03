@@ -15,6 +15,7 @@ Index of the docs for this repo. Start with the repo's [README](../README.md) fo
         - [Not covered](ci.md#not-covered)
 - Infrastructure as code
     - [Updates](updates.md): new image versions as pull requests, deployed by Portainer after merge
+        - [How a change reaches the server](updates.md#how-a-change-reaches-the-server): polling, webhook, by hand
         - [Exceptions](updates.md#exceptions)
         - [Set it up](updates.md#set-it-up)
         - [Routine](updates.md#routine-eg-once-a-week)

@@ -77,7 +77,7 @@ The waiting times ("for") keep a single slow or failed answer from sending a mes
 
 Portainer CE deploys a Git stack from its own copy of the repo, and can't mount files from that copy into containers (a Business Edition feature). So each part has a small `Dockerfile` that copies its config files into the official image, and the stack builds these images on the server (`pull_policy: build`), as the `hello` stack does.
 
-- consequence: a changed file reaches the server when Portainer redeploys after the push (within its polling interval), which rebuilds the images
+- consequence: a changed file reaches the server when Portainer redeploys after the push, by polling or by hand with `tofu apply -replace` ([How a change reaches the server](updates.md#how-a-change-reaches-the-server)), which rebuilds the images
 - the personal values (which URLs, which webhook) stay out of the files: they're variables, written into the config by the start scripts at start-up
 
 ## Set it up
@@ -92,7 +92,7 @@ Portainer CE deploys a Git stack from its own copy of the repo, and can't mount 
 ## Daily use
 
 - **add or remove a URL**: change `PROBE_TARGETS` and apply (`tofu apply`); the stack restarts with the new list
-- **change a rule or a route**: edit the file here, commit, push; Portainer rebuilds and redeploys
+- **change a rule or a route**: edit the file here, commit, push; Portainer rebuilds and redeploys (or redeploy by hand, [How a change reaches the server](updates.md#how-a-change-reaches-the-server))
 - **test an alert on purpose**: stop a checked service for 3 minutes (e.g. `docker stop hello` on the server); `SiteDown` arrives on Discord, and "resolved" after `docker start hello`
 - **test the backup alert**: write an old time into the file, `docker exec backup sh -c 'echo backup_last_success_timestamp_seconds 1700000000 > /status/backup.prom'`; `BackupTooOld` arrives within about 11 minutes, "resolved" after a real run (`docker exec backup backup.sh`)
 - **see what's happening**: Prometheus `…:9090/alerts` (rules and their state), Alertmanager `…:9093` (alerts being sent); both read-only

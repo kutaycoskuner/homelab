@@ -1,6 +1,6 @@
 # Updates
 
-How new versions of the images reach the server: as pull requests you check and merge, then Portainer deploys them by itself.
+How new versions of the images reach the server: as pull requests you check and merge, then Portainer deploys them, by itself or by one tofu command ([How a change reaches the server](#how-a-change-reaches-the-server)).
 
 ## What it is and why we use it
 
@@ -15,6 +15,20 @@ How new versions of the images reach the server: as pull requests you check and 
 ```text
 new image version → Renovate pull request → CI checks → you merge into dev → Portainer redeploys the stack
 ```
+
+## How a change reaches the server
+
+A push to `dev` changes nothing on the server until Portainer redeploys the stack. Three ways, all set in [tofu/portainer](../tofu/portainer/README.md):
+
+| Way | Used for | How | Status here (Portainer CE 2.45.3) |
+|---|---|---|---|
+| **polling** | every stack by default | Portainer checks the branch every `update_interval` (`5m`); a new commit → pull and redeploy | worked for homelab stacks in Oct 2026; failed for homelab-private stacks on 2026-11-01 (cause unknown, see below); test again 2026-11-03 |
+| **webhook** | apps whose CI pushes a new image under the same tag (`webhook = true`, e.g. archrium-uo) | the app's CI calls a secret URL after pushing the image; Portainer pulls and redeploys at once ([Portainer webhook](integrations/portainer-webhook.md)) | tested 2026-11-01: works |
+| **by hand, as code** | when neither has run, or right away | `tofu apply '-replace=module.portainer.portainer_stack.stack["<stack>"]'` in the private repo's `tofu/portainer` (in this repo: `'-replace=portainer_stack.stack["<stack>"]'`); deletes and recreates the stack from the branch, volumes stay | always works; the fallback |
+
+- **Community or Business Edition**: Portainer's stack docs list polling and webhook without a Business Edition label, its features page lists them as Business Edition; on this server (CE) the webhook works, so at least that is in CE
+- **check whether polling ran**: Portainer → Stacks → the stack → the Git section shows the commit it deployed; after a push it should show the new commit within `update_interval` plus a few minutes. On the server, `docker inspect <container> --format '{{.Created}}'` shows when the container was last recreated (UTC)
+- **polling on homelab-private stacks**: the private repo needs the GitHub token; tofu sends it write-only, only on create or when `github_token_version` goes up, which may be why Portainer couldn't fetch it
 
 ## Exceptions
 
@@ -48,12 +62,13 @@ Nothing changes on the server until you merge: Renovate only proposes.
     - patch / minor (`2026.10.2 → 2026.10.3`): usually safe
     - major (`31 → 32`): read the release notes linked in the pull request first
 2. wait for CI to be green (the stack is validated and, where possible, started)
-3. merge; within the polling interval Portainer redeploys the stack
+3. merge; within the polling interval Portainer redeploys the stack; if it doesn't, redeploy it by hand ([How a change reaches the server](#how-a-change-reaches-the-server))
 4. check the service once (web UI, logs)
 
 Don't want an update: **close** the pull request; Renovate won't propose that version again, only the next one.
 
 ## Changes
+- 2026-11-03 — how a change reaches the server: polling, webhook, by hand with tofu -replace; what was tested
 - 2026-11-01 — Portainer webhook as the alternative to polling for apps whose CI pushes `:latest`
 - 2026-10-28 — Portainer's automatic updates set from tofu/portainer instead of the interface
 - 2026-10-28 — setup starts with getting renovate.json onto main; weekly routine, git pull afterwards, closing a pull request to skip a version
