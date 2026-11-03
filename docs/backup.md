@@ -36,16 +36,19 @@ crond ──> backup.sh
             3. restic backup /backup the dump + /backup/portainer + /backup/media + /backup/adguard-conf
                                      ──encrypted, only changed parts──> S3 bucket
             4. restic forget --prune keep 7 daily, 4 weekly, 6 monthly; delete the rest
+            5. success time          ──> /status/backup.prom (volume backup-status) ──> monitoring
             any step fails ──> Discord: "Backup failed at step: <step>"
             success ──> silent; the dump file is deleted either way
 ```
 
+- **the success time** (step 5): one line, `backup_last_success_timestamp_seconds <Unix time>`, in the volume `backup-status`; the monitoring stack's node-exporter reads it ([The server's numbers](monitoring.md#the-servers-numbers-node-exporter)), so a backup that stops running at all can raise an alert, not only one that fails
+
 | File | Does |
 |---|---|
-| [docker-compose.yml](../stacks/backup/docker-compose.yml) | the container, its variables, the read-only mounts, `db_network` |
+| [docker-compose.yml](../stacks/backup/docker-compose.yml) | the container, its variables, the read-only mounts, `db_network`, the volume `backup-status` |
 | [Dockerfile](../stacks/backup/Dockerfile) | `alpine` + `restic` + PostgreSQL 17 client + `curl` + `tzdata`, scripts copied in |
 | [start.sh](../stacks/backup/start.sh) | puts `backup.sh` on the schedule and runs crond |
-| [backup.sh](../stacks/backup/backup.sh) | the 4 steps and the failure message |
+| [backup.sh](../stacks/backup/backup.sh) | the 5 steps and the failure message |
 
 ## Set it up
 
@@ -56,9 +59,10 @@ crond ──> backup.sh
     - `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`: from `tofu output` in `tofu/aws`
     - `POSTGRES_USER`, `POSTGRES_PASSWORD`: a user that can read every database; best a read-only one created by [tofu/postgres](../tofu/postgres/README.md) (`backup` with `pg_read_all_data`), so the backup never holds the admin password
     - `POSTGRES_NETWORK`: the postgres stack's network, `db_network` when deployed from `stacks/postgres`; a stack started under another name has `<stack>_db_network` (check: `docker inspect postgres-core --format '{{range $k, $v := .NetworkSettings.Networks}}{{$k}} {{end}}'`)
-4. **deploy** with re-pull images off (`pull_image = false`): the image is built on the server
-5. **first run by hand**, on the server: `docker exec backup backup.sh`; expect "no repository in the bucket yet: creating it", then "done"
-6. **restore test** (below), once: a backup you've never restored is a hope, not a backup
+4. **deploy** the [monitoring](monitoring.md) stack first: it creates the volume `backup-status` this stack mounts
+5. **deploy** with re-pull images off (`pull_image = false`): the image is built on the server
+6. **first run by hand**, on the server: `docker exec backup backup.sh`; expect "no repository in the bucket yet: creating it", then "done"; Prometheus (`…:9090`) then answers the query `backup_last_success_timestamp_seconds` with the time of that run
+7. **restore test** (below), once: a backup you've never restored is a hope, not a backup
 
 ## Daily use
 
@@ -104,11 +108,14 @@ An older backup instead of the latest: take its ID from `restic snapshots` in pl
 | Symptom | Look at |
 |---|---|
 | deploy fails: "network … declared as external, but could not be found" | `POSTGRES_NETWORK` doesn't match the postgres stack's network (check command in Set it up) |
+| deploy fails: "volume "backup-status" … declared as external, but could not be found" | the monitoring stack isn't deployed yet; deploy it first |
+| "Backup failed at step: recording the success time" | the backup itself is in the bucket; writing `/status/backup.prom` failed: `docker exec backup ls -l /status` |
 | "Backup failed at step: dumping the databases" | postgres down, a wrong `POSTGRES_NETWORK`, or a wrong `POSTGRES_USER` / `POSTGRES_PASSWORD` |
 | "… opening the repository" / "… uploading" | the bucket's login or `RESTIC_REPOSITORY` (region, bucket name); `docker logs backup` shows AWS's answer |
 | "wrong password or no key found" | `RESTIC_PASSWORD` differs from the one the repository was created with |
 | no message, but no backups either | the schedule: `docker logs backup` shows "backups run at …" on start; time zone `TZ` |
 
 ## Changes
+- 2026-11-03 — step 5: the success time for the monitoring stack (volume backup-status)
 - 2026-10-30 — read-only database user from tofu/postgres instead of the admin; dump without password hashes
 - 2026-10-30 — first version: what is backed up and why, pipeline, setup, daily use, restore, troubleshooting
