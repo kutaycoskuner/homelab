@@ -36,6 +36,8 @@ A push to `dev` changes nothing on the server until Portainer redeploys the stac
 - **nextcloud**: one pull request per major version, because Nextcloud can't skip majors (see [Stack · Nextcloud](stack-nextcloud.md#updating))
 - local image names of stacks built on the server (`script-temp_control`, `homelab-hello`) are skipped: they're on no registry; their `FROM` base images are still updated
 - images without a version (`latest`, `lts`, `alpine`): Renovate adds a digest (`image:tag@sha256:...`), so a new build also shows up as a pull request
+- **Python packages** (`requirements.txt`): one pull request "Update python packages" for all of them, not one per package; the file's lines sit next to each other, so separate pull requests conflicted after every merge (Nov 2026)
+- **uptimerobot provider**: stays below 2.0 ([tofu/uptimerobot](../tofu/uptimerobot/README.md))
 
 ## Set it up
 
@@ -67,7 +69,12 @@ Nothing changes on the server until you merge: Renovate only proposes.
 
 Don't want an update: **close** the pull request; Renovate won't propose that version again, only the next one.
 
+**"This branch has conflicts"** after another merge: don't resolve it in GitHub's editor. Tick the rebase box at the bottom of the pull request's description; Renovate rebuilds it on the current `dev` within minutes. If several pull requests change neighbouring lines and keep conflicting, put their versions into one commit on `dev` yourself; Renovate then closes them.
+
+**The Dependency Dashboard** issue stays open on purpose: Renovate keeps it up to date; closed, it opens a new one.
+
 ## Changes
+- 2026-11-03 — Python packages in one pull request; handling conflicts; the Dependency Dashboard stays open
 - 2026-11-03 — polling tested again: works for homelab stacks
 - 2026-11-03 — how a change reaches the server: polling, webhook, by hand with tofu -replace; what was tested
 - 2026-11-01 — Portainer webhook as the alternative to polling for apps whose CI pushes `:latest`

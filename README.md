@@ -7,7 +7,7 @@
 </p>
 
 <p align="center">
-    <img alt="Version 0.56.13" src="https://img.shields.io/badge/version-0.56.13-blue" />
+    <img alt="Version 0.56.14" src="https://img.shields.io/badge/version-0.56.14-blue" />
     <img alt="Last Update" src="https://img.shields.io/github/last-commit/kutaycoskuner/homelab" />
     <img alt="Stacks" src="https://github.com/kutaycoskuner/homelab/actions/workflows/stacks.yml/badge.svg" />
     <img alt="Secrets" src="https://github.com/kutaycoskuner/homelab/actions/workflows/secrets.yml/badge.svg" />
