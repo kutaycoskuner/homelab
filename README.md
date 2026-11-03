@@ -7,7 +7,7 @@
 </p>
 
 <p align="center">
-    <img alt="Version 0.56.14" src="https://img.shields.io/badge/version-0.56.14-blue" />
+    <img alt="Version 0.57" src="https://img.shields.io/badge/version-0.57-blue" />
     <img alt="Last Update" src="https://img.shields.io/github/last-commit/kutaycoskuner/homelab" />
     <img alt="Stacks" src="https://github.com/kutaycoskuner/homelab/actions/workflows/stacks.yml/badge.svg" />
     <img alt="Secrets" src="https://github.com/kutaycoskuner/homelab/actions/workflows/secrets.yml/badge.svg" />
@@ -43,7 +43,7 @@ What runs on the server; "reached" says who can open it: anyone through the Clou
 | [PostgreSQL + pgAdmin](docs/stack-postgres.md) | shared database for own apps | private |
 | [Umami](docs/stack-umami.md) | website analytics | public (tunnel) |
 | [Media server](docs/stack-media-server.md) | files from a folder as web addresses | public (tunnel) |
-| [Monitoring](docs/monitoring.md) | checks the sites, alerts to Discord | private |
+| [Monitoring](docs/monitoring.md) | checks the sites, alerts to Discord, dashboards (Grafana) | private |
 | [Backup](docs/backup.md) | nightly encrypted backup to S3 | outbound only |
 | [hello](stacks/hello/README.md) | one-page test site for a deploy | public (tunnel) |
 | [temp_control](scripts/temp_control/README.md) | CPU temperature guard, shutdown when too hot | — |
@@ -81,7 +81,7 @@ homelab/
 │   ├── umami/             self-hosted website analytics
 │   ├── nextcloud/         your own cloud storage, with its own database
 │   ├── media-server/      files from a folder as web addresses (images for websites)
-│   ├── monitoring/        checks that the sites answer, alerts to Discord; the server's numbers; configured as code (blackbox, Prometheus, Alertmanager, node-exporter)
+│   ├── monitoring/        checks that the sites answer, alerts to Discord; the server's numbers and dashboards; configured as code (blackbox, Prometheus, Alertmanager, node-exporter, Grafana)
 │   ├── backup/            nightly, encrypted backup of databases and data to S3 (restic), Discord on failure
 │   ├── _idle/             stacks not in use, kept for later (uptime-kuma); not tested or deployed
 │   ├── tailscale/         private access from your own devices
