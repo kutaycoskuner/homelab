@@ -15,6 +15,7 @@ Index of the docs for this repo. Start with the repo's [README](../README.md) fo
         - [Not covered](ci.md#not-covered)
 - Infrastructure as code
     - [Updates](updates.md): new image versions as pull requests, deployed by Portainer after merge
+        - [How a change reaches the server](updates.md#how-a-change-reaches-the-server): polling, webhook, by hand
         - [Exceptions](updates.md#exceptions)
         - [Set it up](updates.md#set-it-up)
         - [Routine](updates.md#routine-eg-once-a-week)
@@ -80,11 +81,13 @@ Index of the docs for this repo. Start with the repo's [README](../README.md) fo
         - [Make it public](stack-media-server.md#make-it-public)
     - [Monitoring](monitoring.md): checks that the sites answer, alerts to Discord; configured as code
         - [The pipeline](monitoring.md#the-pipeline)
+        - [The server's numbers: node-exporter](monitoring.md#the-servers-numbers-node-exporter)
         - [The alerts](monitoring.md#the-alerts)
         - [Why the config is built into the images](monitoring.md#why-the-config-is-built-into-the-images)
         - [Set it up](monitoring.md#set-it-up)
         - [Daily use](monitoring.md#daily-use)
         - [When something doesn't work](monitoring.md#when-something-doesnt-work)
+        - [When the server itself is down](monitoring.md#when-the-server-itself-is-down): the outside check (UptimeRobot) and the options
     - [Backup](backup.md): nightly, encrypted backup of databases and data to S3, and how to restore
         - [What is backed up](backup.md#what-is-backed-up)
         - [The pipeline](backup.md#the-pipeline)
@@ -94,7 +97,7 @@ Index of the docs for this repo. Start with the repo's [README](../README.md) fo
         - [When something doesn't work](backup.md#when-something-doesnt-work)
     - idle: [Uptime Kuma](stack-uptime-kuma.md), replaced by Monitoring (configured in its web UI, not as code)
 - Scripts (each script's README is its doc)
-    - [server_base](../scripts/server_base/README.md): installs and updates Docker and Portainer
+    - [server_base](../scripts/server_base/README.md): installs and updates Docker and Portainer; the server's own DNS servers
     - [copy_tfvars_values](../scripts/copy_tfvars_values/README.md): copies OpenTofu values between .tfvars files without showing them
     - [temp_control](../scripts/temp_control/README.md): CPU temperature report and shutdown guard
 - Integrations
@@ -114,6 +117,10 @@ Index of the docs for this repo. Start with the repo's [README](../README.md) fo
         - [Create the token](integrations/github-read-token.md#create-the-token)
         - [Use it in Portainer](integrations/github-read-token.md#use-it-in-portainer)
         - [Renew or replace it](integrations/github-read-token.md#renew-or-replace-it)
+    - [Portainer webhook](integrations/portainer-webhook.md): an app's CI redeploys its stack right after pushing a new image
+        - [Set up](integrations/portainer-webhook.md#set-up)
+        - [Test it](integrations/portainer-webhook.md#test-it)
+        - [Replace a leaked webhook, renew the token](integrations/portainer-webhook.md#replace-a-leaked-webhook-renew-the-token)
 - Legacy (how it was done before, not current)
     - [First setup, before Docker](legacy/first-setup-without-docker.md): scripts with tmux, bot with pm2, Pi-hole, AdGuard and Tailscale on the host, and moving away from it
 - Setup guides (planned)

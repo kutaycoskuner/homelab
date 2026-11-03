@@ -113,6 +113,8 @@ All steps on your PC, in PowerShell, in this folder (`tofu\cloudflare`); code bl
 
 From now on change routes only here: a route added in the dashboard is removed at the next apply.
 
+A route can be limited to some paths with `path` (a regex), e.g. only Portainer's webhooks: `{ subdomain = "deploy", port = 9000, path = "^/api/stacks/webhooks/" }`. Other paths on that subdomain get 404, so the rest of the service stays private.
+
 ## When a subdomain doesn't work
 
 | Browser shows | Means | Check |
@@ -123,4 +125,4 @@ From now on change routes only here: a route added in the dashboard is removed a
 
 ## State
 
-`terraform.tfstate` (and `.backup`) is OpenTofu's record of what it manages. It stays on the machine you run Terraform on and is gitignored: it can contain secrets. Lose it and Terraform no longer knows its resources (import them again as in step 5). Keep a copy somewhere private, e.g. your Nextcloud.
+`terraform.tfstate` (and `.backup`) is OpenTofu's record of what it manages. It stays on the machine you run Terraform on and is gitignored: it can contain secrets. Lose it and Terraform no longer knows its resources (import them again as in step 5). Keep a copy somewhere private, e.g. your Nextcloud, or keep the state in an S3 bucket, as the owner's setup does ([State in S3](../../docs/terraform.md#state-in-s3)).

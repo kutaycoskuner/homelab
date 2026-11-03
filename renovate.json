@@ -23,6 +23,17 @@
       "matchDatasources": ["docker"],
       "matchPackageNames": ["nextcloud"],
       "separateMultipleMajor": true
+    },
+    {
+      "description": "uptimerobot provider: 2.0.0 was published briefly and withdrawn but is still listed; stay on 1.x (tofu/uptimerobot README)",
+      "matchDatasources": ["terraform-provider"],
+      "matchPackageNames": ["uptimerobot/uptimerobot"],
+      "allowedVersions": "<2.0.0"
+    },
+    {
+      "description": "Python packages (requirements.txt) in one pull request: their lines are next to each other, so separate pull requests conflict after each merge",
+      "matchManagers": ["pip_requirements"],
+      "groupName": "python packages"
     }
   ]
 }

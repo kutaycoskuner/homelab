@@ -7,6 +7,7 @@
 </p>
 
 <p align="center">
+    <img alt="Version 0.56.14" src="https://img.shields.io/badge/version-0.56.14-blue" />
     <img alt="Last Update" src="https://img.shields.io/github/last-commit/kutaycoskuner/homelab" />
     <img alt="Stacks" src="https://github.com/kutaycoskuner/homelab/actions/workflows/stacks.yml/badge.svg" />
     <img alt="Secrets" src="https://github.com/kutaycoskuner/homelab/actions/workflows/secrets.yml/badge.svg" />
@@ -58,7 +59,7 @@ homelab           (this repo, public)   how things are set up: stacks, scripts, 
 homelab-private   (private)             what runs on the owner's server: which stacks, domain, routes, notes on own apps
 ```
 
-- the private repo calls this repo's `tofu/portainer` and `tofu/cloudflare` folders as OpenTofu modules and passes its own values; secrets and state stay local and gitignored in both
+- the private repo calls this repo's `tofu/portainer`, `tofu/cloudflare`, `tofu/github` and `tofu/uptimerobot` folders as OpenTofu modules and passes its own values; secrets stay local and gitignored in both, the states are in an S3 bucket ([State in S3](docs/terraform.md#state-in-s3))
 - a fix here reaches the owner's server on the next `tofu apply` there, and nothing personal ever has to be committed here
 - you can do the same with a private repo of your own: [Your own values in a private repo](docs/terraform.md#your-own-values-in-a-private-repo); or skip it and fill in the `.example` files here
 
@@ -80,13 +81,13 @@ homelab/
 │   ├── umami/             self-hosted website analytics
 │   ├── nextcloud/         your own cloud storage, with its own database
 │   ├── media-server/      files from a folder as web addresses (images for websites)
-│   ├── monitoring/        checks that the sites answer, alerts to Discord; configured as code (blackbox, Prometheus, Alertmanager)
+│   ├── monitoring/        checks that the sites answer, alerts to Discord; the server's numbers; configured as code (blackbox, Prometheus, Alertmanager, node-exporter)
 │   ├── backup/            nightly, encrypted backup of databases and data to S3 (restic), Discord on failure
 │   ├── _idle/             stacks not in use, kept for later (uptime-kuma); not tested or deployed
 │   ├── tailscale/         private access from your own devices
 │   ├── cloudflared/       Cloudflare Tunnel: public subdomains without open ports
 │   └── hello/             one-page test site to check a deploy end to end
-├── tofu/                  OpenTofu, in use: Cloudflare tunnel routes and DNS, Portainer stacks with automatic updates, AWS bucket for backups, PostgreSQL users
+├── tofu/                  OpenTofu, in use: Cloudflare tunnel routes and DNS, Portainer stacks with automatic updates, AWS buckets for backups and the tofu states, PostgreSQL users, GitHub Actions secrets, UptimeRobot outside checks
 ├── legacy/                replaced code kept for reference (terraform/cloudflare, superseded by tofu/cloudflare)
 ├── renovate.json          settings for automatic update pull requests
 ├── scripts/               helper scripts
@@ -145,4 +146,5 @@ Your copies (`.env`, `terraform.tfvars`) are gitignored and never committed. Sta
     - [Discord webhook](docs/integrations/discord-web-hook.md): messages from scripts to a Discord channel
     - [Tailscale](docs/integrations/tailscale.md) and [Cloudflare Tunnel](docs/integrations/cloudflare-tunnel.md): private and public access
     - [GitHub read-only token](docs/integrations/github-read-token.md): lets Portainer clone the private repo
+    - [Portainer webhook](docs/integrations/portainer-webhook.md): an app's CI redeploys its stack right after pushing a new image
     - Scripts: [server_base](scripts/server_base/README.md) (Docker and Portainer), [copy_tfvars_values](scripts/copy_tfvars_values/README.md) (OpenTofu values into new files), [temp_control](scripts/temp_control/README.md)

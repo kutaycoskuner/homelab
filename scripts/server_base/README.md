@@ -1,6 +1,6 @@
 # server_base
 
-Installs, updates and checks the server's base software in one script: **Docker** and **Portainer**. Everything else (stacks, `tofu/portainer`, automatic updates) runs on top of these two.
+Installs, updates and checks the server's base software in one script: **Docker** and **Portainer**. Everything else (stacks, `tofu/portainer`, automatic updates) runs on top of these two. It also sets the server's own **DNS servers** (`--dns`), which tofu can't manage.
 
 ## What it is and why we use it
 
@@ -11,6 +11,10 @@ Installs, updates and checks the server's base software in one script: **Docker*
 |---|---|---|
 | Docker (engine, Compose plugin) | Docker's official script `get.docker.com`, then your user into the `docker` group | `apt` packages `docker-ce`, `docker-ce-cli`, `containerd.io`, `docker-compose-plugin`, `docker-buildx-plugin` |
 | Portainer | [stacks/portainer/docker-compose.yml](../../stacks/portainer/docker-compose.yml); replaces an old `docker run` container (data kept) | pulls the image tag the compose file names; restarts only if it changed |
+
+| Part | Set by `--dns` |
+|---|---|
+| the server's own DNS servers | fixed public ones (`1.1.1.1`, `8.8.8.8` and their IPv6 addresses) in the NetworkManager connection, instead of those the router hands out |
 
 ## Run
 
@@ -27,6 +31,10 @@ bash scripts/server_base/server_base.sh --install
 # update: first get the newest compose file (e.g. a merged Renovate update), then update
 git pull
 bash scripts/server_base/server_base.sh --update
+
+# the server's own DNS: see the change, then make it (asks first; checks a lookup afterwards)
+bash scripts/server_base/server_base.sh --dns --dry-run
+bash scripts/server_base/server_base.sh --dns
 ```
 
 - `bash scripts/...`: runs the script with bash, so it doesn't need to be marked executable
@@ -39,3 +47,6 @@ bash scripts/server_base/server_base.sh --update
 - first Portainer start: open `https://<server-ip>:9443` and create the admin user right away; Portainer stops the first-time setup after a few minutes
 - nothing deletes data: Portainer's settings stay in the `portainer_data` volume, the stacks' data in their own volumes and folders
 - Debian-based systems only (Raspberry Pi OS, Debian, Ubuntu): the update step uses `apt`
+- why `--dns`: when the router hands out AdGuard on this server as DNS, the server asks itself for names; while AdGuard redeploys (e.g. several stacks recreated at once), image downloads and builds fail with `lookup registry-1.docker.io ... i/o timeout`
+    - afterwards the server itself is no longer filtered by AdGuard; the other devices on the network still are
+    - needs NetworkManager (`nmcli`, default on Raspberry Pi OS since Bookworm); the change is applied without dropping the connection (`nmcli device reapply`), and the script prints the command to undo it if the check fails

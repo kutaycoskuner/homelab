@@ -1,13 +1,15 @@
 # -----------------------------------------------------------------------------------------
 #   author          : Kutay Coskuner
 #   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-#   last update     : 2026-10-28
+#   last update     : 2026-11-01
 #   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 #                     Check outputs before relying on them.
 # -----------------------------------------------------------------------------------------
 # Portainer stacks deployed from this repo, as code (see README.md). Run with OpenTofu (tofu).
 # Each entry in var.stacks becomes a Git stack with automatic updates: Portainer polls the
-# branch and redeploys when the stack's files change. Portainer itself is not managed here.
+# branch and redeploys when the stack's files change, or, for stacks with webhook = true,
+# redeploys when its webhook URL is called (e.g. by an app's CI after an image push).
+# Portainer itself is not managed here.
 
 terraform {
   required_version = ">= 1.11" # write-only and ephemeral values (the GitHub token never reaches the state)
@@ -53,7 +55,10 @@ resource "portainer_stack" "stack" {
   repository_password_wo        = var.github_token         # write-only: not stored in the state
   repository_wo_version         = var.github_token_version # raise by one after changing the token, so it's sent again
 
-  update_interval = var.update_interval   # automatic updates: poll the branch at this interval
+  # automatic updates: poll the branch at this interval, or, for webhook stacks, redeploy when the webhook URL is called
+  # (Portainer offers one or the other per stack)
+  update_interval = each.value.webhook ? null : var.update_interval
+  stack_webhook   = each.value.webhook
   pull_image      = each.value.pull_image # re-pull images on redeploy; false for stacks built on the server (their image is on no registry)
 
   # registry logins this stack may pull with; Git stacks get none unless listed here

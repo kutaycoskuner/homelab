@@ -13,6 +13,7 @@ Portainer's stacks as code: every stack deployed from this repo, its variables a
 tofu/portainer/
 ├── main.tf                    one Portainer stack per entry in stacks, from the repo, with automatic updates
 ├── variables.tf               which values main.tf needs; no values themselves
+├── outputs.tf                 what apply hands back: the webhook URLs of webhook stacks
 ├── terraform.tfvars.example   those values with placeholders: every stack and the keys of its .env.example
 ├── .terraform.lock.hcl        exact provider version (created by tofu init; commit it)
 ├── README.md                  this file
@@ -30,10 +31,15 @@ terraform.tfvars ──tofu apply──> Portainer API: create / update the stac
 Portainer ──every update_interval──> the repo's branch ──changed?──> pull and redeploy that stack
 ```
 
+- the three ways a change reaches the server (polling, webhook, by hand with `-replace`) and what was tested: [How a change reaches the server](../../docs/updates.md#how-a-change-reaches-the-server)
+- **webhook instead of polling** (`webhook = true` in `stacks`): Portainer doesn't poll that stack; it redeploys when its webhook URL is called, e.g. by the app's CI right after it pushes a new image
+    - the URL: `tofu output -json webhook_urls`; it's a secret (anyone with it can trigger a redeploy, not change the stack); store it as a CI secret, e.g. with [tofu/github](../github/README.md)
+    - the apply that turns the webhook on saves the output empty (`""`): Portainer creates the URL during that apply; `tofu apply -refresh-only` reads it and saves it
+    - the caller must reach Portainer: from GitHub's servers that means a tunnel route for the webhook path only
 - the GitHub token is **write-only**: sent to Portainer, never stored in the state
 - **re-pull image** (`pull_image`, per stack, default on) downloads every image before a redeploy, so a new version is used; switch it **off** for stacks that build their image on the server (`build: .`, e.g. `hello`, `temp_control`): their image name is on no registry, and the download fails with "pull access denied … may require 'docker login'" (not a token problem); their compose files also set `pull_policy: build`
 - OpenTofu doesn't start or stop stacks (`active` is ignored): Portainer 2.45 reports some running Git stacks with a status the provider reads as stopped, and "starting" them again redeployed and removed their containers
-- the stacks' variables (`stack_env`) **are** stored in the state, because Portainer needs them as values; the state stays local and private
+- the stacks' variables (`stack_env`) **are** stored in the state, because Portainer needs them as values; keep the state private ([State](#state))
 - **private images** (`registries`, `registry_passwords`): a registry login in Portainer, created from here; a stack pulls with it only if it names it (`registries = ["ghcr"]`), otherwise the pull fails with `denied` even though the login exists in Portainer
     - for ghcr.io: a **classic** GitHub token with only `read:packages` (fine-grained tokens don't work for packages); stored in the state, the provider has no write-only field for it
     - an existing login made in Portainer's UI is taken over with an `import` block (`to = portainer_registry.registry["<name>"]`, `id = "<number in its address, #!/registries/<n>>"`)
@@ -93,9 +99,10 @@ Quotes in `tofu import`: single quotes outside, plain double quotes inside (Powe
 
 - add a stack: one line in `stacks`, its variables in `stack_env`, then `tofu plan` and `tofu apply`
 - change a variable: edit `stack_env`, `tofu apply`; Portainer redeploys that stack
+- redeploy a stack now (e.g. polling hasn't picked up a push): `tofu apply '-replace=portainer_stack.stack["<stack>"]'`; deletes and recreates it from the branch, volumes stay
 - new GitHub token: put it in `github_token`, raise `github_token_version` by one, `tofu apply`
 - remove a stack: delete its line, `tofu apply` (removes the stack; volumes stay)
 
 ## State
 
-`terraform.tfstate` holds the stacks and their variables, passwords included. It stays on this PC, is gitignored, and should have a private copy (e.g. in Nextcloud). Lose it and OpenTofu no longer knows the stacks: import them again as above.
+`terraform.tfstate` holds the stacks and their variables, passwords included. Run on its own, it stays on this PC, is gitignored, and should have a private copy (e.g. in Nextcloud). Lose it and OpenTofu no longer knows the stacks: import them again as above. The owner's setup keeps it in an S3 bucket instead ([State in S3](../../docs/terraform.md#state-in-s3)).

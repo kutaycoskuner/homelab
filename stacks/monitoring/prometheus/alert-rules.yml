@@ -41,3 +41,25 @@ groups:
         annotations:
           summary: "Monitoring part {{ $labels.instance }} is down"
           description: "Prometheus can't reach it for 5 minutes; checks or alerts may be missing."
+
+  # the backup stack writes the time of its last success into the volume backup-status, read by
+  # node-exporter; this catches a backup that stopped running, which sends no failure message
+  - name: backup
+    rules:
+      - alert: BackupTooOld
+        expr: time() - backup_last_success_timestamp_seconds > 26 * 3600   # nightly run + 2 h slack
+        for: 10m
+        labels:
+          severity: critical
+        annotations:
+          summary: "No successful backup for over 26 hours"
+          description: "Last success {{ $value | humanizeDuration }} ago. Check: docker logs backup"
+
+      - alert: BackupStatusMissing
+        expr: absent(backup_last_success_timestamp_seconds)
+        for: 1h
+        labels:
+          severity: warning
+        annotations:
+          summary: "The backup's success time is missing"
+          description: "No backup.prom in the volume backup-status, or node-exporter can't read it; BackupTooOld can't fire meanwhile."

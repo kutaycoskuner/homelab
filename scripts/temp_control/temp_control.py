@@ -1,7 +1,7 @@
 # ----------------------------------------------------------------------------------------
 #                notes
 # ----------------------------------------------------------------------------------------
-'''
+r'''
 Kutay Coskuner, 2025
 This code is licensed under the MIT License. You can use, modify, and distribute it freely.
 However, it is provided "as is," without any warranties or guarantees of any kind.

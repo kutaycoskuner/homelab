@@ -6,7 +6,8 @@ Every night: dumps all PostgreSQL databases and uploads them, together with Port
 - the bucket: [tofu/aws](../../tofu/aws/README.md)
 - reads, read-only: Postgres over `db_network`, the volume `portainer_data`, the folders `MEDIA_DIR` and `ADGUARD_CONF_DIR`
 - variables ([.env.example](.env.example)): the bucket and its login, the **restic password**, the Postgres admin login, the folders, the Discord webhook, the schedule
-- needs the postgres stack (its network `db_network`) and Portainer's volume to exist
+- writes: the time of the last successful run to the volume `backup-status`, which the monitoring stack reads
+- needs the postgres stack (its network `db_network`), Portainer's volume and the monitoring stack (its volume `backup-status`) to exist
 
 ## Start
 

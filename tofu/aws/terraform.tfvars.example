@@ -13,6 +13,9 @@ aws_profile = "<profile-name>"
 # Bucket name: unique across all of AWS; lowercase letters, digits, hyphens
 bucket_name = "<you>-homelab-backup"
 
+# Bucket for the tofu states: a second, separate bucket; same naming rules
+state_bucket_name = "<you>-homelab-state"
+
 # Monthly cost limit in USD for the alerts, and where they go
 budget_limit_usd = 5
 budget_email     = "<you@example.net>"

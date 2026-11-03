@@ -12,7 +12,7 @@ jobs:
     outputs:
       folders: ${{ steps.find.outputs.folders }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       - id: find
         run: |
           echo "folders=$(find terraform -name '*.tf' -printf '%h\n' 2>/dev/null | sort -u | jq -R . | jq -cs .)" >> "$GITHUB_OUTPUT"
@@ -29,7 +29,7 @@ jobs:
       run:
         working-directory: ${{ matrix.folder }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       - uses: hashicorp/setup-terraform@v3
       - name: Formatting
         run: terraform fmt -check -diff

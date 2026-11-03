@@ -27,6 +27,8 @@ services:
       - ${ADGUARD_CONF_DIR}:/backup/adguard-conf:ro
       # restic's local index cache: makes nightly runs faster, can be lost without harm
       - restic_cache:/root/.cache/restic
+      # the time of the last successful run, read by the monitoring stack (outside /backup, so not backed up)
+      - backup-status:/status
     networks:
       - db_network   # reaches the postgres stack by its container name
 
@@ -34,6 +36,8 @@ volumes:
   portainer_data:
     external: true   # Portainer's own volume, created by stacks/portainer
   restic_cache:
+  backup-status:
+    external: true   # created by stacks/monitoring, which reads it through its node-exporter
 
 networks:
   db_network:

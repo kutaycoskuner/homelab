@@ -1,7 +1,7 @@
 # -----------------------------------------------------------------------------------------
 #   author          : Kutay Coskuner
 #   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-#   last update     : 2026-10-30
+#   last update     : 2026-11-02
 #   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 #                     Check outputs before relying on them.
 # -----------------------------------------------------------------------------------------
@@ -40,6 +40,22 @@ variable "keep_old_versions_days" {
   description = "Days a deleted or overwritten file stays recoverable in the bucket"
   type        = number
   default     = 30
+}
+
+variable "state_bucket_name" {
+  description = "Name of the bucket for the tofu states; unique across all of AWS, e.g. <you>-homelab-state"
+  type        = string
+
+  validation {
+    condition     = can(regex("^[a-z0-9][a-z0-9-]{1,61}[a-z0-9]$", var.state_bucket_name))
+    error_message = "Use 3-63 lowercase letters, digits and hyphens, starting and ending with a letter or digit."
+  }
+}
+
+variable "keep_old_state_versions_days" {
+  description = "Days an older version of a tofu state stays recoverable"
+  type        = number
+  default     = 90
 }
 
 variable "budget_limit_usd" {

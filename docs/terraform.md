@@ -18,6 +18,7 @@ How outside accounts (Cloudflare, later Tailscale and GitHub) and Portainer's st
 | [tofu/portainer](../tofu/portainer/README.md) | OpenTofu | **in use**: Portainer stacks and their automatic updates |
 | [tofu/aws](../tofu/aws/README.md) | OpenTofu | **in use**: S3 bucket for offsite backups, the server's backup login, a budget alarm |
 | [tofu/postgres](../tofu/postgres/README.md) | OpenTofu | **new**: PostgreSQL users with generated passwords, e.g. a read-only user for backups |
+| [tofu/uptimerobot](../tofu/uptimerobot/README.md) | OpenTofu | **new**: outside check, the public sites opened from the internet every 5 minutes, alerts to Discord |
 | [legacy/terraform/cloudflare](../legacy/terraform/cloudflare/README.md) | Terraform | **legacy**: the first version of `tofu/cloudflare`, kept for reference; don't `apply` there |
 
 Apply each account from **one** folder only: two folders with two state files would overwrite each other's changes.
@@ -26,7 +27,7 @@ Apply each account from **one** folder only: two folders with two state files wo
 
 Terraform talks to the providers' APIs over the internet; it doesn't need to run on the server. Run it on your PC, where you edit the repo:
 
-- the state file (Terraform's record of what it manages) stays on that one machine
+- the state file (Terraform's record of what it manages) is read and written from that one machine; it lives on it, or in an S3 bucket ([State in S3](#state-in-s3))
 - the API tokens never have to be on the server
 
 Running it on the server works too, but pick one place: two machines with two state files don't know about each other's changes.
@@ -71,7 +72,7 @@ terraform -version
 | `terraform.tfvars.example` | the variables with placeholders | yes |
 | `terraform.tfvars` | your values: API tokens, account IDs | no (gitignored) |
 | `.terraform.lock.hcl` | exact provider versions | yes |
-| `terraform.tfstate`, `.terraform/` | state and downloaded providers | no (gitignored) |
+| `terraform.tfstate`, `.terraform/` | state (only with no backend; otherwise in S3) and downloaded providers | no (gitignored) |
 
 - create `terraform.tfvars` by copying the example in the same folder (`main.py` only handles `.env` files)
 - API tokens with only the permissions the folder needs; the README of each folder lists them
@@ -119,12 +120,67 @@ GitHub/
 ```
 
 - **module**: any folder of `.tf` files can be called by another folder like a function; its variables become the module's inputs
-- **why**: the logic stays in one place (here), your private repo only says what to deploy; values that aren't secret are committed there, secrets and state stay local and gitignored
+- **why**: the logic stays in one place (here), your private repo only says what to deploy; values that aren't secret are committed there, secrets stay local and gitignored, the state in the S3 bucket ([State in S3](#state-in-s3))
 - **source**: `../../../homelab/...` needs both repos cloned side by side; once this repo is public, a pinned address works without a clone: `git::https://github.com/<owner>/homelab.git//tofu/portainer?ref=<tag>`
 - **moving existing state**: copy `terraform.tfstate` into the private folder and add a `moved` block per resource, e.g. `moved { from = portainer_stack.stack  to = module.portainer.portainer_stack.stack }`; `plan` then shows "has moved" and recreates nothing
 - **moving your values**: copy the private folder's `.example` files, then fill them from your old `terraform.tfvars` with [copy_tfvars_values](../scripts/copy_tfvars_values/README.md), which never shows a value
 
+## State in S3
+
+A local `terraform.tfstate` exists only on one PC: lose the PC and OpenTofu no longer knows what it manages, including every generated password. The owner's folders keep their states in the state bucket from [tofu/aws](../tofu/aws/README.md) (`state_bucket_name`): private, encrypted at rest by AWS, versioned.
+
+- **backend**: one block per folder, each with its own `key`; `use_lockfile` puts a lock file next to the state while tofu runs, so two runs never write at once
+    ```hcl
+    terraform {
+      backend "s3" {
+        bucket       = var.state_bucket   # from terraform.tfvars (OpenTofu 1.8+ allows variables here)
+        key          = "portainer/terraform.tfstate"
+        region       = var.state_region
+        profile      = var.state_profile  # the AWS CLI profile from `aws login`
+        use_lockfile = true
+      }
+    }
+    ```
+- **moving a local state there**: once per folder, `tofu init -migrate-state`, answer `yes`; then `plan` must show **No changes**; the local file is no longer used and can be deleted after that
+- **reading another folder's state** (`terraform_remote_state`): `backend = "s3"` with the same `bucket`, `key`, `region`, `profile` in `config`
+- **who can read it**: anyone with your AWS admin login; the server's backup login has no access to this bucket
+
+### Optional: encrypt the state with a passphrase
+
+The state holds every password in plain text; AWS encrypts it on its disks, but anyone with access to the account can read it. OpenTofu can encrypt it on the PC before upload. **A lost passphrase is a lost state**: keep a copy off the PC.
+
+```hcl
+terraform {
+  encryption {
+    key_provider "pbkdf2" "passphrase" {
+      passphrase = var.state_passphrase   # at least 16 characters; sensitive variable
+    }
+    method "aes_gcm" "passphrase" {
+      keys = key_provider.pbkdf2.passphrase
+    }
+    method "unencrypted" "before" {}       # reads the old unencrypted state once
+
+    state {
+      method = method.aes_gcm.passphrase
+      fallback { method = method.unencrypted.before }   # remove after the first apply
+    }
+    plan {
+      method = method.aes_gcm.passphrase
+    }
+    remote_state_data_sources {             # only in folders that read another folder's state
+      default { method = method.aes_gcm.passphrase }
+    }
+  }
+}
+```
+
+- the passphrase once for every folder, as a Windows user variable (new terminals see it): `[Environment]::SetEnvironmentVariable('TF_VAR_state_passphrase', '<passphrase>', 'User')`
+- turn it on folder by folder: `tofu apply` writes the state encrypted; then remove the `fallback`, so an unencrypted state is never read silently
+- a folder that reads another folder's state needs the passphrase too, so encrypt the read folder and its readers together
+
 ## Changes
+- 2026-11-02 — tofu/uptimerobot: outside check of the public sites
+- 2026-11-02 — state in S3: backend block, moving a local state, optional encryption with a passphrase
 - 2026-11-01 — terraform/cloudflare moved to legacy/
 - 2026-10-30 — tofu/postgres: database users with generated passwords
 - 2026-10-30 — tofu/aws: bucket for offsite backups, the server's backup login, budget alarm

@@ -1,7 +1,7 @@
 # -----------------------------------------------------------------------------------------
 #   author          : Kutay Coskuner
 #   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-#   last update     : 2026-10-28
+#   last update     : 2026-11-01
 #   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 #                     Check outputs before relying on them.
 # -----------------------------------------------------------------------------------------
@@ -66,13 +66,14 @@ variable "update_interval" {
 }
 
 variable "stacks" {
-  description = "Stacks to deploy: stack name -> compose file path; repository_url / branch only for stacks from another repo (default: this repo, repository_branch); pull_image false for stacks that build their image on the server; registries: names from var.registries, for stacks with private images"
+  description = "Stacks to deploy: stack name -> compose file path; repository_url / branch only for stacks from another repo (default: this repo, repository_branch); pull_image false for stacks that build their image on the server; registries: names from var.registries, for stacks with private images; webhook true: redeployed by calling its webhook URL (output webhook_urls) instead of polling"
   type = map(object({
     path           = string
     pull_image     = optional(bool, true)
     repository_url = optional(string)
     branch         = optional(string)
     registries     = optional(list(string))
+    webhook        = optional(bool, false)
   }))
 }
 

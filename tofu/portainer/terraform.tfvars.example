@@ -43,6 +43,8 @@ stacks = {
   # my-app = { path = "docker-compose.yml", repository_url = "https://github.com/<owner>/<app>", branch = "refs/heads/main" }
   # a stack with a private image: name the registry login it pulls with (from registries below)
   # my-private-app = { path = "stacks/my-private-app/docker-compose.yml", registries = ["ghcr"] }
+  # a stack redeployed by its webhook (e.g. called by the app's CI) instead of polling; URL: tofu output -json webhook_urls
+  # my-webhook-app = { path = "stacks/my-webhook-app/docker-compose.yml", webhook = true }
 }
 
 # Registry logins for private images (optional): name -> registry address and user; the token per name in registry_passwords

@@ -33,6 +33,8 @@
 
 Symptom: containers (or `apt`) fail with DNS errors after the router points to the server. The server then asks itself for DNS, which only works while AdGuard runs.
 
+On a server with NetworkManager (Raspberry Pi OS since Bookworm), [server_base](../scripts/server_base/README.md) `--dns` sets fixed public DNS servers for the server itself; the steps below are the manual way.
+
 - give Docker fixed DNS servers: `sudo nano /etc/docker/daemon.json`
     ```json
     {
@@ -63,6 +65,7 @@ The AdGuard stack itself already sets `dns: 1.1.1.1, 8.8.8.8` for the same reaso
 Tailscale can push its own DNS to the server, which would replace the setup above. Log the server in with `--accept-dns=false` (see [Tailscale](integrations/tailscale.md)).
 
 ## Changes
+- 2026-11-01 — the server's own DNS: server_base `--dns` as the scripted way
 - 2026-11-01 — web UI ports as variables; data folder example /srv/adguard
 - 2026-10-19 — renamed from `04-dns-adguard.md`: optional stack, not a core setup step
 - 2026-10-19 — first version, rewritten from the private notes: what and why, setup, router, block lists, the server's own DNS fix, tests, Tailscale

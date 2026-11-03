@@ -1,13 +1,14 @@
 # -----------------------------------------------------------------------------------------
 #   author          : Kutay Coskuner
 #   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-#   last update     : 2026-10-30
+#   last update     : 2026-11-02
 #   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 #                     Check outputs before relying on them.
 # -----------------------------------------------------------------------------------------
 # Offsite storage for the server's backups, as code (see README.md). Run with OpenTofu (tofu).
 # An S3 bucket that can never be public, keeps deleted files for a while, and a login for the
-# server that may only use this one bucket; plus a monthly budget with email alerts.
+# server that may only use this one bucket; a second bucket for the tofu states; plus a
+# monthly budget with email alerts.
 
 terraform {
   required_version = ">= 1.6"
@@ -16,6 +17,16 @@ terraform {
       source  = "hashicorp/aws"
       version = "~> 6.0"
     }
+  }
+
+  # this folder's state lives in the state bucket it creates itself; on a new account, comment
+  # this block out for the first apply, then move the state there (README.md, First run)
+  backend "s3" {
+    bucket       = var.state_bucket_name
+    key          = "aws/terraform.tfstate"
+    region       = var.region
+    profile      = var.aws_profile
+    use_lockfile = true
   }
 }
 
@@ -122,6 +133,57 @@ resource "aws_iam_user_policy" "backup" {
 # state (local, gitignored) and shown only with `tofu output -raw backup_secret_access_key`
 resource "aws_iam_access_key" "backup" {
   user = aws_iam_user.backup.name
+}
+
+# -----------------------------------------------------------------------------------------
+#   state bucket: the tofu states of every folder, so they no longer exist only on the PC
+# -----------------------------------------------------------------------------------------
+
+# a separate bucket, because the states hold every password: the server's backup login has
+# no access to it, only the admin login tofu runs with
+resource "aws_s3_bucket" "state" {
+  bucket = var.state_bucket_name
+}
+
+resource "aws_s3_bucket_public_access_block" "state" {
+  bucket                  = aws_s3_bucket.state.id
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+}
+
+resource "aws_s3_bucket_server_side_encryption_configuration" "state" {
+  bucket = aws_s3_bucket.state.id
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm = "AES256"
+    }
+  }
+}
+
+# every apply writes a new version; an older state can be restored if one goes wrong
+resource "aws_s3_bucket_versioning" "state" {
+  bucket = aws_s3_bucket.state.id
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
+resource "aws_s3_bucket_lifecycle_configuration" "state" {
+  bucket = aws_s3_bucket.state.id
+
+  rule {
+    id     = "remove-old-versions"
+    status = "Enabled"
+    filter {} # every file in the bucket
+
+    noncurrent_version_expiration {
+      noncurrent_days = var.keep_old_state_versions_days
+    }
+  }
+
+  depends_on = [aws_s3_bucket_versioning.state]
 }
 
 # -----------------------------------------------------------------------------------------

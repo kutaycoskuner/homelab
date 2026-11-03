@@ -1,7 +1,7 @@
 # -----------------------------------------------------------------------------------------
 #   author          : Kutay Coskuner
 #   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-#   last update     : 2026-10-28
+#   last update     : 2026-11-01
 #   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 #                     Check outputs before relying on them.
 # -----------------------------------------------------------------------------------------
@@ -37,6 +37,7 @@ resource "cloudflare_zero_trust_tunnel_cloudflared_config" "homelab" {
     ingress = concat(
       [for r in var.routes : {
         hostname = "${r.subdomain}.${var.domain}"
+        path     = r.path # null: every path; other paths of a limited route fall through to the 404 below
         service  = "http://${var.server_ip}:${r.port}"
       }],
       [{ service = "http_status:404" }]

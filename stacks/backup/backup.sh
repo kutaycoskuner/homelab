@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------------------
 #   author          : Kutay Coskuner
 #   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-#   last update     : 2026-10-30
+#   last update     : 2026-11-03
 #   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 #                     Check outputs before relying on them.
 # -----------------------------------------------------------------------------------------
@@ -13,9 +13,12 @@
 #      of a running database are not)
 #   3. upload /backup (the dump and the read-only mounts) with restic: encrypted, only changed parts
 #   4. remove old backups: KEEP_DAILY / KEEP_WEEKLY / KEEP_MONTHLY (default 7 / 4 / 6)
+#   5. write the time of this success to /status/backup.prom, which the monitoring stack reads
+#      (node-exporter) to alert when the last success is too old, e.g. when runs stopped entirely
 # On any failure: a message to DISCORD_WEBHOOK_URL naming the step; success stays silent.
 # Requires: the variables in .env.example; the postgres stack on its network; a database user
-# that can read everything (e.g. one with pg_read_all_data from tofu/postgres, not the admin).
+# that can read everything (e.g. one with pg_read_all_data from tofu/postgres, not the admin);
+# the volume backup-status at /status (step 5 is skipped without it).
 
 set -eu
 
@@ -23,6 +26,7 @@ set -eu
 [ -f /etc/backup.env ] && . /etc/backup.env
 
 DUMP_DIR=/backup/postgres
+STATUS_DIR=/status   # volume backup-status, shared with the monitoring stack
 HOST_NAME=homelab   # fixed, so old backups are found again after the container is recreated
 
 log() { echo "backup: $(date '+%Y-%m-%d %H:%M:%S') $*"; }
@@ -71,6 +75,19 @@ restic backup --host "$HOST_NAME" --tag nightly /backup
 step="removing old backups"
 restic forget --host "$HOST_NAME" --tag nightly --prune \
     --keep-daily "${KEEP_DAILY:-7}" --keep-weekly "${KEEP_WEEKLY:-4}" --keep-monthly "${KEEP_MONTHLY:-6}"
+
+# 5. success time; written to a temporary file and moved, so node-exporter never reads half a file
+step="recording the success time"
+if [ -d "$STATUS_DIR" ]; then
+    {
+        echo "# HELP backup_last_success_timestamp_seconds Unix time of the last successful backup run."
+        echo "# TYPE backup_last_success_timestamp_seconds gauge"
+        echo "backup_last_success_timestamp_seconds $(date +%s)"
+    } > "$STATUS_DIR/backup.prom.tmp"
+    mv "$STATUS_DIR/backup.prom.tmp" "$STATUS_DIR/backup.prom"
+else
+    log "no $STATUS_DIR mounted: success time not recorded"
+fi
 
 step="done"
 log "done"
