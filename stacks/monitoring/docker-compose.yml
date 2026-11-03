@@ -43,7 +43,7 @@ services:
   # the server's own numbers (CPU, RAM, temperature, disk) and values other stacks write as small
   # files into backup-status, e.g. the backup's last successful run
   node-exporter:
-    image: prom/node-exporter:v1.12.1
+    image: prom/node-exporter:v1.12.1@sha256:1b4e4438faca4dd7e001dd445d161a4a2091b0fededa84093b3a8dfeae1f1be0
     container_name: monitoring-node-exporter
     restart: unless-stopped
     pid: host   # sees the server's processes, not only its own

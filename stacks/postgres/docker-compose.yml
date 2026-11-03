@@ -2,7 +2,7 @@
 # Portainer: set the keys from .env.example under Environment variables. CLI: put them in .env.
 services:
   postgres:
-    image: postgres:17
+    image: postgres:17@sha256:3b0cda93be7c8dba2ed484d19393d93845dc3dafb88973e248ba8e6d99d784e1
     container_name: postgres-core
     restart: unless-stopped
     environment:
@@ -18,7 +18,7 @@ services:
       - db_network
 
   pgadmin:
-    image: dpage/pgadmin4:latest
+    image: dpage/pgadmin4:latest@sha256:3591b3d02910dcd817dec6fcaa681c278ba6966945283dd0ea0042731c330c83
     container_name: pgadmin-core
     restart: unless-stopped
     environment:
