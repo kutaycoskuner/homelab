@@ -67,7 +67,9 @@ volume backup-status: *.prom files ──┘
 | `SiteDown` | a URL hasn't answered successfully for 2 minutes | critical |
 | `SiteSlow` | answers took over 5 s for 10 minutes | warning |
 | `CertificateExpiresSoon` | a site's certificate expires within 14 days | warning |
-| `MonitoringPartDown` | blackbox, Prometheus or Alertmanager is unreachable for 5 minutes | critical |
+| `MonitoringPartDown` | blackbox, Prometheus, Alertmanager or node-exporter is unreachable for 5 minutes | critical |
+| `BackupTooOld` | the [backup](backup.md)'s last success is over 26 hours old, for 10 minutes: runs fail or stopped entirely | critical |
+| `BackupStatusMissing` | the backup's success time is missing for 1 hour (file or volume gone); `BackupTooOld` can't fire meanwhile | warning |
 
 The waiting times ("for") keep a single slow or failed answer from sending a message.
 
@@ -92,6 +94,7 @@ Portainer CE deploys a Git stack from its own copy of the repo, and can't mount 
 - **add or remove a URL**: change `PROBE_TARGETS` and apply (`tofu apply`); the stack restarts with the new list
 - **change a rule or a route**: edit the file here, commit, push; Portainer rebuilds and redeploys
 - **test an alert on purpose**: stop a checked service for 3 minutes (e.g. `docker stop hello` on the server); `SiteDown` arrives on Discord, and "resolved" after `docker start hello`
+- **test the backup alert**: write an old time into the file, `docker exec backup sh -c 'echo backup_last_success_timestamp_seconds 1700000000 > /status/backup.prom'`; `BackupTooOld` arrives within about 11 minutes, "resolved" after a real run (`docker exec backup backup.sh`)
 - **see what's happening**: Prometheus `…:9090/alerts` (rules and their state), Alertmanager `…:9093` (alerts being sent); both read-only
 
 ## When something doesn't work
@@ -111,7 +114,7 @@ Monitoring that runs on the server goes silent with it: a power cut, a crash, a 
 |---|---|---|---|
 | **Heartbeat service** (e.g. Healthchecks.io) | the server sends "I'm alive" every few minutes, the backup one after each run; silence → alert | server or internet down, backup stopped | a broken tunnel, a single site down |
 | **Website checker** (e.g. UptimeRobot) | an outside service opens the public sites every few minutes | server or internet down, tunnel broken, a single site down | backup stopped |
-| **Website checker + backup-age alert** (chosen here; the website checker is set up, the backup-age alert is next) | the website checker as above; the backup records the time of its last success, and a rule here alerts when it's older than about 26 h | everything above: the outside check covers the server being down, the rule covers the backup | nothing of these; the backup alert waits while the server is down, the outside check fires then |
+| **Website checker + backup-age alert** (chosen here, both set up: [UptimeRobot](#the-outside-check-uptimerobot), `BackupTooOld` in [The alerts](#the-alerts)) | the website checker as above; the backup records the time of its last success, and a rule here alerts when it's older than about 26 h | everything above: the outside check covers the server being down, the rule covers the backup | nothing of these; the backup alert waits while the server is down, the outside check fires then |
 | **"Backup fresh" URL** | after a backup, the server serves a URL for 24 h; the website checker watches it | backup stopped, server down | needs a web server, a public route and expiry logic; the alert doesn't say which of the two failed |
 
 All four are free; health checks from AWS (~$0.50–1/month) or Cloudflare (paid plan) work too.
@@ -132,6 +135,7 @@ Discord: "Monitor is DOWN: <site>"   ...   "Monitor is UP: <site>"
 - **test**: stop a site's container for 10 minutes (`docker stop <container>`); DOWN arrives on Discord, UP within 5 minutes after `docker start <container>`
 
 ## Changes
+- 2026-11-03 — backup-age alerts: BackupTooOld, BackupStatusMissing
 - 2026-11-02 — node-exporter: the server's numbers and the shared volume backup-status
 - 2026-11-02 — outside check set up: UptimeRobot through tofu/uptimerobot
 - 2026-11-02 — when the server itself is down: options for an outside check and a backup-age alert
