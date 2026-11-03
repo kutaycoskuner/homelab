@@ -37,7 +37,7 @@ PROBE_TARGETS ──> start.sh ──> target file
 | Step | Module | What it does | File |
 |---|---|---|---|
 | 1 | `start.sh` (Prometheus image) | turns `PROBE_TARGETS` (comma-separated URLs) into the target file Prometheus reads | [prometheus/start.sh](../stacks/monitoring/prometheus/start.sh) |
-| 2 | Prometheus | every 30 s, asks blackbox to check each URL; also checks that the three parts are up | [prometheus/prometheus.yml](../stacks/monitoring/prometheus/prometheus.yml) |
+| 2 | Prometheus | every 30 s, asks blackbox to check each URL; also checks that its parts are up (blackbox, Alertmanager, node-exporter, itself) | [prometheus/prometheus.yml](../stacks/monitoring/prometheus/prometheus.yml) |
 | 3 | blackbox | does the actual check: an HTTP request to the site, 10 s timeout, redirects followed; reports success, status code, duration, certificate expiry | [blackbox/blackbox.yml](../stacks/monitoring/blackbox/blackbox.yml) |
 | 4 | Prometheus | stores the results and evaluates the alert rules every 30 s | [prometheus/alert-rules.yml](../stacks/monitoring/prometheus/alert-rules.yml) |
 | 5 | Alertmanager | receives firing alerts, groups them per alert and site, sends them to Discord, reminds every 12 h, posts again when resolved | [alertmanager/alertmanager.yml](../stacks/monitoring/alertmanager/alertmanager.yml) |
@@ -106,11 +106,12 @@ Portainer CE deploys a Git stack from its own copy of the repo, and can't mount 
 ## Set it up
 
 1. **Discord**: create a webhook for the alerts channel ([Discord webhook](integrations/discord-web-hook.md)); one per tool, so it can be replaced on its own
-2. **values**: the stack's two variables, e.g. in `tofu/portainer`'s `stack_env`
+2. **values**: the stack's three variables, e.g. in `tofu/portainer`'s `stack_env`
     - `PROBE_TARGETS`: e.g. `https://hello.<domain>,https://www.<domain>`; public addresses check the app, the tunnel and DNS at once
     - `DISCORD_WEBHOOK_URL`: the webhook
+    - `GRAFANA_ADMIN_PASSWORD`: a long random password, set **before** the first deploy ([Dashboards: Grafana](#dashboards-grafana))
 3. **deploy** the stack with re-pull images off (`pull_image = false` in `tofu/portainer`): the images are built on the server
-4. **check**: `http://<server-tailscale-ip>:9090/targets` lists every URL with state **UP**; `…:9090/alerts` lists the rules, all **Inactive**
+4. **check**: `http://<server-tailscale-ip>:9090/targets` lists every URL with state **UP**; `…:9090/alerts` lists the rules, all **Inactive**; `…:3010` opens Grafana's login
 
 ## Daily use
 

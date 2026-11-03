@@ -66,7 +66,8 @@ On your PC, where you edit the repo ([Terraform and OpenTofu](terraform.md): ins
 Deployed in Portainer as Git stacks, each following its own page; any of them can move into `tofu/portainer` later (one line in `stacks`, its variables in `stack_env`):
 
 - [Tailscale](integrations/tailscale.md): private access, also to services without a public route
-- recommended: [Monitoring](monitoring.md): a message to Discord when a site stops answering, configured as code; deploy it with `tofu/portainer` like the stacks in C
+- recommended: [Monitoring](monitoring.md): a message to Discord when a site stops answering or the backup gets old, dashboards in Grafana, configured as code; deploy it with `tofu/portainer` like the stacks in C, before the backup stack (it creates the volume `backup-status`)
+- recommended: an outside check with [tofu/uptimerobot](../tofu/uptimerobot/README.md), so you hear about it when the whole server is down ([When the server itself is down](monitoring.md#when-the-server-itself-is-down))
 - recommended: [Backup](backup.md): nightly, encrypted backup of the databases and data to an S3 bucket from [tofu/aws](../tofu/aws/README.md); do the restore test once
 - optional: [AdGuard](stack-adguard.md), [PostgreSQL](stack-postgres.md), [Umami](stack-umami.md), [Nextcloud](stack-nextcloud.md), [Media server](stack-media-server.md)
 
@@ -77,6 +78,7 @@ Deployed in Portainer as Git stacks, each following its own page; any of them ca
 
 ## Changes
 - 2026-10-30 — Backup in phase D
+- 2026-11-03 — Monitoring with backup alert and Grafana, before the backup stack; outside check with tofu/uptimerobot
 - 2026-10-30 — Monitoring in phase D (Uptime Kuma idle)
 - 2026-10-30 — Uptime Kuma in phase D
 - 2026-10-28 — first version: the whole setup in order (accounts, server, OpenTofu, other stacks, updates), with the private-repo variant

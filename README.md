@@ -7,16 +7,16 @@
 </p>
 
 <p align="center">
-    <img alt="Version 0.57.1" src="https://img.shields.io/badge/version-0.57.1-blue" />
+    <img alt="Version 0.57.2" src="https://img.shields.io/badge/version-0.57.2-blue" />
     <img alt="Last Update" src="https://img.shields.io/github/last-commit/kutaycoskuner/homelab" />
     <img alt="Stacks" src="https://github.com/kutaycoskuner/homelab/actions/workflows/stacks.yml/badge.svg" />
     <img alt="Secrets" src="https://github.com/kutaycoskuner/homelab/actions/workflows/secrets.yml/badge.svg" />
 </p>
 
 <p align="center">
-    <img alt="Architecture: from the PC, OpenTofu sets up Portainer, Cloudflare and an AWS S3 bucket; Portainer deploys the stacks on the Raspberry Pi from the GitHub repos; visitors reach them through Cloudflare's tunnel and cloudflared, own devices through Tailscale; the backup sends encrypted copies to S3 every night, monitoring and backup failures go to Discord" src="display/20261101-architecture_v1.svg" />
+    <img alt="Architecture: from the PC, OpenTofu sets up Portainer, Cloudflare and the AWS S3 buckets for backups and tofu states; Portainer deploys the stacks on the Raspberry Pi from GitHub by polling or webhook; visitors reach them through Cloudflare's tunnel and cloudflared, own devices through Tailscale, including Grafana's dashboards; monitoring checks the stacks and the backup's last success and alerts on Discord; the backup sends encrypted copies to S3 every night; UptimeRobot checks the public sites from outside and posts to Discord when the server is down" src="display/20261103-architecture_v2.svg" />
     <br>
-    <sub><i>How the parts fit together; dashed links are set up once by OpenTofu. Drawn with <a href="https://kutaycoskuner.github.io/imge/">imge</a>, source: <a href="graphs/20261101-architecture_v1.json">graphs/20261101-architecture_v1.json</a></i></sub>
+    <sub><i>How the parts fit together; solid: runs all the time, dashed: set up by OpenTofu or only on failure, dotted: checks from outside. Drawn with <a href="https://kutaycoskuner.github.io/imge/">imge</a>, source: <a href="graphs/20261103-architecture_v2.json">graphs/20261103-architecture_v2.json</a></i></sub>
 </p>
 
 ------------------------------------------------------------------------------------------
