@@ -82,6 +82,7 @@ Index of the docs for this repo. Start with the repo's [README](../README.md) fo
     - [Monitoring](monitoring.md): checks that the sites answer, alerts to Discord; configured as code
         - [The pipeline](monitoring.md#the-pipeline)
         - [The server's numbers: node-exporter](monitoring.md#the-servers-numbers-node-exporter)
+        - [Dashboards: Grafana](monitoring.md#dashboards-grafana)
         - [The alerts](monitoring.md#the-alerts)
         - [Why the config is built into the images](monitoring.md#why-the-config-is-built-into-the-images)
         - [Set it up](monitoring.md#set-it-up)

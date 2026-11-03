@@ -1,0 +1,10 @@
+# Grafana's only data source: this stack's Prometheus. Fixed uid, so the dashboards can name it.
+apiVersion: 1
+datasources:
+  - name: Prometheus
+    uid: prometheus
+    type: prometheus
+    access: proxy                  # Grafana asks Prometheus, not the browser
+    url: http://prometheus:9090    # inside this stack's network
+    isDefault: true
+    editable: false                # changed here, not in the UI

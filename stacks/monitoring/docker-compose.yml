@@ -1,6 +1,6 @@
 # monitoring: checks that the sites answer and posts to Discord when one fails; everything is configured
 # as code in this folder. blackbox checks, Prometheus collects and evaluates the alert rules,
-# Alertmanager sends the alerts. The config files are copied into images built on the server, because
+# Alertmanager sends the alerts, Grafana draws the dashboards. The config files are copied into images built on the server, because
 # Portainer CE can't mount files from a Git stack. Variables: see .env.example. See docs/monitoring.md.
 services:
   blackbox:
@@ -55,9 +55,30 @@ services:
       - backup-status:/textfile:ro     # *.prom files written by other stacks
     # no port on the server: only Prometheus asks it, inside this stack's network
 
+  # dashboards: graphs of what Prometheus stores; data source and dashboards are files in ./grafana
+  grafana:
+    build: ./grafana
+    image: homelab-monitoring-grafana
+    pull_policy: build
+    container_name: monitoring-grafana
+    restart: unless-stopped
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD}   # secret; used only on the very first start, see docs/monitoring.md
+      GF_USERS_ALLOW_SIGN_UP: "false"            # no new accounts from the login page
+      GF_AUTH_ANONYMOUS_ENABLED: "false"         # nothing without a login
+      GF_ANALYTICS_REPORTING_ENABLED: "false"    # no usage statistics sent to Grafana Labs
+      GF_ANALYTICS_CHECK_FOR_UPDATES: "false"    # updates come as Renovate pull requests
+    ports:
+      - "3010:3000"   # Grafana's page, through Tailscale; 3000 on the server is AdGuard's setup page
+    volumes:
+      - grafana_data:/var/lib/grafana   # users, preferences; the dashboards themselves come from the image
+    depends_on:
+      - prometheus
+
 volumes:
   prometheus_data:
   alertmanager_data:
+  grafana_data:
   backup-status:
     name: backup-status   # fixed name: the backup stack mounts it as an external volume
 
