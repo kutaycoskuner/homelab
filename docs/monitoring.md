@@ -63,7 +63,7 @@ volume backup-status: *.prom files ──┘
 ## Dashboards: Grafana
 
 ```text
-Prometheus (15 days of numbers) ──> Grafana ──> http://<server-tailscale-ip>:3000, login admin
+Prometheus (15 days of numbers) ──> Grafana ──> http://<server-tailscale-ip>:3010, login admin
                                       ^
              grafana/provisioning ────┤  the data source (this Prometheus) and where the dashboards are
              grafana/dashboards ──────┘  one JSON file per dashboard, in the folder "Homelab"
@@ -80,8 +80,8 @@ Prometheus (15 days of numbers) ──> Grafana ──> http://<server-tailscale
     - Grafana reads it **only on its very first start** and keeps it in its volume `grafana_data`; a changed variable doesn't change it
     - to set it again: `docker exec monitoring-grafana grafana cli admin reset-admin-password <new>` on the server
     - deploy the variable **before** the first start, or Grafana starts with its default password `admin`
-- **private**: port `3000` like Prometheus' `9090`, for the home network and Tailscale, no tunnel route; sign-up and anonymous access are off, usage statistics and the update check too
-- **check**: log in at `…:3000` → Dashboards → Homelab: every panel shows data; a wrong password is refused
+- **private**: port `3010` (inside the container 3000; on the server 3000 is AdGuard's setup page) like Prometheus' `9090`, for the home network and Tailscale, no tunnel route; sign-up and anonymous access are off, usage statistics and the update check too
+- **check**: log in at `…:3010` → Dashboards → Homelab: every panel shows data; a wrong password is refused
 
 ## The alerts
 

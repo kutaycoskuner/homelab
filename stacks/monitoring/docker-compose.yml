@@ -69,7 +69,7 @@ services:
       GF_ANALYTICS_REPORTING_ENABLED: "false"    # no usage statistics sent to Grafana Labs
       GF_ANALYTICS_CHECK_FOR_UPDATES: "false"    # updates come as Renovate pull requests
     ports:
-      - "3000:3000"   # Grafana's page, through Tailscale
+      - "3010:3000"   # Grafana's page, through Tailscale; 3000 on the server is AdGuard's setup page
     volumes:
       - grafana_data:/var/lib/grafana   # users, preferences; the dashboards themselves come from the image
     depends_on:
