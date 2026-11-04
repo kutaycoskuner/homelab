@@ -23,7 +23,7 @@ A push to `dev` changes nothing on the server until Portainer redeploys the stac
 | Way | Used for | How | Status here (Portainer CE 2.45.3) |
 |---|---|---|---|
 | **polling** | every stack by default | Portainer checks the branch every `update_interval` (`5m`); a new commit → pull and redeploy | works for homelab stacks (tested again 2026-11-03: the new commit was deployed within 10 minutes); failed for homelab-private stacks on 2026-11-01 (see below) |
-| **webhook** | apps whose CI pushes a new image under the same tag (`webhook = true`, e.g. archrium-uo) | the app's CI calls a secret URL after pushing the image; Portainer pulls and redeploys at once ([Portainer webhook](integrations/portainer-webhook.md)) | tested 2026-11-01: works |
+| **webhook** | apps whose CI pushes a new image under the same tag (`webhook = true`, e.g. archrium-uo) | the app's CI calls a secret URL after pushing the image; Portainer pulls and redeploys at once ([Portainer webhook](integrations/portainer-webhook.md)) | needs force redeployment, set by tofu/portainer since 2026-11-04: before, the call succeeded but nothing redeployed without a new commit |
 | **by hand, as code** | when neither has run, or right away | `tofu apply '-replace=module.portainer.portainer_stack.stack["<stack>"]'` in the private repo's `tofu/portainer` (in this repo: `'-replace=portainer_stack.stack["<stack>"]'`); deletes and recreates the stack from the branch, volumes stay | always works; the fallback |
 
 - **Community or Business Edition**: Portainer's stack docs list polling and webhook without a Business Edition label, its features page lists them as Business Edition; on this server (CE 2.45.3) both work

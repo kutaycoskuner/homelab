@@ -5,6 +5,7 @@ How an app's CI redeploys its stack on the server right after it pushes a new im
 ## What it is and why we use it
 
 - **Portainer webhook**: a secret URL per stack; a `POST` to it makes Portainer pull the stack's images again and redeploy it
+    - only with **force redeployment** on, which `tofu/portainer` sets for webhook stacks: otherwise Portainer redeploys only when the Git commit changed, and a new `:latest` has no new commit
     - why: an app in its own repo (e.g. a website) builds its image in CI; the webhook lets that CI deploy it within seconds, and a failed deploy shows up as a failed CI step
     - instead of **polling** ([Updates](../updates.md)): polling only notices changes in the stack's files, not a new image under the same tag (e.g. `:latest`), and waits up to its interval
     - the URL contains its own ID: anyone who has it can trigger a redeploy (not change the stack), so it's a secret
@@ -75,6 +76,19 @@ All on your PC, in PowerShell, in the folder that runs the tofu folders; each `a
     ```
     → `204` or `200`
 
+## When it doesn't redeploy
+
+The CI step can be green (Portainer accepted the call) while nothing was redeployed. Check on the server, without clicking Redeploy in Portainer first (that hides the answer):
+
+| Check (on the server) | Shows |
+|---|---|
+| `docker inspect <container> --format '{{.Created}}'` | when the container was last recreated (UTC); it should match the CI run's time |
+| `docker image inspect <image>:latest --format '{{index .RepoDigests 0}}'` | the image running; compare with the digest the CI's push step printed |
+| `curl -s http://localhost:<port>/ \| grep -c "<text of the change>"` | whether the server delivers the new version; if yes but the browser doesn't, it's the browser's or Cloudflare's cache |
+
+- created time old, digest old: Portainer didn't redeploy; check that force redeployment is on (Portainer → the stack → GitOps updates → Force redeployment), set by `tofu/portainer`
+- Portainer logs almost nothing about webhooks at its default log level; an empty `docker logs portainer` proves nothing
+
 ## Replace a leaked webhook, renew the token
 
 - **leaked URL**: recreate the stack, which gives it a new ID, then set the secret again
@@ -92,4 +106,5 @@ All on your PC, in PowerShell, in the folder that runs the tofu folders; each `a
 - app repos with their own image, deployed as a stack from a private configuration (see [tofu/portainer](../../tofu/portainer/README.md), stacks from another repo)
 
 ## Changes
+- 2026-11-04 — force redeployment for webhook stacks; when it doesn't redeploy: what to check
 - 2026-11-01 — first version: webhook per stack, webhook-only tunnel route, CI secret set by tofu/github, the CI step, testing, replacing a leaked URL
