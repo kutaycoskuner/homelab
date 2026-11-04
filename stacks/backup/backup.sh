@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------------------
 #   author          : Kutay Coskuner
 #   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-#   last update     : 2026-11-03
+#   last update     : 2026-11-04
 #   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 #                     Check outputs before relying on them.
 # -----------------------------------------------------------------------------------------
@@ -84,6 +84,9 @@ if [ -d "$STATUS_DIR" ]; then
         echo "# TYPE backup_last_success_timestamp_seconds gauge"
         echo "backup_last_success_timestamp_seconds $(date +%s)"
     } > "$STATUS_DIR/backup.prom.tmp"
+    # readable for node-exporter, which runs as an unprivileged user; crond starts this script
+    # with a stricter umask than docker exec, so the file would otherwise be root-only
+    chmod 644 "$STATUS_DIR/backup.prom.tmp"
     mv "$STATUS_DIR/backup.prom.tmp" "$STATUS_DIR/backup.prom"
 else
     log "no $STATUS_DIR mounted: success time not recorded"

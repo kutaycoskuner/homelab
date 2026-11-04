@@ -109,6 +109,7 @@ An older backup instead of the latest: take its ID from `restic snapshots` in pl
 |---|---|
 | deploy fails: "network … declared as external, but could not be found" | `POSTGRES_NETWORK` doesn't match the postgres stack's network (check command in Set it up) |
 | deploy fails: "volume "backup-status" … declared as external, but could not be found" | the monitoring stack isn't deployed yet; deploy it first |
+| `BackupStatusMissing` on Discord, and `docker logs monitoring-node-exporter` says "permission denied" for `backup.prom` | the file isn't readable for node-exporter; `backup.sh` sets it to `644` since 2026-11-04 (the nightly run created it root-only before); fix now: `docker exec backup chmod 644 /status/backup.prom` |
 | "Backup failed at step: recording the success time" | the backup itself is in the bucket; writing `/status/backup.prom` failed: `docker exec backup ls -l /status` |
 | "Backup failed at step: dumping the databases" | postgres down, a wrong `POSTGRES_NETWORK`, or a wrong `POSTGRES_USER` / `POSTGRES_PASSWORD` |
 | "… opening the repository" / "… uploading" | the bucket's login or `RESTIC_REPOSITORY` (region, bucket name); `docker logs backup` shows AWS's answer |
@@ -116,6 +117,7 @@ An older backup instead of the latest: take its ID from `restic snapshots` in pl
 | no message, but no backups either | the schedule: `docker logs backup` shows "backups run at …" on start; time zone `TZ` |
 
 ## Changes
+- 2026-11-04 — the success-time file is readable for node-exporter (chmod 644), also when the nightly run writes it
 - 2026-11-03 — step 5: the success time for the monitoring stack (volume backup-status)
 - 2026-10-30 — read-only database user from tofu/postgres instead of the admin; dump without password hashes
 - 2026-10-30 — first version: what is backed up and why, pipeline, setup, daily use, restore, troubleshooting
