@@ -30,7 +30,7 @@ jobs:
         working-directory: ${{ matrix.folder }}
     steps:
       - uses: actions/checkout@v7
-      - uses: hashicorp/setup-terraform@v3
+      - uses: hashicorp/setup-terraform@v4
       - name: Formatting
         run: terraform fmt -check -diff
       - name: Download providers
