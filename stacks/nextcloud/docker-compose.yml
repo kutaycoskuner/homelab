@@ -14,7 +14,7 @@ services:
       - db_data:/var/lib/postgresql/data
 
   app:
-    image: nextcloud:31@sha256:07ec73cc816e58d6f45a162cd53ef886462c29271a23fc68d0124cec276e3767   # one major version at a time: Nextcloud can't skip majors on upgrade
+    image: nextcloud:35@sha256:8041f24690c5631da46d2391e1fd7efcde95c6cf08695047f3dd7ce7783934b4   # one major version at a time: Nextcloud can't skip majors on upgrade
     container_name: nextcloud_app
     restart: unless-stopped
     depends_on:
