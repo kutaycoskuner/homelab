@@ -25,6 +25,11 @@ Index of the docs for this repo. Start with the repo's [README](../README.md) fo
         - [Where it runs: your PC](terraform.md#where-it-runs-your-pc)
         - [Install](terraform.md#install)
         - [Secrets and state](terraform.md#secrets-and-state)
+    - [Databases](databases.md): who builds what — tofu the databases, users and passwords, each app its own tables
+        - [The line](databases.md#the-line)
+        - [Why this way](databases.md#why-this-way)
+        - [Safety](databases.md#safety)
+        - [Known limits](databases.md#known-limits)
 - Setup guides (core, in order)
     - [00 · From zero to a running server](00-from-zero.md): the whole setup in order, linking the guides below
         - [A. Accounts and tokens](00-from-zero.md#a-accounts-and-tokens)
@@ -128,6 +133,7 @@ Index of the docs for this repo. Start with the repo's [README](../README.md) fo
     - Troubleshooting
 
 ## Changes
+- 2026-11-28 — added the Databases page
 - 2026-10-30 — added the Backup page
 - 2026-10-30 — added the Monitoring page; Uptime Kuma idle
 - 2026-10-30 — added the Uptime Kuma stack page

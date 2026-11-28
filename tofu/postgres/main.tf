@@ -1,13 +1,15 @@
 # -----------------------------------------------------------------------------------------
 #   author          : Kutay Coskuner
 #   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-#   last update     : 2026-10-30
+#   last update     : 2026-11-28
 #   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 #                     Check outputs before relying on them.
 # -----------------------------------------------------------------------------------------
-# PostgreSQL users (roles) as code (see README.md). Run with OpenTofu (tofu) on your PC; it
-# connects to the database server with the admin login. Each entry in var.users becomes a user
-# with a strong password generated here, plus optional built-in roles (e.g. read-only access).
+# PostgreSQL databases and users (roles) as code (see README.md). Run with OpenTofu (tofu) on
+# your PC; it connects to the database server with the admin login. Each entry in var.databases
+# is a database tofu keeps (never deletes); each entry in var.users becomes a user with a strong
+# password generated here, plus optional built-in roles (e.g. read-only access). Tables are not
+# managed here: each app applies its own schema (docs/databases.md).
 
 terraform {
   required_version = ">= 1.6"
@@ -30,6 +32,20 @@ provider "postgresql" {
   username = var.admin_username
   password = var.admin_password
   sslmode  = var.sslmode
+}
+
+# the databases, by name only: settings tofu isn't given (owner, encoding, template) are read from
+# the server and left as they are, so taking over an existing one changes nothing
+resource "postgresql_database" "database" {
+  for_each = var.databases
+
+  name = each.key
+
+  # replacing a database deletes its data: tofu refuses any plan that would destroy one. To remove
+  # a database on purpose, take this out for that run, or `tofu state rm` it and drop it by hand
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 # one strong password per user; stored in the state, shown with `tofu output`

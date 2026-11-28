@@ -9,6 +9,7 @@ services:
       - "8090:80"
     volumes:
       - ${MEDIA_DIR}:/usr/share/nginx/html/images:ro   # read-only: the web server can't change your files
+      
 
 x-ci:   # CI options, see docs/ci.md
   url: http://localhost:8090/

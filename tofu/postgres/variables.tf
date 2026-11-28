@@ -44,3 +44,9 @@ variable "users" {
   }))
   default = {}
 }
+
+variable "databases" {
+  description = "Databases tofu manages, by name; existing ones are taken over with an import block in the calling configuration and keep their settings (owner, encoding). Tables are not managed here: each app applies its own schema"
+  type        = map(object({}))
+  default     = {}
+}
