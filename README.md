@@ -7,7 +7,7 @@
 </p>
 
 <p align="center">
-    <img alt="Version 0.57.4" src="https://img.shields.io/badge/version-0.57.4-blue" />
+    <img alt="Version 0.58.1" src="https://img.shields.io/badge/version-0.58.1-blue" />
     <img alt="Last Update" src="https://img.shields.io/github/last-commit/kutaycoskuner/homelab" />
     <img alt="Stacks" src="https://github.com/kutaycoskuner/homelab/actions/workflows/stacks.yml/badge.svg" />
     <img alt="Secrets" src="https://github.com/kutaycoskuner/homelab/actions/workflows/secrets.yml/badge.svg" />
@@ -138,6 +138,7 @@ Your copies (`.env`, `terraform.tfvars`) are gitignored and never committed. Sta
     - [CI](docs/ci.md): what GitHub Actions checks on every push
     - [Terraform and OpenTofu](docs/terraform.md): Cloudflare routes and Portainer stacks as code, run from your PC
     - [Updates](docs/updates.md): new image versions as pull requests, deployed by Portainer after merge
+    - [Databases](docs/databases.md): tofu builds the databases, users and passwords; each app its own tables
     - [00 · From zero to a running server](docs/00-from-zero.md): the whole setup in order, from an empty machine to all stacks running
     - [01 · Headless server setup](docs/01-headless-server-setup.md): install the OS and reach the server over the network (Raspberry Pi as the example)
     - [02 · Docker and Portainer](docs/02-docker-portainer.md): container runtime and its web UI
