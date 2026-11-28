@@ -1,0 +1,7 @@
+# The servers Ansible configures. Copy to inventory.yml in your configuration folder (gitignored:
+# it holds your server's address) and fill in the placeholders.
+servers:
+  hosts:
+    pi:
+      ansible_host: <server-ip>   # home network or Tailscale address
+      ansible_user: <user>        # the user you log in with over SSH (key login, see docs/01-headless-server-setup.md)

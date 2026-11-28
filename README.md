@@ -139,6 +139,7 @@ Your copies (`.env`, `terraform.tfvars`) are gitignored and never committed. Sta
     - [Terraform and OpenTofu](docs/terraform.md): Cloudflare routes and Portainer stacks as code, run from your PC
     - [Updates](docs/updates.md): new image versions as pull requests, deployed by Portainer after merge
     - [Databases](docs/databases.md): tofu builds the databases, users and passwords; each app its own tables
+    - [Ansible](ansible/README.md): the server itself as code (packages, Docker, Portainer, folders, DNS); written, not run yet
     - [00 · From zero to a running server](docs/00-from-zero.md): the whole setup in order, from an empty machine to all stacks running
     - [01 · Headless server setup](docs/01-headless-server-setup.md): install the OS and reach the server over the network (Raspberry Pi as the example)
     - [02 · Docker and Portainer](docs/02-docker-portainer.md): container runtime and its web UI

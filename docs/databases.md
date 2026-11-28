@@ -10,7 +10,7 @@ How the databases of the own apps are built and changed: who does what, and why 
 | databases, users, grants, generated passwords | OpenTofu, [tofu/postgres](../tofu/postgres/README.md) | one list of databases and users in the private configuration (e.g. `databases.yml`) |
 | each app's connection setting (`DATABASE_URL`) | OpenTofu, [tofu/portainer](../tofu/portainer/README.md) | built from tofu/postgres' state, passed as a stack variable |
 | tables, columns, fixed lists | the app itself | a schema file in the app's own repository, applied by its own tool |
-| server configuration (later) | Ansible, with Ansible Vault | not set up yet |
+| the server itself (packages, Docker, Portainer), not the databases | Ansible, with Ansible Vault | [ansible/](../ansible/README.md) (written, not run yet) |
 
 ```text
 databases.yml ─▶ tofu/postgres ─▶ databases + users + passwords (state in S3)
@@ -29,7 +29,7 @@ databases.yml ─▶ tofu/postgres ─▶ databases + users + passwords (state i
 - **Ansible was considered for the databases** (Nov 2026: databases as YAML, passwords in Ansible Vault) and dropped for them:
     - the generated passwords would have to be copied into a vault by hand, and kept in sync with the stacks
     - two tools for the same layer means two places to look; one is enough
-    - Ansible stays the candidate for configuring the server itself (packages, files, services), where a vault fits
+    - Ansible configures the server itself instead (packages, Docker, Portainer, folders: [ansible/](../ansible/README.md)), where a vault fits
 - **SQL scripts run by tofu** (through `psql` on the PC) were considered and dropped: a workaround for what the provider can't do, and a local install on every PC that runs tofu
 
 ## Safety
@@ -45,4 +45,5 @@ databases.yml ─▶ tofu/postgres ─▶ databases + users + passwords (state i
 - **the database port** is published on every interface of the server; it should only be reachable from the home network and Tailscale ([Keep it private](stack-postgres.md#keep-it-private))
 
 ## Changes
+- 2026-11-28 — Ansible row: the server itself, in ansible/
 - 2026-11-28 — first version: tofu for databases, users and passwords; tables owned by each app; Ansible only for server configuration; why, safety, limits

@@ -1,0 +1,6 @@
+# Collections the roles use. Install once (in WSL): ansible-galaxy collection install -r requirements.yml
+collections:
+  - name: community.docker    # docker_compose_v2: starts Portainer from its compose file
+    version: ">=4.0.0"
+  - name: community.general   # timezone
+    version: ">=9.0.0"

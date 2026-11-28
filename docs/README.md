@@ -25,6 +25,7 @@ Index of the docs for this repo. Start with the repo's [README](../README.md) fo
         - [Where it runs: your PC](terraform.md#where-it-runs-your-pc)
         - [Install](terraform.md#install)
         - [Secrets and state](terraform.md#secrets-and-state)
+    - [Ansible](../ansible/README.md): the server itself as code (packages, Docker, Portainer, folders, DNS); written, not run yet
     - [Databases](databases.md): who builds what — tofu the databases, users and passwords, each app its own tables
         - [The line](databases.md#the-line)
         - [Why this way](databases.md#why-this-way)
@@ -133,6 +134,7 @@ Index of the docs for this repo. Start with the repo's [README](../README.md) fo
     - Troubleshooting
 
 ## Changes
+- 2026-11-28 — added the Ansible folder to Infrastructure as code
 - 2026-11-28 — added the Databases page
 - 2026-10-30 — added the Backup page
 - 2026-10-30 — added the Monitoring page; Uptime Kuma idle

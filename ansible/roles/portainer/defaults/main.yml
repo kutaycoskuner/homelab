@@ -1,0 +1,6 @@
+# where the compose file is copied to on the server; the folder name is the compose project
+# name, the same "portainer" as when scripts/server_base starts it from the repo clone
+portainer_dir: /opt/portainer
+
+# the repo's compose file (image version kept up to date by Renovate)
+portainer_compose_src: "{{ playbook_dir }}/../stacks/portainer/docker-compose.yml"

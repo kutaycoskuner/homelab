@@ -1,0 +1,30 @@
+# NetworkManager (nmcli), the default on Raspberry Pi OS since Bookworm. The read steps also run
+# in --check, so a check run shows whether a change is due
+- name: DNS is set by NetworkManager
+  when: dns_fixed | bool
+  block:
+    - name: Network connection of the default route is known
+      ansible.builtin.command:
+        cmd: nmcli -g GENERAL.CONNECTION device show {{ ansible_default_ipv4.interface }}
+      register: dns_connection
+      changed_when: false
+      check_mode: false
+
+    - name: Current DNS settings are read
+      ansible.builtin.command:
+        argv: [nmcli, -g, "ipv4.dns,ipv4.ignore-auto-dns,ipv6.dns,ipv6.ignore-auto-dns", connection, show, "{{ dns_connection.stdout }}"]
+      register: dns_current
+      changed_when: false
+      check_mode: false
+
+    # nmcli -g prints one line per field, values joined by commas, colons escaped (\:)
+    - name: DNS servers are fixed (the connection stays up)
+      ansible.builtin.shell:
+        cmd: >-
+          nmcli connection modify "{{ dns_connection.stdout }}"
+          ipv4.dns "{{ dns_servers_v4 | join(' ') }}" ipv4.ignore-auto-dns yes
+          ipv6.dns "{{ dns_servers_v6 | join(' ') }}" ipv6.ignore-auto-dns yes
+          && nmcli device reapply {{ ansible_default_ipv4.interface }}
+      when: >-
+        (dns_current.stdout | replace('\:', ':')).splitlines() !=
+        [dns_servers_v4 | join(','), 'yes', dns_servers_v6 | join(','), 'yes']

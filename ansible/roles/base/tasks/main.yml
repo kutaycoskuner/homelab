@@ -1,0 +1,18 @@
+- name: Base packages are installed
+  ansible.builtin.apt:
+    name: "{{ base_packages }}"
+    state: present
+    update_cache: true
+    cache_valid_time: 3600   # refresh the package list at most once an hour
+
+- name: Time zone is set
+  community.general.timezone:
+    name: "{{ base_timezone }}"
+  when: base_timezone is not none
+
+# no owner or mode given: a folder that exists keeps both, only missing ones are created (as root)
+- name: Data folders exist
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+  loop: "{{ srv_dirs }}"

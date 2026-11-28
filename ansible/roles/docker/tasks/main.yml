@@ -1,0 +1,38 @@
+# get.docker.com (used by scripts/server_base) writes docker.list with its own key; next to the
+# repository below, apt would stop with "Conflicting values set for option Signed-By"
+- name: Repository file of Docker's install script is gone
+  ansible.builtin.file:
+    path: /etc/apt/sources.list.d/docker.list
+    state: absent
+
+- name: Docker's apt repository is set up
+  ansible.builtin.deb822_repository:
+    name: docker
+    types: [deb]
+    uris: "https://download.docker.com/linux/{{ docker_apt_distro }}"
+    suites: ["{{ ansible_distribution_release }}"]
+    components: [stable]
+    architectures: ["{{ docker_apt_arch }}"]
+    signed_by: "https://download.docker.com/linux/{{ docker_apt_distro }}/gpg"
+
+# server_update=true: newest versions, like server_base --update (restarts Docker: all containers
+# stop for a moment and come back by their restart policy)
+- name: Docker packages are installed
+  ansible.builtin.apt:
+    name: "{{ docker_packages }}"
+    state: "{{ 'latest' if server_update | bool else 'present' }}"
+    update_cache: true
+
+- name: Docker starts at boot
+  ansible.builtin.service:
+    name: docker
+    state: started
+    enabled: true
+
+# takes effect at the user's next login
+- name: Users may run docker without sudo
+  ansible.builtin.user:
+    name: "{{ item }}"
+    groups: docker
+    append: true
+  loop: "{{ docker_users }}"

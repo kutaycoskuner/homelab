@@ -1,0 +1,20 @@
+- name: Portainer's folder exists
+  ansible.builtin.file:
+    path: "{{ portainer_dir }}"
+    state: directory
+    mode: "0755"
+
+- name: Portainer's compose file is on the server
+  ansible.builtin.copy:
+    src: "{{ portainer_compose_src }}"
+    dest: "{{ portainer_dir }}/docker-compose.yml"
+    mode: "0644"
+
+# data stays in the portainer_data volume, which the compose file reuses by name. A Portainer
+# started by `docker run` (container name in use) has to be replaced first: scripts/server_base --install
+- name: Portainer is running
+  community.docker.docker_compose_v2:
+    project_src: "{{ portainer_dir }}"
+    project_name: portainer
+    state: present
+    pull: "{{ 'always' if server_update | bool else 'missing' }}"

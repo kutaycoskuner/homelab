@@ -1,0 +1,15 @@
+# The server itself as code: base packages and folders, Docker, Portainer, the server's own DNS
+# servers. What runs inside Portainer (stacks, routes, databases) is OpenTofu's job (tofu/).
+# Run from your configuration folder (see README.md); first with --check --diff, which changes nothing.
+- name: Server base setup
+  hosts: servers
+  become: true   # the tasks change system files; sudo password from the vault (README.md)
+
+  vars:
+    server_update: false   # true (-e server_update=true): also update the Docker packages and Portainer's image
+
+  roles:
+    - { role: base, tags: [base] }
+    - { role: docker, tags: [docker] }
+    - { role: portainer, tags: [portainer] }
+    - { role: dns, tags: [dns] }

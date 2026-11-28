@@ -1,0 +1,8 @@
+# the server's own DNS servers, instead of those the router hands out (Cloudflare, Google; the same
+# as scripts/server_base --dns). Why: a server that asks its own AdGuard for names can't pull images
+# while AdGuard redeploys (docs/stack-adguard.md)
+dns_servers_v4: [1.1.1.1, 8.8.8.8]
+dns_servers_v6: ["2606:4700:4700::1111", "2001:4860:4860::8888"]
+
+# false: leave the server's DNS as it is
+dns_fixed: true

@@ -1,0 +1,11 @@
+# packages every server gets
+base_packages:
+  - git    # clone the repo on the server
+  - curl
+
+# the server's time zone (logs, scheduled backups); null leaves it as it is
+base_timezone: null
+
+# folders the stacks keep their data in (bind mounts), e.g. /srv/adguard; created when missing,
+# existing ones keep their owner and permissions
+srv_dirs: []
